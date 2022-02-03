@@ -57,8 +57,8 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import PageTitle from "@/components/Accounts/child/PageTitle.vue";
-import InputPassword from "@/components/Accounts/child/InputPassword.vue";
+import PageTitle from "@/components/accounts/child/PageTitle.vue";
+import InputPassword from "@/components/accounts/child/InputPassword.vue";
 
 export default defineComponent({
   name: "Login",
@@ -93,8 +93,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import "@/assets/css/reset.scss";
-@import "@/assets/css/common.scss";
 @import "@/assets/css/accounts.scss";
 
 .addition-box {

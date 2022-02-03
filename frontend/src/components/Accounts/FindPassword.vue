@@ -40,7 +40,7 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import PageTitle from "@/components/Accounts/child/PageTitle.vue";
+import PageTitle from "@/components/accounts/child/PageTitle.vue";
 import { AlertCircleOutline } from "mdue";
 
 export default defineComponent({
@@ -62,8 +62,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import "@/assets/css/reset.scss";
-@import "@/assets/css/common.scss";
 @import "@/assets/css/accounts.scss";
 
 p {

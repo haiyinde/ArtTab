@@ -79,9 +79,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import "@/assets/css/reset.scss";
-@import "@/assets/css/common.scss";
-
 #navbar {
   position: relative;
   display: flex;

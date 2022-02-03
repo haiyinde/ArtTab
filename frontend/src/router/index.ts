@@ -3,11 +3,11 @@ import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import Main from "@/views/Main.vue";
 // 계정 페이지
 import Accounts from "@/views/Accounts.vue";
-import Login from "@/components/Accounts/Login.vue";
-import SignUp from "@/components/Accounts/SignUp.vue";
-import ConfirmEmail from "@/components/Accounts/ConfirmEmail.vue";
-import InsertNickname from "@/components/Accounts/InsertNickname.vue";
-import FindPassword from "@/components/Accounts/FindPassword.vue";
+import Login from "@/components/accounts/Login.vue";
+import SignUp from "@/components/accounts/SignUp.vue";
+import ConfirmEmail from "@/components/accounts/ConfirmEmail.vue";
+import InsertNickname from "@/components/accounts/InsertNickname.vue";
+import FindPassword from "@/components/accounts/FindPassword.vue";
 // 내 정보 페이지
 import Profile from "@/views/Profile.vue";
 // 검색 결과 페이지
