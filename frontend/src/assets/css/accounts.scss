@@ -1,0 +1,49 @@
+.label-text {
+  display: block;
+  font-size: $font-regular;
+  margin: $size-big 0 $size-regular 0;
+}
+
+.input-text {
+  width: 100%;
+  padding: $size-small;
+  border: 1px solid $grey;
+  font-size: $font-regular;
+  border-radius: $size-micro;
+}
+
+.alert {
+  display: block;
+  margin: $size-small;
+  color: $red;
+}
+
+.guide {
+  display: inline-block;
+  margin: $size-big $size-small $size-regular $size-small;
+  span {
+    font-weight: $weight-semi-bold;
+    cursor: pointer;
+  }
+}
+
+button {
+  width: 100%;
+  padding: $size-small;
+  margin: $size-big 0 $size-medium 0;
+  font-size: $font-medium;
+  background-color: $black;
+  color: $white;
+  border-radius: $size-micro;
+  cursor: pointer;
+  &.disabled {
+    background-color: $grey;
+    cursor: default;
+  }
+  &.btn-white {
+    margin-top: $size-medium;
+    background-color: $white;
+    color: $black;
+    border: 1px solid $black;
+  }
+}
