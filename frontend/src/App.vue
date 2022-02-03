@@ -1,9 +1,16 @@
 <template>
-  <div id="nav">
-    <router-link to="/">Home</router-link>
-  </div>
+  <nav-bar />
   <router-view />
 </template>
+
+<script lang="ts">
+import { defineComponent } from "vue";
+import NavBar from "@/components/layout/NavBar.vue";
+
+export default defineComponent({
+  components: { NavBar },
+});
+</script>
 
 <style lang="scss">
 /* font */
