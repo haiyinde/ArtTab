@@ -24,7 +24,7 @@ import static com.ssafy.arttab.member.dto.ValidatorMessage.*;
  **/
 @Getter
 public class MemberSaveRequest {
-    @NotBlank(message = MEMBER_NICK_MESSAG)
+
     private String nickname;
     @NotBlank(message = MEMBER_PW_MESSAG)
     private String password;

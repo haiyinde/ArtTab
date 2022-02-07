@@ -88,7 +88,7 @@ public class MemberController {
 //    }
 
     @ApiOperation(value = "닉네임 중복체크")
-    @GetMapping("/idCk")
+    @PostMapping("/idCk")
     public ResponseEntity<String> selectOnebynick(@RequestBody Member member){
         String message = "success";
         try{
@@ -101,7 +101,7 @@ public class MemberController {
     }
 
     @ApiOperation(value = "이메일 중복체크")
-    @GetMapping("/emailCk")
+    @PostMapping("/emailCk")
     public ResponseEntity<String> selectOnebyemail(@RequestBody Member member){
         String message = "success";
         try{

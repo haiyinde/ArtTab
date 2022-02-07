@@ -47,6 +47,7 @@ public class MemberService {
      * @param memberSaveRequest
      * @return
      */
+    @Transactional
     public boolean saveMember(final MemberSaveRequest memberSaveRequest){
         //중복검사
         MemberEmailCheck(memberSaveRequest.toEntity());
@@ -156,6 +157,7 @@ public class MemberService {
      * @param loginEmail
      * @param nickname
      */
+    @Transactional
     public void addNickname(final LoginEmail loginEmail,final String nickname ){
         var member = memberRepository.findByEmail(loginEmail.getEmail())
                 .orElseThrow(NoSuchMemberExcption::new);
@@ -184,6 +186,7 @@ public class MemberService {
      * @param loginEmail
      * @param passwordUpdateRequest
      */
+    @Transactional
     public void updatePassword(final LoginEmail loginEmail, final PasswordUpdateRequest passwordUpdateRequest){
         var member = memberRepository.findByEmail(loginEmail.getEmail())
                 .orElseThrow(NoSuchMemberExcption::new);
@@ -200,6 +203,7 @@ public class MemberService {
      * @param loginEmail
      * @param memberUpdateRequest
      */
+    @Transactional
     public void updateMember(final LoginEmail loginEmail,final IntroUpdateRequest memberUpdateRequest){
         var member = memberRepository.findByEmail(loginEmail.getEmail())
                 .orElseThrow(NoSuchMemberExcption::new);
@@ -211,6 +215,7 @@ public class MemberService {
      * 회원 삭제
      * @param loginEmail
      */
+    @Transactional
     public void deleteMember(final LoginEmail loginEmail){
         var member = memberRepository.findByEmail(loginEmail.getEmail())
                 .orElseThrow(NoSuchMemberExcption::new);
