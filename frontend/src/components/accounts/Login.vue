@@ -59,6 +59,7 @@
 import { defineComponent } from "vue";
 import PageTitle from "@/components/accounts/child/PageTitle.vue";
 import InputPassword from "@/components/accounts/child/InputPassword.vue";
+import { useCookies } from "vue3-cookies";
 
 export default defineComponent({
   name: "Login",
@@ -75,7 +76,25 @@ export default defineComponent({
         email: false,
       },
       isCompleted: false,
+      cookies: useCookies().cookies,
     };
+  },
+  // 이전에 아이디 저장을 한 경우 아이디 불러오기
+  mounted() {
+    this.email = this.cookies.get("idCookie");
+    if (this.email) {
+      this.storeId = "true";
+    }
+  },
+  watch: {
+    password: function () {
+      console.log("dd");
+      if (this.password && this.email && !this.valid.email) {
+        this.isCompleted = true;
+      } else {
+        this.isCompleted = false;
+      }
+    },
   },
   methods: {
     // 비밀번호 컴포넌트에 입력된 텍스트 가져오기
@@ -83,6 +102,14 @@ export default defineComponent({
       this.password = value;
     },
     login() {
+      // 아이디 저장을 체크한 경우 쿠키에 저장하기
+      if (this.storeId) {
+        this.cookies.set("idCookie", this.email, "30d");
+      }
+      // 아이디 저장을 체크하지 않은 경우(체크 해제) 쿠키에서 삭제하기
+      else {
+        this.cookies.remove("idCookie");
+      }
       console.log("로그인 처리하기");
     },
     moveSignUp() {
