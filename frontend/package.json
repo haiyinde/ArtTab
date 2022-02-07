@@ -8,6 +8,7 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@yeger/vue-masonry-wall": "^3.0.19",
     "axios": "^0.25.0",
     "core-js": "^3.6.5",
     "mdue": "^0.1.4",
