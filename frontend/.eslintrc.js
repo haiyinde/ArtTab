@@ -4,11 +4,11 @@ module.exports = {
     node: true,
   },
   extends: [
-    "plugin:vue/vue3-essential",  // vue 추천 규칙
+    "plugin:vue/vue3-essential", // vue 추천 규칙
     "eslint:recommended",
     "@vue/typescript/recommended",
     "@vue/prettier",
-    "@vue/prettier/@typescript-eslint",  // eslint의 typescript formatting 기능 제거
+    "@vue/prettier/@typescript-eslint", // eslint의 typescript formatting 기능 제거
   ],
   parserOptions: {
     ecmaVersion: 2020,

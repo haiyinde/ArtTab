@@ -1,0 +1,119 @@
+@charset "UTF-8";
+
+// Color
+$white: #fff;
+$red: #cc0000;
+$blue: #002dcc;
+$dark-grey: #616161;
+$grey: #d8d8d8;
+$light-grey: #f5f5f5;
+$black: #000;
+$shadow: #d1d1d122;
+$back: #d1d1d144;
+
+// Font-style
+$font-style: "Noto Sans KR", sans-serif;
+
+// Font size
+$font-big: 2.8125rem;
+$font-large: 1.75rem;
+$font-medium: 1.125rem;
+$font-regular: 1rem;
+$font-small: 0.875rem;
+
+// Font-weight
+$weight-bold: 700;
+$weight-semi-bold: 500;
+$weight-regular: 400;
+$weight-light: 300;
+
+// Size (border-radius, padding, margin
+$size-big: 1.75rem;
+$size-large: 1.25rem;
+$size-medium: 1rem;
+$size-regular: 0.75rem;
+$size-small: 0.5rem;
+$size-micro: 0.25rem;
+
+// Navbar size
+$navbar-height: 3.5rem;
+
+// Animation duration
+$animation-duration: 300ms;
+
+html {
+  font-size: 16px;
+}
+
+* {
+  font-family: $font-style;
+}
+
+// Typography
+h1 {
+  font-size: $font-big;
+  font-weight: $weight-bold;
+  color: $black;
+}
+
+h2 {
+  font-size: $font-large;
+  font-weight: $weight-semi-bold;
+  color: $black;
+  margin: 0.5rem 0;
+}
+
+h3 {
+  font-size: $font-medium;
+  font-weight: $weight-semi-bold;
+  color: $black;
+  margin: 0.5rem 0;
+}
+
+h4 {
+  font-size: $font-small;
+  font-weight: $weight-semi-bold;
+  color: $black;
+  margin: 0.25rem 0;
+}
+
+p {
+  font-size: $font-regular;
+  font-weight: $weight-regular;
+  color: $black;
+  margin: 0.25rem 0;
+}
+
+span {
+  font-size: $font-small;
+  font-weight: $weight-light;
+  color: $dark-grey;
+  margin: 0.125rem 0;
+}
+
+@media screen and (max-width: 640px) {
+  html {
+    font-size: 14px;
+  }
+}
+
+// 스크롤바 스타일
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+  z-index: 99;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 4px;
+  background-color: $light-grey;
+  background-clip: padding-box;
+  border: 2px solid transparent;
+}
+
+::-webkit-scrollbar-track {
+  margin: $size-regular;
+  border-radius: 4px;
+  background-color: $white;
+  box-shadow: inset 0px 0px 5px $light-grey;
+}
