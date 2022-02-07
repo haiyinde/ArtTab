@@ -15,7 +15,7 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-public class Member {
+public class Memberdto {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,7 +31,7 @@ public class Member {
     private List<Artwork> artworkList; // 회원이 만든 작품 리스트
 
     @Builder
-    public Member(String nickname, List<GalleryItem> galleryItemList, List<Artwork> artworkList) {
+    public Memberdto(String nickname, List<GalleryItem> galleryItemList, List<Artwork> artworkList) {
         this.nickname = nickname;
         this.galleryItemList = galleryItemList;
         this.artworkList = artworkList;

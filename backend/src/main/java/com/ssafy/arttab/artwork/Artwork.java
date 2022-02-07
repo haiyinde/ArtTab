@@ -1,7 +1,7 @@
 package com.ssafy.arttab.artwork;
 
 import com.ssafy.arttab.domain.gallery.GalleryItem;
-import com.ssafy.arttab.member.Member;
+import com.ssafy.arttab.member.dto.Memberdto;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -34,7 +34,7 @@ public class Artwork {
     private Long id; // 작품 식별번호
 
     @ManyToOne
-    private Member writer; // 작성자
+    private Memberdto writer; // 작성자
 
     @OneToMany(mappedBy="artwork", cascade = CascadeType.REMOVE)
     private List<GalleryItem> galleryItemList; // 작품을 포함하는 갤러리아이템 null처리
@@ -59,7 +59,7 @@ public class Artwork {
     private String saveFolder; // 저장된 폴더 경로
 
     @Builder
-    public Artwork(Member writer, List<GalleryItem> galleryItemList, String title, String desc, LocalDateTime regdate, String originFileName, String saveFileName, String saveFolder) {
+    public Artwork(Memberdto writer, List<GalleryItem> galleryItemList, String title, String desc, LocalDateTime regdate, String originFileName, String saveFileName, String saveFolder) {
         this.writer = writer;
         this.galleryItemList = galleryItemList; // 생성할 때 null로 만들기. 수정할 때는 닉네임으로 조회해와서 변경할 값을 set한 다음 save
         this.title = title;

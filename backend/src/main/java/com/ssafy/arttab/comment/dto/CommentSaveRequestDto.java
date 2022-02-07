@@ -2,7 +2,7 @@ package com.ssafy.arttab.comment.dto;
 
 import com.ssafy.arttab.artwork.Artwork;
 import com.ssafy.arttab.comment.Comment;
-import com.ssafy.arttab.member.Member;
+import com.ssafy.arttab.member.dto.Memberdto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,11 +25,11 @@ public class CommentSaveRequestDto {
         this.memberId = memberId;
     }
 
-    public Comment toEntity(Artwork artwork, Member member) {
+    public Comment toEntity(Artwork artwork, Memberdto memberdto) {
         return Comment.builder()
                 .content(content)
                 .artwork(artwork)
-                .member(member)
+                .member(memberdto)
                 .build();
     }
 }

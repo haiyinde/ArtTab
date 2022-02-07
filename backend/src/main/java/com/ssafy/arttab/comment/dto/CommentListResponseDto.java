@@ -16,7 +16,7 @@ public class CommentListResponseDto {
     public CommentListResponseDto(Comment entity) {
         this.id = entity.getId();
         this.artwork_id = entity.getArtwork().getId();
-        this.member_id = entity.getMember().getId();
+        this.member_id = entity.getMemberdto().getId();
         this.modifiedDate = entity.getModifiedDate();
         this.content = entity.getContent();
     }

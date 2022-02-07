@@ -1,7 +1,7 @@
 package com.ssafy.arttab.domain.gallery;
 
 import com.ssafy.arttab.artwork.Artwork;
-import com.ssafy.arttab.member.Member;
+import com.ssafy.arttab.member.dto.Memberdto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,7 +19,7 @@ public class GalleryItem {
 
     @ManyToOne
     @JoinColumn(name="writer")
-    private Member writer; // 작성자
+    private Memberdto writer; // 작성자
 
     @ManyToOne
     @JoinColumn(name="artwork")
@@ -32,7 +32,7 @@ public class GalleryItem {
     private double yLoc; // y축 위치
 
     @Builder
-    public GalleryItem(Member writer, Artwork artwork, double xLoc, double yLoc){
+    public GalleryItem(Memberdto writer, Artwork artwork, double xLoc, double yLoc){
         this.writer=writer;
         this.artwork=artwork;
         this.xLoc=xLoc;

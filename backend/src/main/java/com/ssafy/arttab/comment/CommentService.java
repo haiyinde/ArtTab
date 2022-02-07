@@ -5,8 +5,9 @@ import com.ssafy.arttab.artwork.ArtworkRepository;
 import com.ssafy.arttab.comment.dto.CommentListResponseDto;
 import com.ssafy.arttab.comment.dto.CommentSaveRequestDto;
 import com.ssafy.arttab.comment.dto.CommentUpdateRequestDto;
-import com.ssafy.arttab.member.Member;
+import com.ssafy.arttab.member.dto.Memberdto;
 import com.ssafy.arttab.member.MemberRepository;
+import com.ssafy.arttab.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,10 +28,10 @@ public class CommentService {
         Artwork artwork = artworkRepository.findById(id)
                 .orElseThrow(IllegalArgumentException::new);
         // 회원 객체값 유무
-       Member member = memberRepository.findById(requestDto.getMemberId())
+       Memberdto memberdto = memberRepository.findById(requestDto.getMemberId())
                .orElseThrow(IllegalArgumentException::new);
 
-        return commentRepository.save(requestDto.toEntity(artwork, member)).getId();
+        return commentRepository.save(requestDto.toEntity(artwork, memberdto)).getId();
     }
 
     @Transactional

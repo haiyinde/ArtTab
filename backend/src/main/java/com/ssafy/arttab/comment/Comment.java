@@ -3,7 +3,7 @@ package com.ssafy.arttab.comment;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ssafy.arttab.artwork.Artwork;
 import com.ssafy.arttab.BaseTimeEntity;
-import com.ssafy.arttab.member.Member;
+import com.ssafy.arttab.member.dto.Memberdto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -36,13 +36,13 @@ public class Comment extends BaseTimeEntity {
     @ManyToOne
     @JoinColumn(name = "member_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private Member member;
+    private Memberdto memberdto;
 
     @Builder
-    public Comment(String content, Artwork artwork, Member member){
+    public Comment(String content, Artwork artwork, Memberdto memberdto){
         this.content = content;
         this.artwork = artwork;
-        this.member = member;
+        this.memberdto = memberdto;
     }
 
     public void update(String content) {
