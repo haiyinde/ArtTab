@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -137,17 +138,17 @@ public class ArtworkController {
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
-    // 회원이 그린 작품 전체 조회 api
-//    @GetMapping("api/v1/artwork/member")
-//    public ResponseEntity<List<ArtworkListResponseDto>> getArtworkListByMember(@RequestParam("nickname") String nickname){
-//        List<ArtworkListResponseDto> list=artworkService.getArtworkByMemberId(nickname);
-//
-//        if(list.isEmpty()){
-//            return new ResponseEntity<>(null, HttpStatus.OK);
-//        }
-//
-//        return new ResponseEntity<>(list, HttpStatus.OK);
-//    }
+    // 회원이 업로드한 전체 작품 조회 api
+    @GetMapping("api/v1/artwork/member")
+    public ResponseEntity<List<ArtworkListResponseDto>> getArtworkListByMember(@RequestParam("nickname") String nickname){
+        List<ArtworkListResponseDto> list=artworkService.getArtworkByMemberId(nickname);
+
+        if(list.isEmpty()){
+            return new ResponseEntity<>(null, HttpStatus.OK);
+        }
+
+        return new ResponseEntity<>(list, HttpStatus.OK);
+    }
 
     // 작품 삭제 api
     @DeleteMapping("api/v1/artwork/{id}")

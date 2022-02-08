@@ -24,7 +24,7 @@
     <button
       :class="{ disabled: !isCompleted }"
       :disabled="!isCompleted"
-      @click="moveInsertNickname"
+      @click="addNickname"
     >
       가입하기
     </button>
@@ -34,6 +34,11 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import PageTitle from "@/components/accounts/child/PageTitle.vue";
+import AccountsAPI from "@/apis/accountsAPI";
+import ResponseData from "@/types/ResponseData";
+import { mapState } from "vuex";
+
+const accountsStore = "accountsStore";
 
 export default defineComponent({
   name: "InsertNickname",
@@ -49,6 +54,44 @@ export default defineComponent({
       },
       isCompleted: false,
     };
+  },
+  computed: {
+    ...mapState(accountsStore, ["joinEmail"]),
+  },
+  watch: {
+    nickname: function () {
+      this.checkNickname();
+    },
+  },
+  methods: {
+    // 닉네임 유효성 검사
+    checkNickname() {
+      // 닉네임 형식 검사 필요시 추가
+
+      // 닉네임 중복 검사
+      AccountsAPI.checkNickname(this.nickname).then((res: ResponseData) => {
+        if (res.data === "success") {
+          this.valid.nickname = false;
+          this.isCompleted = true;
+        } else {
+          this.valid.nickname = true;
+          this.isCompleted = false;
+        }
+      });
+    },
+    // 닉네임 등록
+    addNickname() {
+      AccountsAPI.addNickname(this.joinEmail, this.nickname).then(
+        (res: ResponseData) => {
+          if (res.data === "success") {
+            // 로그인 처리 후 메인페이지로 이동
+            this.$router.push({ name: "Main" });
+          } else {
+            alert("닉네임 등록 중 오류가 발생했습니다.");
+          }
+        }
+      );
+    },
   },
 });
 </script>

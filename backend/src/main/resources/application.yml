@@ -1,0 +1,39 @@
+server:
+  port: 8080
+
+spring :
+  mail :
+    host : smtp.gmail.com
+    port : 587
+    username : tph654@korea.ac.kr
+    password : rlawlalsqkqh!
+    properties :
+      mail :
+        smtp :
+          auth : true
+          starttls :
+            enable : true
+
+  datasource:
+#    url: jdbc:h2:~/test;
+#    driver-class-name: org.h2.Driver
+#    username: sa
+#    password: 50299e1b-21be-48ae-95d0-3b649af9e57f
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    open-in-view: false
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+
+  jwt:
+    algorithm: Algorithm.HMAC256("banban")
+
+

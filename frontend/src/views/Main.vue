@@ -1,11 +1,11 @@
 <template>
   <!-- Tab menu -->
   <div class="tab">
-    <input type="radio" name="tabmenu" id="feed" checked>
+    <input type="radio" name="tabmenu" id="feed" checked />
     <label for="feed" class="tab-item">Feed</label>
-    <input type="radio" name="tabmenu" id="FavouriteArtwork">
+    <input type="radio" name="tabmenu" id="FavouriteArtwork" />
     <label for="FavouriteArtwork" class="tab-item">❤ Artwork</label>
-    <input type="radio" name="tabmenu" id="FavouriteArtist">
+    <input type="radio" name="tabmenu" id="FavouriteArtist" />
     <label for="FavouriteArtist" class="tab-item">❤ Artist</label>
 
     <div class="conbox con1">
@@ -40,25 +40,43 @@ export default defineComponent({
         { content: "그림2", height: 300 },
         { content: "그림3", height: 150 },
         { content: "그림4", height: 450 },
-      ]
-    }
+      ],
+    };
   },
-  methods: {
-  },
-})
+  methods: {},
+});
 </script>
 
 <style scoped lang="scss">
-
-input[type="radio"] {display:none;}
-input[type="radio"] + label {display:inline-block; padding:16px; color: $dark-grey; font: size 4rem; cursor:pointer;}
-input[type="radio"]:checked + label {color:#000; border-bottom: 3px solid #000;}
+input[type="radio"] {
+  display: none;
+}
+input[type="radio"] + label {
+  display: inline-block;
+  padding: 16px;
+  color: $dark-grey;
+  font: size 4rem;
+  cursor: pointer;
+}
+input[type="radio"]:checked + label {
+  color: #000;
+  border-bottom: 3px solid #000;
+}
 
 // 컨텐츠는 나중에 라우터로 처리
-.conbox {margin:0 auto;display:none;}
-input[id="feed"]:checked ~ .con1 {display:block;}
-input[id="FavouriteArtwork"]:checked ~ .con2 {display:block;}
-input[id="FavouriteArtist"]:checked ~ .con3 {display:block;}
+.conbox {
+  margin: 0 auto;
+  display: none;
+}
+input[id="feed"]:checked ~ .con1 {
+  display: block;
+}
+input[id="FavouriteArtwork"]:checked ~ .con2 {
+  display: block;
+}
+input[id="FavouriteArtist"]:checked ~ .con3 {
+  display: block;
+}
 
 div {
   margin: 1rem;
