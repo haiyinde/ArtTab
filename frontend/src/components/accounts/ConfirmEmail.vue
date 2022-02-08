@@ -99,9 +99,6 @@ export default defineComponent({
           }
           this.valid.authNum = true;
           this.isCompleted = false;
-
-          // 이메일 인증 기능 확인 후 삭제해야할 코드
-          this.isCompleted = true;
         }
       );
     },
