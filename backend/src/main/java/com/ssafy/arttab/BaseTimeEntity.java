@@ -20,7 +20,5 @@ public class BaseTimeEntity {
     @CreatedDate
     private LocalDateTime regdate;
 
-    @LastModifiedDate
-    private LocalDateTime modifiedDate;
 
 }

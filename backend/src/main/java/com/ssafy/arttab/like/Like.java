@@ -1,58 +1,42 @@
-package com.ssafy.arttab.comment;
+package com.ssafy.arttab.like;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.ssafy.arttab.artwork.Artwork;
 import com.ssafy.arttab.BaseTimeEntity;
+import com.ssafy.arttab.artwork.Artwork;
 import com.ssafy.arttab.member.domain.Member;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
-import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 
+@Entity
 @Getter
 @NoArgsConstructor
-@Entity
-@Table(name = "comment")
-public class Comment extends BaseTimeEntity {
+@Table(name = "likes")
+public class Like extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
-    @Column(length = 100, nullable = false)
-    private String content;
-
-    @JsonIgnore
     @ManyToOne
-    @JoinColumn(name = "artwork", nullable = false)
+    @JoinColumn(name = "artwork")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Artwork artwork;
 
-    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "member")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Member member;
 
-
-    @LastModifiedDate
-    private LocalDateTime modifiedDate;
-
     @Builder
-    public Comment(String content, Artwork artwork, Member member){
-        this.content = content;
+    public Like(Artwork artwork, Member member) {
         this.artwork = artwork;
         this.member = member;
     }
 
-    public void update(String content) {
-        this.content = content;
-    }
 
 }
