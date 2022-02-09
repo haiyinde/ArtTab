@@ -1,5 +1,5 @@
 package com.ssafy.arttab.member.domain;
-import com.ssafy.arttab.domain.gallery.GalleryItem;
+import com.ssafy.arttab.gallery.GalleryItem;
 import com.ssafy.arttab.artwork.Artwork;
 import lombok.*;
 

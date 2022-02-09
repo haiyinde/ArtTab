@@ -2,7 +2,6 @@ package com.ssafy.arttab.member;
 
 
 import com.ssafy.arttab.exception.member.DuplicateException;
-import com.ssafy.arttab.member.domain.Member;
 import com.ssafy.arttab.member.dto.LoginEmail;
 import com.ssafy.arttab.member.dto.request.AuthNumCheckRequest;
 import com.ssafy.arttab.member.dto.request.IntroUpdateRequest;
@@ -18,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Email;
 
 @RequiredArgsConstructor
 @RestController
@@ -89,10 +89,10 @@ public class MemberController {
 
     @ApiOperation(value = "닉네임 중복체크")
     @PostMapping("/idCk")
-    public ResponseEntity<String> selectOnebynick(@RequestBody Member member){
+    public ResponseEntity<String> selectOnebynick(@RequestBody String nickname){
         String message = "success";
         try{
-            memberService.MemberIdCheck(member);
+            memberService.MemberIdCheck(nickname);
         }catch (DuplicateException e){
             message= e.getMessage();
         }
@@ -102,10 +102,10 @@ public class MemberController {
 
     @ApiOperation(value = "이메일 중복체크")
     @PostMapping("/emailCk")
-    public ResponseEntity<String> selectOnebyemail(@RequestBody Member member){
+    public ResponseEntity<String> selectOnebyemail(@Email @RequestBody String email){
         String message = "success";
         try{
-            memberService.MemberIdCheck(member);
+            memberService.MemberIdCheck(email);
         }catch (DuplicateException e){
             message = e.getMessage();
         }
@@ -116,7 +116,7 @@ public class MemberController {
     @PutMapping("/me/password")
     public ResponseEntity<String> updatePassword(@RequestBody LoginEmail loginEmail, PasswordUpdateRequest passwordUpdateRequest) {
         memberService.updatePassword(loginEmail,passwordUpdateRequest);
-        return new ResponseEntity<String>("succse", HttpStatus.OK);
+        return new ResponseEntity<String>("success", HttpStatus.OK);
     }
 
     @ApiOperation(value = "회원 정보 조회", notes = "회원 정보를 담은 Token을 반환한다.")
@@ -140,6 +140,11 @@ public class MemberController {
         memberService.updateMember(loginEmail,introUpdateRequest);
         return ResponseEntity.ok().build();
     }
-
+    @ApiOperation(value = "비밀번호 찾기")
+    @PutMapping("/password")
+    public ResponseEntity<String> findPassword(String email){
+        memberService.findPassword(email);
+        return ResponseEntity.ok().body("success");
+    }
 
 }

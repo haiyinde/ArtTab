@@ -3,6 +3,7 @@ package com.ssafy.arttab.artwork;
 import com.ssafy.arttab.artwork.dto.ArtworkFileDto;
 import com.ssafy.arttab.artwork.dto.ArtworkListResponseDto;
 import com.ssafy.arttab.artwork.dto.ArtworkUpdateRequestDto;
+import com.ssafy.arttab.member.domain.Member;
 import com.ssafy.arttab.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
@@ -76,14 +77,17 @@ public class ArtworkService {
     }
 
     // id를 아이디로 갖는 회원이 그린 작품들 리턴
-//    public List<ArtworkListResponseDto> getArtworkByMemberId(String nickname){
-//        Optional<Member> member=memberRepository.findMemberByNickname(nickname); // 닉네임에 해당하는 회원 가져오기
-//
-//        if(member.isEmpty()) return null; // 회원 찾기에 실패했을 경우
-//
-//        return member.get().getArtworkList().stream().map(ArtworkListResponseDto::new).collect(Collectors.toList());
-//
-//    }
+    public List<ArtworkListResponseDto> getArtworkByMemberId(String nickname){
+        Member member=memberRepository.findMemberByNickname(nickname); // 닉네임에 해당하는 회원 가져오기
+
+        if(member == null) return null; // 회원 찾기에 실패했을 경우
+
+        return member.getArtworkList().stream()
+                .map(ArtworkListResponseDto::new)
+                .sorted((a,b)->(int)(b.getArtworkId()-a.getArtworkId())) // 최근 순으로 정렬
+                .collect(Collectors.toList());
+
+    }
 
     @Transactional
     public void delete(Long id){

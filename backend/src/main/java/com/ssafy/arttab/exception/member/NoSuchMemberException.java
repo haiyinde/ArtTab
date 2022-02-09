@@ -14,10 +14,10 @@ import org.springframework.http.HttpStatus;
  * @submissions : 1
  * @description :
  **/
-public class NoSuchMemberExcption extends CustomException {
+public class NoSuchMemberException extends CustomException {
     private static final String MESSAGE = "fail";
 
-    public NoSuchMemberExcption() {
+    public NoSuchMemberException() {
         super(MESSAGE, HttpStatus.BAD_REQUEST);
     }
 }

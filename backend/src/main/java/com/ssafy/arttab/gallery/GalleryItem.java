@@ -1,4 +1,4 @@
-package com.ssafy.arttab.domain.gallery;
+package com.ssafy.arttab.gallery;
 
 import com.ssafy.arttab.artwork.Artwork;
 import com.ssafy.arttab.member.domain.Member;

@@ -1,6 +1,6 @@
 package com.ssafy.arttab.artwork;
 
-import com.ssafy.arttab.domain.gallery.GalleryItem;
+import com.ssafy.arttab.gallery.GalleryItem;
 import com.ssafy.arttab.member.domain.Member;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;

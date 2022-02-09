@@ -1,7 +1,7 @@
 package com.ssafy.arttab.member.service;
 
 import com.ssafy.arttab.exception.member.DuplicateException;
-import com.ssafy.arttab.exception.member.NoSuchMemberExcption;
+import com.ssafy.arttab.exception.member.NoSuchMemberException;
 import com.ssafy.arttab.exception.member.PasswordMismatchException;
 import com.ssafy.arttab.member.domain.MailAuth;
 import com.ssafy.arttab.member.domain.Member;
@@ -50,7 +50,7 @@ public class MemberService {
     @Transactional
     public boolean saveMember(final MemberSaveRequest memberSaveRequest){
         //중복검사
-        MemberEmailCheck(memberSaveRequest.toEntity());
+        MemberEmailCheck(memberSaveRequest.getEmail());
 
 
         //비밀번호 암호화
@@ -76,12 +76,12 @@ public class MemberService {
 
     /**
      * 닉네임 중복 검사
-     * @param member
+     * @param nickname
      * @return
      */
     @Transactional(readOnly = true)
-    public void MemberIdCheck(final Member member){
-        if(memberRepository.existsMembersByNickname(member.getNickname())){
+    public void MemberIdCheck(final String nickname){
+        if(memberRepository.existsMembersByNickname(nickname)){
             throw new DuplicateException();
         }
 
@@ -89,12 +89,12 @@ public class MemberService {
 
     /**
      * 이메일 중복검사
-     * @param member
+     * @param email
      * @return
      */
     @Transactional(readOnly = true)
-    public void MemberEmailCheck(final Member member){
-        if(memberRepository.existsMembersByEmail(member.getEmail())){
+    public void MemberEmailCheck(final String email){
+        if(memberRepository.existsMembersByEmail(email)){
             throw new DuplicateException();
         }
 
@@ -107,7 +107,8 @@ public class MemberService {
      */
     public void SendNumtoEmail(final String email){
         // 인증번호 생성
-        final String pwd = UUID.randomUUID().toString().replaceAll("-", "").substring(0, 10);;
+        final String pwd = UUID.randomUUID().toString().replaceAll("-", "").substring(0, 10);
+
 
         // DB 확인
         Member member = memberRepository.findMemberByEmail(email);
@@ -128,7 +129,6 @@ public class MemberService {
 
         );
 
-
         // 이메일보내기
         StringBuilder cntnt = new StringBuilder();
         cntnt.append("인증 번호는 ")
@@ -139,10 +139,10 @@ public class MemberService {
     public void selectMailAuthId(final AuthNumCheckRequest authNumCheckRequest){
         //이메일로 Id찾기
         var member = memberRepository.findByEmail(authNumCheckRequest.getEmail())
-                .orElseThrow(NoSuchMemberExcption::new);
+                .orElseThrow(NoSuchMemberException::new);
 
         var mailAuth = mailAuthRepogitory.findById(member.getId())
-                .orElseThrow(NoSuchMemberExcption::new);
+                .orElseThrow(NoSuchMemberException::new);
 
         //인증번호 맞으면 권한 바꾸기기
        if(mailAuth.getId().equals(authNumCheckRequest.getId())) {
@@ -160,7 +160,7 @@ public class MemberService {
     @Transactional
     public void addNickname(final LoginEmail loginEmail,final String nickname ){
         var member = memberRepository.findByEmail(loginEmail.getEmail())
-                .orElseThrow(NoSuchMemberExcption::new);
+                .orElseThrow(NoSuchMemberException::new);
 
         member.updateNickname(nickname);
     }
@@ -172,7 +172,7 @@ public class MemberService {
     @Transactional(readOnly = true)
     public MemberInfoResponse getMemberInfo(final LoginEmail loginEmail){
         var member = memberRepository.findByEmail(loginEmail.getEmail())
-                .orElseThrow(NoSuchMemberExcption::new);
+                .orElseThrow(NoSuchMemberException::new);
         var memberInfoResponse = MemberInfoResponse.builder()
                 .email(member.getEmail())
                 .nickname(member.getNickname())
@@ -189,7 +189,7 @@ public class MemberService {
     @Transactional
     public void updatePassword(final LoginEmail loginEmail, final PasswordUpdateRequest passwordUpdateRequest){
         var member = memberRepository.findByEmail(loginEmail.getEmail())
-                .orElseThrow(NoSuchMemberExcption::new);
+                .orElseThrow(NoSuchMemberException::new);
         if(BCrypt.checkpw(passwordUpdateRequest.getPassword(),member.getPassword())){
             member.updatepassword(BCrypt.hashpw(passwordUpdateRequest.getNewPassword(),BCrypt.gensalt()));
         }else{
@@ -199,6 +199,30 @@ public class MemberService {
     }
 
     /**
+     * 비밀번호 찾기
+     * @param email
+     * @param
+     */
+    public void findPassword(final String email){
+        var member = memberRepository.findByEmail(email)
+                .orElseThrow(NoSuchMemberException::new);
+
+        // 인증번호 생성
+        final String pwd = UUID.randomUUID().toString().replaceAll("-", "").substring(0, 10);
+
+        // DB 변경
+        member.updatepassword(pwd);
+
+        //이메일 보내기
+        StringBuilder cntnt = new StringBuilder();
+        cntnt.append("임시 비밀번호는 ")
+                .append(pwd)
+                .append( "입니다");
+        mailSendService.sendEmail(email, "안녕하세요.Art Tab입니다." +member.getNickname()+"님의 임시 비밀번호 입니다.", cntnt.toString());
+
+    }
+
+   /**
      * 소개글 수정
      * @param loginEmail
      * @param memberUpdateRequest
@@ -206,7 +230,7 @@ public class MemberService {
     @Transactional
     public void updateMember(final LoginEmail loginEmail,final IntroUpdateRequest memberUpdateRequest){
         var member = memberRepository.findByEmail(loginEmail.getEmail())
-                .orElseThrow(NoSuchMemberExcption::new);
+                .orElseThrow(NoSuchMemberException::new);
 
         member.updateIntro(memberUpdateRequest.getIntro());
     }
@@ -218,7 +242,7 @@ public class MemberService {
     @Transactional
     public void deleteMember(final LoginEmail loginEmail){
         var member = memberRepository.findByEmail(loginEmail.getEmail())
-                .orElseThrow(NoSuchMemberExcption::new);
+                .orElseThrow(NoSuchMemberException::new);
 
         memberRepository.delete(member);
     }
