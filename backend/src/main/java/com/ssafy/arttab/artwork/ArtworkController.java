@@ -68,7 +68,7 @@ public class ArtworkController {
             }
         }
 
-        String saveFolder=savePath+"\\"+saveFileName;
+        String saveFolder=savePath+File.separator+saveFileName;
         file.transferTo(new File(saveFolder)); // 파일 저장
 
         boolean result = artworkService.save(
@@ -128,17 +128,17 @@ public class ArtworkController {
     }
 
     // id에 해당하는 작품 조회
+    @ApiOperation(value = "id라는 작품 아이디를 가진 작품의 상세 정보를 조회한다.")
     @GetMapping("api/v1/artwork/{id}")
-    public ResponseEntity<ArtworkResponseDto> findByNo(@PathVariable("id") Long id){
-        Optional<Artwork> artwork = artworkService.findByNo(id);
+    public ResponseEntity<ArtworkResponseDto> findByNo(@PathVariable("id") Long id,
+                                                       @RequestParam("loginId") Long loginId){
 
-        if(artwork.isEmpty()) // 조회된 값이 없을 때
-            return new ResponseEntity<>(null, HttpStatus.OK);
-
-        return new ResponseEntity<ArtworkResponseDto>(new ArtworkResponseDto(artwork.get()), HttpStatus.OK);
+        ArtworkResponseDto response=artworkService.findByNo(id, loginId);
+        return new ResponseEntity<ArtworkResponseDto>(response, HttpStatus.OK);
     }
 
     // 작품 전체 조회 api -최근순 정렬
+    @ApiOperation(value ="전체 작품을 최근순으로 정렬한다.")
     @GetMapping("api/v1/artwork")
     public ResponseEntity<List<ArtworkListResponseDto>> getArtworkList(){
         List<ArtworkListResponseDto> list=artworkService.getArtworkList();

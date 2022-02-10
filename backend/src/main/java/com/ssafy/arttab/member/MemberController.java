@@ -201,7 +201,7 @@ public class MemberController {
             }
         }
 
-        String saveFolder = savePath + "\\" + saveFileName;
+        String saveFolder = savePath + File.separator + saveFileName;
         file.transferTo(new File(saveFolder)); // 파일 저장
 
         LoginEmail loginEmail=new LoginEmail(email);
