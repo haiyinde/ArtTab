@@ -5,7 +5,12 @@
       <div class="box-likeartist">
         <div class="profile-status">
           <div class="image-profile">
-            <img src="../../assets/images/test1.jpg" height="52" width="52" alt="프로필사진" />
+            <img
+              src="../../assets/images/test1.jpg"
+              height="52"
+              width="52"
+              alt="프로필사진"
+            />
           </div>
           <div class="nickname">아이디</div>
           <div class="status">
@@ -17,23 +22,48 @@
         </div>
         <div class="box-image">
           <div class="image-first">
-            <img src="../../assets/images/test2.jpg" height="124" width="124" alt="작품1" />
+            <img
+              src="../../assets/images/test2.jpg"
+              height="124"
+              width="124"
+              alt="작품1"
+            />
           </div>
           <div class="image-second">
-            <img src="../../assets/images/test2.jpg" height="124" width="124" alt="작품1" />
+            <img
+              src="../../assets/images/test2.jpg"
+              height="124"
+              width="124"
+              alt="작품1"
+            />
           </div>
           <div class="image-third">
-            <img src="../../assets/images/test2.jpg" height="124" width="124" alt="작품1" />
+            <img
+              src="../../assets/images/test2.jpg"
+              height="124"
+              width="124"
+              alt="작품1"
+            />
           </div>
           <div class="image-fourth">
-            <img src="../../assets/images/test2.jpg" height="124" width="124" alt="작품1" />
+            <img
+              src="../../assets/images/test2.jpg"
+              height="124"
+              width="124"
+              alt="작품1"
+            />
           </div>
         </div>
       </div>
       <div class="box-likeartist">
         <div>
           <div class="image-profile">
-            <img src="../../assets/images/test1.jpg" height="52" width="52" alt="프로필사진" />
+            <img
+              src="../../assets/images/test1.jpg"
+              height="52"
+              width="52"
+              alt="프로필사진"
+            />
           </div>
           <div class="nickname">아이디</div>
           <div class="status">
@@ -45,16 +75,37 @@
         </div>
         <div class="box-image">
           <div class="image-first">
-            <img src="../../assets/images/test2.jpg" height="124" width="124" alt="작품1" />
+            <img
+              src="../../assets/images/test2.jpg"
+              height="124"
+              width="124"
+              alt="작품1"
+            />
           </div>
           <div class="image-second">
-            <img src="../../assets/images/test2.jpg" height="124" width="124" alt="작품1" />
+            <img
+              src="../../assets/images/test2.jpg"
+              height="124"
+              width="124"
+              alt="작품1"
+            />
           </div>
           <div class="image-third">
-            <img src="../../assets/images/test2.jpg" height="124" width="124" alt="작품1" />
+            <img
+              src="../../assets/images/test2.jpg"
+              height="124"
+              width="124"
+              alt="작품1"
+            />
           </div>
           <div class="image-fourth">
-            <img src="" height="124" width="124" alt="작품1" onerror="this.style.display='none'"/>
+            <img
+              src=""
+              height="124"
+              width="124"
+              alt="작품1"
+              onerror="this.style.display='none'"
+            />
           </div>
         </div>
       </div>
@@ -63,7 +114,12 @@
       <div class="box-likeartist">
         <div>
           <div class="image-profile">
-            <img src="../../assets/images/test1.jpg" height="52" width="52" alt="프로필사진" />
+            <img
+              src="../../assets/images/test1.jpg"
+              height="52"
+              width="52"
+              alt="프로필사진"
+            />
           </div>
           <div class="nickname">아이디</div>
           <div class="status">
@@ -75,16 +131,36 @@
         </div>
         <div class="box-image">
           <div class="image-first">
-            <img src="../../assets/images/test2.jpg" height="124" width="124" alt="작품1" />
+            <img
+              src="../../assets/images/test2.jpg"
+              height="124"
+              width="124"
+              alt="작품1"
+            />
           </div>
           <div class="image-second">
-            <img src="../../assets/images/test2.jpg" height="124" width="124" alt="작품1" />
+            <img
+              src="../../assets/images/test2.jpg"
+              height="124"
+              width="124"
+              alt="작품1"
+            />
           </div>
           <div class="image-third">
-            <img src="../../assets/images/test2.jpg" height="124" width="124" alt="작품1" />
+            <img
+              src="../../assets/images/test2.jpg"
+              height="124"
+              width="124"
+              alt="작품1"
+            />
           </div>
           <div class="image-fourth">
-            <img src="../../assets/images/test2.jpg" height="124" width="124" alt="작품1" />
+            <img
+              src="../../assets/images/test2.jpg"
+              height="124"
+              width="124"
+              alt="작품1"
+            />
           </div>
         </div>
       </div>
@@ -203,7 +279,7 @@ span {
 }
 
 /* 1261px 이하면 열로 정렬 */
-@media(max-width: 1262px) {
+@media (max-width: 1262px) {
   .divide-box {
     flex-direction: column;
   }
@@ -212,7 +288,7 @@ span {
   }
 }
 
-@media(max-width: 640px) {
+@media (max-width: 640px) {
   .box-image {
     display: none;
   }

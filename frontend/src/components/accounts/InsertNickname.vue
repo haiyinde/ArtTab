@@ -69,28 +69,35 @@ export default defineComponent({
       // 닉네임 형식 검사 필요시 추가
 
       // 닉네임 중복 검사
-      AccountsAPI.checkNickname(this.nickname).then((res: ResponseData) => {
-        if (res.data === "success") {
-          this.valid.nickname = false;
-          this.isCompleted = true;
-        } else {
-          this.valid.nickname = true;
-          this.isCompleted = false;
-        }
-      });
+      AccountsAPI.checkNickname(this.nickname)
+        .then((res: ResponseData) => {
+          if (res.data === "success") {
+            this.valid.nickname = false;
+            this.isCompleted = true;
+          } else {
+            this.valid.nickname = true;
+            this.isCompleted = false;
+          }
+        })
+        .catch((e) => {
+          console.log(e);
+        });
     },
     // 닉네임 등록
     addNickname() {
-      AccountsAPI.addNickname(this.joinEmail, this.nickname).then(
-        (res: ResponseData) => {
+      AccountsAPI.addNickname(this.joinEmail, this.nickname)
+        .then((res: ResponseData) => {
           if (res.data === "success") {
             // 로그인 처리 후 메인페이지로 이동
             this.$router.push({ name: "Main" });
           } else {
             alert("닉네임 등록 중 오류가 발생했습니다.");
           }
-        }
-      );
+        })
+        .catch((e) => {
+          console.log(e);
+          alert("닉네임 등록 중 오류가 발생했습니다.");
+        });
     },
   },
 });

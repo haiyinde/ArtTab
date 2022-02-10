@@ -158,15 +158,17 @@ export default defineComponent({
       }
       this.valid.emailType = false;
       // 이메일 중복 검사
-      await AccountsAPI.checkEmail(this.account.email).then(
-        (res: ResponseData) => {
+      await AccountsAPI.checkEmail(this.account.email)
+        .then((res: ResponseData) => {
           if (res.data === "success") {
             this.valid.email = false;
           } else {
             this.valid.email = true;
           }
-        }
-      );
+        })
+        .catch((e) => {
+          console.log(e);
+        });
       if (!this.valid.email) {
         this.checkForm();
       }
@@ -192,18 +194,23 @@ export default defineComponent({
     // 가입 처리 후 다음 단계(이메일 인증)로 이동
     moveConfirmEmail() {
       // 회원가입 처리
-      AccountsAPI.signUp(this.account).then((res: ResponseData) => {
-        if (res.data === "success") {
-          // store에 이메일 저장 및 메일 전송 후 다음 단계 페이지로 이동
-          this.storeEmail(this.account.email);
+      AccountsAPI.signUp(this.account)
+        .then((res: ResponseData) => {
+          if (res.data === "success") {
+            // store에 이메일 저장 및 메일 전송 후 다음 단계 페이지로 이동
+            this.storeEmail(this.account.email);
 
-          this.$router.push({
-            name: "ConfirmEmail",
-          });
-        } else {
+            this.$router.push({
+              name: "ConfirmEmail",
+            });
+          } else {
+            alert("가입 중 오류가 발생했습니다. 다시 시도해주시기 바랍니다.");
+          }
+        })
+        .catch((e) => {
+          console.log(e);
           alert("가입 중 오류가 발생했습니다. 다시 시도해주시기 바랍니다.");
-        }
-      });
+        });
     },
   },
 });
