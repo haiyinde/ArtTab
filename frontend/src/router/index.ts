@@ -13,7 +13,8 @@ import Profile from "@/views/Profile.vue";
 // 검색 결과 페이지
 import SearchResult from "@/views/SearchResult.vue";
 // 작품 페이지
-import ArtworkDetail from "@/views/ArtworkDetail.vue";
+import Artwork from "@/views/Artwork.vue";
+import ArtworkDetail from "@/components/artwork/ArtworkDetail.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -64,9 +65,16 @@ const routes: Array<RouteRecordRaw> = [
     component: SearchResult,
   },
   {
-    path: "/artworkdetail",
-    name: "ArtworkDetail",
-    component: ArtworkDetail,
+    path: "/artwork",
+    name: "Artwork",
+    component: Artwork,
+    children: [
+      {
+        path: "detail/:id",
+        name: "ArtworkDetail",
+        component: ArtworkDetail,
+      },
+    ],
   },
 ];
 

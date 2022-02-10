@@ -12,6 +12,7 @@
     "animate.css": "^4.1.1",
     "axios": "^0.25.0",
     "core-js": "^3.6.5",
+    "dayjs": "^1.10.7",
     "mdue": "^0.1.4",
     "node-sass": "^6.0.1",
     "password-validator": "^5.2.1",
