@@ -23,4 +23,28 @@ public interface FollowRepository extends JpaRepository<Follow, Long> {
     @Query(value = "SELECT count(*) FROM Follow WHERE follower = :id", nativeQuery = true)
     int findAllFollowCnt(Long id);
 
+    /***
+     *
+     * @param id 현재 follower 수를 조회할 회원번호
+     * @return id가 팔로우하는 회원의 수를 리턴합니다
+     */
+    @Query(value = "SELECT count(*) FROM Follow WHERE follower = :id", nativeQuery = true)
+    int findAllFollowingCnt(Long id);
+
+    /***
+     *
+     * @param id 현재 followee 수를 조회할 회원번호
+     * @return id를 팔로우하는 회원의 수를 리턴합니다
+     */
+    @Query(value = "SELECT count(*) FROM Follow WHERE followee = :id", nativeQuery = true)
+    int findAllFollowedCnt(Long id);
+
+    /***
+     *
+     * @param follower
+     * @param followee
+     * @return follower가 followee를 팔로우하는지 리턴
+     */
+    @Query(value = "SELECT count(*) FROM Follow WHERE follower = :follower AND followee = :followee", nativeQuery = true)
+    int isFollow(Long follower, Long followee);
 }
