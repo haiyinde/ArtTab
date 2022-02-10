@@ -79,28 +79,37 @@ export default defineComponent({
   methods: {
     // 이메일 전송
     sendEmail() {
-      AccountsAPI.sendEmail(this.joinEmail).then((res: ResponseData) => {
-        if (res.data === "success") {
-          alert("이메일이 정상적으로 전송되었습니다.");
-        } else {
+      AccountsAPI.sendEmail(this.joinEmail)
+        .then((res: ResponseData) => {
+          if (res.data === "success") {
+            alert("이메일이 정상적으로 전송되었습니다.");
+          } else {
+            alert(
+              "이메일 전송 중 오류가 발생했습니다. 이메일 재전송 버튼을 통해 다시 시도해주시기 바랍니다."
+            );
+          }
+        })
+        .catch((e) => {
+          console.log(e);
           alert(
             "이메일 전송 중 오류가 발생했습니다. 이메일 재전송 버튼을 통해 다시 시도해주시기 바랍니다."
           );
-        }
-      });
+        });
     },
     // 이메일 인증 처리 추가
     checkAuthNum() {
-      AccountsAPI.checkAuthNum(this.joinEmail, this.authNum).then(
-        (res: ResponseData) => {
+      AccountsAPI.checkAuthNum(this.joinEmail, this.authNum)
+        .then((res: ResponseData) => {
           if (res.data === "success") {
             this.valid.authNum = false;
             this.isCompleted = true;
           }
           this.valid.authNum = true;
           this.isCompleted = false;
-        }
-      );
+        })
+        .catch((e) => {
+          console.log(e);
+        });
     },
     // 다음 단계(닉네입 입력)로 이동
     moveInsertNickname() {
