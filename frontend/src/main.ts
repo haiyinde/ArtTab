@@ -4,6 +4,7 @@ import router from "./router";
 import store from "./store";
 import MasonryWall from "@yeger/vue-masonry-wall";
 import VueCookies from "vue3-cookies";
+import "animate.css";
 
 createApp(App)
   .use(store)
