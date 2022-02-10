@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@yeger/vue-masonry-wall": "^3.0.19",
+    "animate.css": "^4.1.1",
     "axios": "^0.25.0",
     "core-js": "^3.6.5",
     "mdue": "^0.1.4",

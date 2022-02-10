@@ -1,18 +1,39 @@
 <template>
-  <div class="black-bg" v-if="isOpen == true">
-    <div class="white-bg">
-      <h4>내 정보 수정 modal이 될 것</h4>
-      <img src="https://via.placeholder.com/150/92c952" />
-      <p>닉네임닉네임닉네임</p>
-      <p>
-        Lorem, ipsum dolor sit amet consectetur adipisicing elit. Nostrum,
-        maiores tenetur. Incidunt nihil vitae aliquid totam ex maxime sint
-        perferendis.
-      </p>
-      <button @click="changeProfilePic">프로필 사진 변경</button>
-      <button @click="doneEditInfo">완료</button>
+  <!-- Modal -->
+  <transition name="fade" appear>
+    <div class="overlay" v-if="isOpen == true" @click="closeEditModal"></div>
+  </transition>
+  <transition
+    mode="out-in"
+    enter-active-class="animate__animated animate__fadeInUp"
+    leave-active-class="animate__animated animate__fadeOutDown"
+  >
+    <div class="modal" v-if="isOpen == true">
+      <h2>내 정보 수정</h2>
+      <div class="profile-image">
+        <img src="https://via.placeholder.com/150/92c952" />
+      </div>
+      <div>
+        <button class="change-profile-pic-btn" @click="changeProfilePic">
+          프로필 사진 변경
+        </button>
+        <label for="nickname" class="label-text">닉네임</label>
+        <input
+          type="nickname"
+          id="nickname"
+          class="input-text"
+          name="nickname"
+        />
+        <label for="bio" class="label-text">소개</label>
+        <input type="bio" id="bio" class="input-text" name="bio" />
+        <button class="done-profile-edit-btn" @click="doneEditInfo">
+          정보 수정 완료
+        </button>
+      </div>
     </div>
-  </div>
+  </transition>
+
+  <!-- Profile Info -->
   <div>
     <p>Profile Info Component</p>
     <div class="container">
@@ -50,6 +71,9 @@
             perferendis.
           </p>
         </div>
+        <div class="change-pwd-signout">
+          <p class="change-pwd-signout-text">비밀번호 변경 및 계정 탈퇴</p>
+        </div>
       </div>
     </div>
   </div>
@@ -74,7 +98,6 @@ export default defineComponent({
       this.valid = !this.valid;
     },
     openEditModal() {
-      console.log("내 정보 수정 modal");
       this.isOpen = true;
     },
     closeEditModal() {
@@ -93,19 +116,72 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
+// accounts에서 input css 이용
+@import "@/assets/css/accounts.scss";
+
 // my profile info edit modal
-.black-bg {
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 98;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  position: fixed;
+  background: rgba(0, 0, 0, 0.6);
   padding: 20px;
 }
-.white-bg {
-  width: 100%;
-  background: white;
-  border-radius: 8px;
+.modal {
+  position: fixed;
+  // modal 위치 가운데로 정렬 필요
+  z-index: 99;
+  // width: 100%;
+  max-width: 40rem;
+  // mobile 크기
+  min-width: 320px;
+  background-color: $white;
+  border-radius: 16px;
   padding: 20px;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s;
+}
+
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.change-profile-pic-btn {
+  font-size: $font-regular;
+  line-height: 1.8;
+  border: 0.1rem solid $black;
+  border-radius: 0.3rem;
+  background: $white;
+  color: $black;
+}
+
+.done-profile-edit-btn {
+  font-size: $font-regular;
+  line-height: 1.8;
+  border: 0.1rem solid $black;
+  border-radius: 0.3rem;
+  background: $black;
+  color: $white;
+}
+
+.change-pwd-signout-text {
+  color: $grey;
+  font-size: $font-small;
+  margin: 0;
+  &:hover {
+    transition: opacity 2s;
+    color: $dark-grey;
+    text-decoration-line: underline;
+  }
 }
 
 // profile
@@ -140,17 +216,13 @@ img {
 }
 
 .btn {
-  display: inline-block;
+  // display: inline-block;
   font: inherit;
   background: none;
   border: none;
   color: inherit;
   padding: 0;
   cursor: pointer;
-}
-
-.btn:focus {
-  outline: 0.5rem auto #4d90fe;
 }
 
 .visually-hidden {
@@ -194,27 +266,37 @@ img {
 
 .profile-user-settings {
   margin-top: 1.1rem;
+  width: auto;
+  // margin: auto;
 }
 
 .profile-user-name {
   display: block;
   // display: block;
   // display: none;
+  float: left;
   font-size: $font-large;
   font-weight: $weight-semi-bold;
+  // user-name 글자가 안무너지게하기위해 임시값(15rem) 지정 username 길이가 달라지면 수치도 변할텐데 이건 모르겠음 ㅠㅠ
+  min-width: 15rem;
 }
 
 .profile-user-email {
-  display: inline-block;
+  // display: inline-block;
+  display: block;
+  color: $dark-grey;
+  margin: auto;
+  font-weight: $weight-light;
 }
 
 .profile-edit-btn {
   font-size: $font-regular;
   line-height: 1.8;
-  border: 0.1rem solid $black;
+  border: 1.5px solid $black;
   border-radius: 0.3rem;
-  padding: 0 2.4rem;
-  margin-left: 2rem;
+  margin: 1rem 0 0.2rem 0;
+  // padding: 0 2.4rem;
+  // margin-left: 2rem;
   // hover시 색상 전환 천천히
   transition: border-color 0.5s, background-color 0.5s, color 0.5s;
   // hover시 색상 전환
@@ -226,14 +308,16 @@ img {
 }
 
 .profile-stats {
-  margin-top: 2.3rem;
+  // margin-top: 2.3rem;
+  margin-top: 1rem;
 }
 
 .profile-stats li {
   display: inline-block;
   font-size: 1.6rem;
   line-height: 1.5;
-  margin-right: 4rem;
+  margin-right: 2rem;
+  // margin-right: auto;
   cursor: pointer;
 }
 
@@ -245,7 +329,8 @@ img {
   font-size: 1.6rem;
   font-weight: 400;
   line-height: 1.5;
-  margin-top: 2.3rem;
+  // margin-top: 2.3rem;
+  margin-top: 1rem;
 }
 
 .profile-stat-count,
@@ -254,7 +339,7 @@ img {
 }
 
 /* Media Query */
-// mobile
+// 40rem이하
 
 @media screen and (max-width: 40rem) {
   .profile {
@@ -293,7 +378,7 @@ img {
 
   .profile-user-email {
     display: block;
-    // font-size: $font-large;
+    font-size: $size-medium;
   }
 
   .profile-edit-btn {
@@ -349,7 +434,8 @@ img {
     display: grid;
     grid-template-columns: 1fr 2fr;
     grid-template-rows: repeat(3, auto);
-    grid-column-gap: 3rem;
+    grid-column-gap: 1.5rem;
+    // grid-column-gap: 3rem;
     align-items: center;
   }
 
@@ -357,22 +443,20 @@ img {
     grid-row: 1 / -1;
   }
 
-  .gallery {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(22rem, 1fr));
-    grid-gap: 2rem;
-  }
-
   .profile-image,
   .profile-user-settings,
   .profile-stats,
-  .profile-bio,
-  .gallery-item,
-  .gallery {
+  .profile-bio {
     width: auto;
-    margin: 0;
+    // margin: 0;
+    // margin: auto;
   }
-
+  .change-pwd-signout {
+    grid-column: -2 / -1;
+    display: flex;
+    justify-content: flex-end;
+  }
+  // CSS grid 40rem 이하 적용
   @media (max-width: 40rem) {
     .profile {
       grid-template-columns: auto 1fr;
@@ -400,6 +484,10 @@ img {
     .profile-bio,
     .profile-stats {
       margin: 0;
+    }
+
+    .change-pwd-signout {
+      grid-row: 4 / 5;
     }
   }
 }
