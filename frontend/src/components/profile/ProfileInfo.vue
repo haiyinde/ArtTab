@@ -1,5 +1,6 @@
 <template>
   <!-- Modal -->
+  <!-- Profile Edit Modal -->
   <transition name="fade" appear>
     <div class="overlay" v-if="isOpen == true" @click="closeEditModal"></div>
   </transition>
@@ -10,9 +11,13 @@
   >
     <div class="modal" v-if="isOpen == true">
       <h2>내 정보 수정</h2>
-      <div class="profile-image">
+      <div class="profile-image" style="float: none">
         <img src="https://via.placeholder.com/150/92c952" />
       </div>
+      <close-circle
+        class="profile-close-btn"
+        @click="closeEditModal"
+      ></close-circle>
       <div>
         <button class="change-profile-pic-btn" @click="changeProfilePic">
           프로필 사진 변경
@@ -33,6 +38,67 @@
     </div>
   </transition>
 
+  <!-- Change Password and Sign Out -->
+  <transition name="fade" appear>
+    <div
+      class="overlay"
+      v-if="isCPSOpen == true"
+      @click="closeChangePwdModal"
+    ></div>
+  </transition>
+  <transition
+    mode="out-in"
+    enter-active-class="animate__animated animate__fadeInUp"
+    leave-active-class="animate__animated animate__fadeOutDown"
+  >
+    <div class="modal" v-if="isCPSOpen == true">
+      <h2>비밀번호 변경 및 계정 탈퇴</h2>
+      <!-- 변경할 비밀번호 입력 -->
+      <label for="password" class="label-text">변경할 비밀번호</label>
+      <input-password
+        :password="account.password"
+        :placetext="'영문, 특수문자 포함 8자리 이상'"
+        id="password"
+        @inputVal="updatePassword"
+      ></input-password>
+      <span class="alert" v-show="valid.password"
+        >영문, 특수문자 포함 8자리 이상 입력해주세요.</span
+      >
+      <!-- 변경할 비밀번호 확인 -->
+      <label for="checkPwd" class="label-text">변경할 비밀번호 확인</label>
+      <input-password
+        :password="checkPwd"
+        :placetext="'비밀번호를 다시 입력해주세요.'"
+        id="checkPwd"
+        @inputVal="updatecheckPwd"
+      ></input-password>
+      <span class="alert" v-show="valid.checkPwd"
+        >비밀번호가 일치하지 않습니다.</span
+      >
+      <!-- 현재 비밀번호 -->
+      <label for="password" class="label-text">현재 비밀번호</label>
+      <input-password
+        :password="account.password"
+        :placetext="'영문, 특수문자 포함 8자리 이상'"
+        id="password"
+        @inputVal="updatePassword"
+      ></input-password>
+      <span class="alert" v-show="valid.password"
+        >영문, 특수문자 포함 8자리 이상 입력해주세요.</span
+      >
+      <div>
+        <button class="done-change-password-btn" @click="changePwdSignOut">
+          변경 완료
+        </button>
+      </div>
+      <div class="signout">
+        <p class="change-pwd-signout-text" @click="openSignOutModal">
+          회원 탈퇴
+        </p>
+      </div>
+    </div>
+  </transition>
+
   <!-- Profile Info -->
   <div>
     <p>Profile Info Component</p>
@@ -46,14 +112,13 @@
         </div>
         <div class="profile-user-settings">
           <h1 class="profile-user-name">닉네임닉네임닉네임</h1>
-          <!-- 이메일 조회 빼도 될 듯? -->
           <p class="profile-user-email">email@email.com</p>
           <button class="btn profile-edit-btn" @click="openEditModal">
             내 정보 수정
           </button>
           <follow-button
             class="btn profile-edit-btn"
-            :followed="!valid"
+            :followed="!follow"
             @click="handleFollow"
           ></follow-button>
         </div>
@@ -72,7 +137,9 @@
           </p>
         </div>
         <div class="change-pwd-signout">
-          <p class="change-pwd-signout-text">비밀번호 변경 및 계정 탈퇴</p>
+          <p class="change-pwd-signout-text" @click="openChangePwdModal">
+            비밀번호 변경 및 계정 탈퇴
+          </p>
         </div>
       </div>
     </div>
@@ -82,20 +149,37 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import FollowButton from "./child/FollowButton.vue";
+import { CloseCircle } from "mdue";
+import InputPassword from "../accounts/child/InputPassword.vue";
 
 export default defineComponent({
   data() {
     return {
-      valid: true,
+      follow: true,
       isOpen: false,
+      isCPSOpen: false,
+      // is Change Password Signout Open
+      account: {
+        email: "",
+        password: "",
+      },
+      valid: {
+        emailType: false,
+        email: false,
+        password: false,
+        checkPwd: false,
+      },
+      isShowPwd: false,
     };
   },
   components: {
     FollowButton,
+    CloseCircle,
+    InputPassword,
   },
   methods: {
     handleFollow() {
-      this.valid = !this.valid;
+      this.follow = !this.follow;
     },
     openEditModal() {
       this.isOpen = true;
@@ -110,6 +194,20 @@ export default defineComponent({
     changeProfilePic() {
       // 프로필 사진 변경 정보 담아서 BE로 보내는 method
       this.closeEditModal();
+    },
+    openChangePwdModal() {
+      this.isCPSOpen = true;
+    },
+    closeChangePwdModal() {
+      this.isCPSOpen = false;
+    },
+    changePwdSignOut() {
+      // 비밀번호 변경 method
+      this.closeChangePwdModal();
+    },
+    openSignOutModal() {
+      // 회원 삭제 method
+      this.closeChangePwdModal();
     },
   },
 });
@@ -134,9 +232,10 @@ export default defineComponent({
 }
 .modal {
   position: fixed;
-  // modal 위치 가운데로 정렬 필요
+  right: 0;
+  left: 0;
+  margin: 0 auto;
   z-index: 99;
-  // width: 100%;
   max-width: 40rem;
   // mobile 크기
   min-width: 320px;
@@ -158,7 +257,7 @@ export default defineComponent({
 .change-profile-pic-btn {
   font-size: $font-regular;
   line-height: 1.8;
-  border: 0.1rem solid $black;
+  border: 1.5px solid $black;
   border-radius: 0.3rem;
   background: $white;
   color: $black;
@@ -173,6 +272,16 @@ export default defineComponent({
   color: $white;
 }
 
+.done-change-password-btn {
+  font-size: $font-regular;
+  line-height: 1.8;
+  border: 0.1rem solid $black;
+  border-radius: 0.3rem;
+  background: $black;
+  color: $white;
+  margin: 1rem 0 1rem 0;
+}
+
 .change-pwd-signout-text {
   color: $grey;
   font-size: $font-small;
@@ -182,6 +291,18 @@ export default defineComponent({
     color: $dark-grey;
     text-decoration-line: underline;
   }
+}
+
+.signout {
+  float: right;
+}
+
+.profile-close-btn {
+  font-size: $font-large;
+  cursor: pointer;
+  position: absolute;
+  right: 1rem;
+  top: 1rem;
 }
 
 // profile
@@ -216,7 +337,6 @@ img {
 }
 
 .btn {
-  // display: inline-block;
   font: inherit;
   background: none;
   border: none;
@@ -267,13 +387,10 @@ img {
 .profile-user-settings {
   margin-top: 1.1rem;
   width: auto;
-  // margin: auto;
 }
 
 .profile-user-name {
   display: block;
-  // display: block;
-  // display: none;
   float: left;
   font-size: $font-large;
   font-weight: $weight-semi-bold;
@@ -282,7 +399,6 @@ img {
 }
 
 .profile-user-email {
-  // display: inline-block;
   display: block;
   color: $dark-grey;
   margin: auto;
@@ -295,8 +411,6 @@ img {
   border: 1.5px solid $black;
   border-radius: 0.3rem;
   margin: 1rem 0 0.2rem 0;
-  // padding: 0 2.4rem;
-  // margin-left: 2rem;
   // hover시 색상 전환 천천히
   transition: border-color 0.5s, background-color 0.5s, color 0.5s;
   // hover시 색상 전환
@@ -308,8 +422,7 @@ img {
 }
 
 .profile-stats {
-  // margin-top: 2.3rem;
-  margin-top: 1rem;
+  margin: 1rem auto 0 auto;
 }
 
 .profile-stats li {
@@ -317,7 +430,6 @@ img {
   font-size: 1.6rem;
   line-height: 1.5;
   margin-right: 2rem;
-  // margin-right: auto;
   cursor: pointer;
 }
 
@@ -329,7 +441,6 @@ img {
   font-size: 1.6rem;
   font-weight: 400;
   line-height: 1.5;
-  // margin-top: 2.3rem;
   margin-top: 1rem;
 }
 
@@ -435,7 +546,6 @@ img {
     grid-template-columns: 1fr 2fr;
     grid-template-rows: repeat(3, auto);
     grid-column-gap: 1.5rem;
-    // grid-column-gap: 3rem;
     align-items: center;
   }
 
@@ -448,8 +558,6 @@ img {
   .profile-stats,
   .profile-bio {
     width: auto;
-    // margin: 0;
-    // margin: auto;
   }
   .change-pwd-signout {
     grid-column: -2 / -1;
