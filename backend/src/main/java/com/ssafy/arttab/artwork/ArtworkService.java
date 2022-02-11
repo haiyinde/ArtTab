@@ -1,7 +1,9 @@
 package com.ssafy.arttab.artwork;
 
 import com.ssafy.arttab.artwork.dto.*;
+import com.ssafy.arttab.follow.Follow;
 import com.ssafy.arttab.follow.FollowRepository;
+import com.ssafy.arttab.like.Like;
 import com.ssafy.arttab.like.LikeRepository;
 import com.ssafy.arttab.member.domain.Member;
 import com.ssafy.arttab.member.repository.MemberRepository;
@@ -10,6 +12,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -120,6 +124,50 @@ public class ArtworkService {
 //
 //    }
 
+    public List<LikeArtworkResponseDto> getLikeArtworkList(String nickname){
 
+        Member member = memberRepository.findMemberByNickname(nickname);
+        List<Like> likes = likeRepository.selectByMemberId(member.getId());
 
+        if(likes.isEmpty()) return null; // 좋아하는 작품이 없을 때에는 null 리턴
+
+        List<LikeArtworkResponseDto> result=new ArrayList<>();
+
+        for(Like like: likes){
+            Artwork artwork = like.getArtwork(); // 좋아요 한 작품
+            Member writer = artwork.getWriter(); // 좋아요 한 작품의 작성자
+
+            LikeArtworkResponseDto response = LikeArtworkResponseDto.builder()
+                    .artworkTitle(artwork.getTitle())
+                    .memberNickname(writer.getNickname())
+                    .memberId(writer.getId())
+                    .saveFolder("file:///"+artwork.getSaveFolder())
+                    .likeOrNot(true)
+                    .artworkId(artwork.getId())
+                    .regdate(artwork.getRegdate())
+                    .build();
+
+            result.add(response);
+        }
+
+        Collections.sort(result);
+        return result;
+    }// end getLikeArtworkList
+
+    // 팔로우한 회원의 작품 리스트
+//    public List<FollowArtworkListResponseDto> selectFollowArtworkList(String nickname) {
+//
+//        Member member=memberRepository.findMemberByNickname(nickname); // nickname
+//        List<Follow> followList=followRepository.findAllFollowing(member.getId()); // 팔로우하는 사람들 리스트
+//
+//        if(followList==null) return null; // 팔로우하는 회원이 없으면 null 리턴
+//
+//        for(Follow follow: followList){
+//
+//            FollowArtworkListResponseDto responseDto=FollowArtworkListResponseDto.builder()
+//                    .saveFolder()
+//                    .build();
+//        }
+//
+//    }
 }

@@ -4,6 +4,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.List;
+
 public interface FollowRepository extends JpaRepository<Follow, Long> {
 
     /***
@@ -47,4 +49,12 @@ public interface FollowRepository extends JpaRepository<Follow, Long> {
      */
     @Query(value = "SELECT count(*) FROM Follow WHERE follower = :follower AND followee = :followee", nativeQuery = true)
     int isFollow(Long follower, Long followee);
+
+    /***
+     *
+     * @param id 현재 follower 수를 조회할 회원번호
+     * @return id가 팔로우하는 회원의 리스트를 리턴합니다
+     */
+    @Query(value = "SELECT * FROM Follow WHERE follower = :id", nativeQuery = true)
+    List<Follow> findAllFollowing(Long id);
 }
