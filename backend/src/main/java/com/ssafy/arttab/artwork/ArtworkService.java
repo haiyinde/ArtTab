@@ -1,10 +1,9 @@
 package com.ssafy.arttab.artwork;
 
 import com.ssafy.arttab.artwork.dto.*;
-import com.ssafy.arttab.follow.Follow;
 import com.ssafy.arttab.follow.FollowRepository;
-import com.ssafy.arttab.like.Like;
 import com.ssafy.arttab.like.LikeRepository;
+import com.ssafy.arttab.like.Likes;
 import com.ssafy.arttab.member.domain.Member;
 import com.ssafy.arttab.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -42,7 +41,7 @@ public class ArtworkService {
                         .writer(memberRepository.findById(artworkDto.getWriterId()).get())
                         .galleryItemList(null)
                         .title(artworkDto.getTitle())
-                        .desc(artworkDto.getDesc())
+                        .description(artworkDto.getDescription())
                         .originFileName(artworkDto.getOriginFileName())
                         .saveFileName(artworkDto.getSaveFileName())
                         .saveFolder(artworkDto.getSaveFolder())
@@ -60,7 +59,7 @@ public class ArtworkService {
 
         // 저장된 정보 수정
         artwork.get().setTitle(requestDto.getTitle());
-        artwork.get().setDesc(requestDto.getDesc());
+        artwork.get().setDescription(requestDto.getDescription());
         artwork.get().setOriginFileName(requestDto.getOriginFileName());
         artwork.get().setSaveFileName(requestDto.getSaveFileName());
         artwork.get().setSaveFolder(requestDto.getSaveFolder());
@@ -88,7 +87,7 @@ public class ArtworkService {
                 .writerId(writer.getId())
                 .writerNickname(writer.getNickname())
                 .title(artwork.getTitle())
-                .desc(artwork.getDesc())
+                .desc(artwork.getDescription())
                 .regdate(artwork.getRegdate())
                 .artworkSaveFolder("file:///"+artwork.getSaveFolder())
                 .writerProfileSaveFolder("file:///"+writer.getSaveFolder())
@@ -127,13 +126,13 @@ public class ArtworkService {
     public List<LikeArtworkResponseDto> getLikeArtworkList(String nickname){
 
         Member member = memberRepository.findMemberByNickname(nickname);
-        List<Like> likes = likeRepository.selectByMemberId(member.getId());
+        List<Likes> likes = likeRepository.selectByMemberId(member.getId());
 
         if(likes.isEmpty()) return null; // 좋아하는 작품이 없을 때에는 null 리턴
 
         List<LikeArtworkResponseDto> result=new ArrayList<>();
 
-        for(Like like: likes){
+        for(Likes like: likes){
             Artwork artwork = like.getArtwork(); // 좋아요 한 작품
             Member writer = artwork.getWriter(); // 좋아요 한 작품의 작성자
 

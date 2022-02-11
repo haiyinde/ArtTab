@@ -22,9 +22,9 @@ public interface ArtworkRepository extends JpaRepository<Artwork, Long> {
      * @param id 작품 리스트를 조회할 회원 번호
      * @return 회원 번호로 조회된 작품 리스트를 반환
      */
-    @Query(value = "select * from Artwork where writer_id = :id", nativeQuery = true)
+    @Query(value = "select * from Artwork where writer = :id", nativeQuery = true)
     List<Artwork> findAllByMemberId(@Param("id") Long id);
 
-    @Query(value = "select count(*) from Artwork where writer_id = :id", nativeQuery = true)
+    @Query(value = "select count(*) from Artwork where writer = :id", nativeQuery = true)
     int findNumByMemberId(Long id);
 }

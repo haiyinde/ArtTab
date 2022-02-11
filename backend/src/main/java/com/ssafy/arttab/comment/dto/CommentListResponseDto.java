@@ -12,7 +12,7 @@ public class CommentListResponseDto {
     private Long id;
     private Long artwork_id;
     private Long member_id;
-    private LocalDateTime modifiedDate;
+    private LocalDateTime regdate;
     private String content;
     private String email;
     private String imgUrl;
@@ -21,7 +21,7 @@ public class CommentListResponseDto {
         this.id = entity.getId();
         this.artwork_id = entity.getArtwork().getId();
         this.member_id = entity.getMember().getId();
-        this.modifiedDate = entity.getModifiedDate();
+        this.regdate = LocalDateTime.now();
         this.content = entity.getContent();
         this.email = member.getEmail();
         this.imgUrl = member.getSaveFolder();

@@ -6,7 +6,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public interface LikeRepository extends JpaRepository<Like, Long> {
+public interface LikeRepository extends JpaRepository<Likes, Long> {
 
     @Query(value = "SELECT count(*) FROM Likes WHERE artwork=:id", nativeQuery = true)
     int selectLikeNumByArtworkId(Long id);
@@ -15,6 +15,6 @@ public interface LikeRepository extends JpaRepository<Like, Long> {
     int selectIsLike(@Param("artwork")Long artwork, @Param("member")Long member);
 
     @Query(value = "SELECT * FROM Likes WHERE member=:id", nativeQuery = true)
-    List<Like> selectByMemberId(Long id);
+    List<Likes> selectByMemberId(Long id);
 
 }

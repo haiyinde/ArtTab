@@ -35,7 +35,7 @@ public class ArtworkController {
             @RequestPart(value = "file", required = true) MultipartFile file,
             @RequestParam("writerId") Long writerId,
             @RequestParam("title") String title,
-            @RequestParam("desc") String desc)
+            @RequestParam("description") String description)
             throws IOException, NoSuchAlgorithmException {
 
         LocalDateTime time=LocalDateTime.now();
@@ -75,7 +75,7 @@ public class ArtworkController {
                 ArtworkFileDto.builder()
                         .writerId(writerId)
                         .title(title)
-                        .desc(desc)
+                        .description(description)
                         .originFileName(originFileName)
                         .saveFileName(saveFileName)
                         .saveFolder(saveFolder)
@@ -95,7 +95,7 @@ public class ArtworkController {
                                          @RequestPart(value = "file", required = true) MultipartFile file, // 변경하고 싶은 파일
                                          @RequestParam("writerId") Long writerId, // 작성자 아이디
                                          @RequestParam("title") String title, // 변경하고 싶은 제목
-                                         @RequestParam("desc") String desc) throws IOException, NoSuchAlgorithmException {
+                                         @RequestParam("description") String description) throws IOException, NoSuchAlgorithmException {
 
         String parentSaveFolder = artworkService.getParentFile(id); // 원래 있던 파일 위치
 
@@ -112,7 +112,7 @@ public class ArtworkController {
 
         ArtworkUpdateRequestDto requestDto=ArtworkUpdateRequestDto.builder()
                 .title(title)
-                .desc(desc)
+                .description(description)
                 .originFileName(originFileName)
                 .saveFileName(saveFileName)
                 .saveFolder(saveFolder)

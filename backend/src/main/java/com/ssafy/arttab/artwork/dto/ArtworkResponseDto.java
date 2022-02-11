@@ -12,7 +12,7 @@ public class ArtworkResponseDto { // 작품 정보를 리턴하기 위한 dto
     private Long writerId; // 작가 고유 아이디
     private String writerNickname; // 작가 닉네임
     private String title; // 작품 제목
-    private String desc; // 작품 내용
+    private String description; // 작품 내용
     private LocalDateTime regdate; // 작품 등록일
     private String artworkSaveFolder; // 작품 사진 경로
     private String writerProfileSaveFolder; // 작가 프로필 사진 경로
@@ -27,7 +27,7 @@ public class ArtworkResponseDto { // 작품 정보를 리턴하기 위한 dto
         this.writerId = writerId;
         this.writerNickname = writerNickname;
         this.title = title;
-        this.desc = desc;
+        this.description = description;
         this.regdate = regdate;
         this.artworkSaveFolder = artworkSaveFolder;
         this.writerProfileSaveFolder = writerProfileSaveFolder;
