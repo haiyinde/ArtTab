@@ -36,9 +36,9 @@
     <button
       :class="{ disabled: !isCompleted }"
       :disabled="!isCompleted"
-      @click="moveInsertNickname"
+      @click="checkAuthNum"
     >
-      다음
+      인증하기
     </button>
   </div>
 </template>
@@ -73,7 +73,8 @@ export default defineComponent({
   },
   watch: {
     authNum: function () {
-      this.checkAuthNum();
+      this.isCompleted = this.authNum ? true : false;
+      this.valid.authNum = false;
     },
   },
   methods: {
@@ -81,6 +82,7 @@ export default defineComponent({
     sendEmail() {
       AccountsAPI.sendEmail(this.joinEmail)
         .then((res: ResponseData) => {
+          console.log(res);
           if (res.data === "success") {
             alert("이메일이 정상적으로 전송되었습니다.");
           } else {
@@ -96,26 +98,22 @@ export default defineComponent({
           );
         });
     },
-    // 이메일 인증 처리 추가
+    // 이메일 인증 처리
     checkAuthNum() {
       AccountsAPI.checkAuthNum(this.joinEmail, this.authNum)
         .then((res: ResponseData) => {
           if (res.data === "success") {
-            this.valid.authNum = false;
-            this.isCompleted = true;
+            // 다음 단계(닉네입 입력)로 이동
+            this.$router.push({
+              name: "InsertNickname",
+            });
+          } else {
+            this.valid.authNum = true;
           }
-          this.valid.authNum = true;
-          this.isCompleted = false;
         })
-        .catch((e) => {
-          console.log(e);
+        .catch(() => {
+          alert("인증 처리 중 오류가 발생했습니다.");
         });
-    },
-    // 다음 단계(닉네입 입력)로 이동
-    moveInsertNickname() {
-      this.$router.push({
-        name: "InsertNickname",
-      });
     },
   },
 });

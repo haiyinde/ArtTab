@@ -31,7 +31,7 @@
     <button
       :class="{ disabled: !isCompleted }"
       :disabled="!isCompleted"
-      @click="login"
+      @click="sendEmail"
     >
       이메일 전송
     </button>
@@ -41,6 +41,9 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import PageTitle from "@/components/accounts/child/PageTitle.vue";
+import AccountsAPI from "@/apis/accountsAPI";
+import ResponseData from "@/types/ResponseData";
+import { validateEmail } from "@/utils/validation";
 import { AlertCircleOutline } from "mdue";
 
 export default defineComponent({
@@ -57,6 +60,53 @@ export default defineComponent({
       },
       isCompleted: false,
     };
+  },
+  watch: {
+    email: function () {
+      this.checkEmail();
+    },
+  },
+  methods: {
+    // 이메일 형식 및 중복 검사
+    checkEmail() {
+      // 이메일 형식 검사
+      if (!validateEmail(this.email)) {
+        this.valid.emailType = true;
+        this.valid.email = false;
+        return;
+      }
+      this.valid.emailType = false;
+      // 이메일 가입 여부 검사(회원가입 중복체크와 반대)
+      AccountsAPI.checkEmail(this.email)
+        .then((res: ResponseData) => {
+          if (res.data === "success") {
+            this.valid.email = true;
+          } else {
+            this.valid.email = false;
+          }
+        })
+        .catch(() => {
+          this.valid.email = false;
+          alert("이메일 중복 확인 중 오류가 발생했습니다.");
+        });
+    },
+    // 이메일 전송
+    sendEmail() {
+      AccountsAPI.findPassword(this.email)
+        .then((res: ResponseData) => {
+          if (res.data === "success") {
+            alert(
+              "메일로 초기화된 비밀번호가 전송되었습니다. 확인 후 로그인해주시기 바랍니다."
+            );
+            this.$router.push({ name: "Login" });
+          } else {
+            alert("메일 전송 중 오류가 발생했습니다");
+          }
+        })
+        .catch(() => {
+          alert("메일 전송 중 오류가 발생했습니다.");
+        });
+    },
   },
 });
 </script>
