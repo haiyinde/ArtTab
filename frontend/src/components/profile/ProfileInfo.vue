@@ -1,18 +1,143 @@
 <template>
-  <div class="black-bg" v-if="isOpen == true">
-    <div class="white-bg">
-      <h4>내 정보 수정 modal이 될 것</h4>
-      <img src="https://via.placeholder.com/150/92c952" />
-      <p>닉네임닉네임닉네임</p>
-      <p>
-        Lorem, ipsum dolor sit amet consectetur adipisicing elit. Nostrum,
-        maiores tenetur. Incidunt nihil vitae aliquid totam ex maxime sint
-        perferendis.
-      </p>
-      <button @click="changeProfilePic">프로필 사진 변경</button>
-      <button @click="doneEditInfo">완료</button>
+  <!-- Modal -->
+  <!-- Profile Edit Modal -->
+  <transition name="fade" appear>
+    <div class="overlay" v-if="isOpen == true" @click="closeEditModal"></div>
+  </transition>
+  <transition
+    mode="out-in"
+    enter-active-class="animate__animated animate__fadeInUp"
+    leave-active-class="animate__animated animate__fadeOutDown"
+  >
+    <div class="modal" v-if="isOpen == true">
+      <h2>내 정보 수정</h2>
+      <div class="profile-image" style="float: none">
+        <img src="https://via.placeholder.com/150/92c952" />
+      </div>
+      <!-- <close-circle
+        class="profile-close-btn"
+        @click="closeEditModal"
+      ></close-circle> -->
+      <close-button
+        :closed="isClose"
+        class="profile-close-btn"
+        @click="closeEditModal"
+      ></close-button>
+      <div>
+        <button class="change-profile-pic-btn" @click="changeProfilePic">
+          프로필 사진 변경
+        </button>
+        <label for="nickname" class="label-text">닉네임</label>
+        <input
+          type="nickname"
+          id="nickname"
+          class="input-text"
+          name="nickname"
+        />
+        <label for="bio" class="label-text">소개</label>
+        <input type="bio" id="bio" class="input-text" name="bio" />
+        <button class="done-profile-edit-btn" @click="doneEditInfo">
+          정보 수정 완료
+        </button>
+      </div>
     </div>
-  </div>
+  </transition>
+
+  <!-- Change Password and Sign Out Modal -->
+  <transition name="fade" appear>
+    <div
+      class="overlay"
+      v-if="isCPSOpen == true"
+      @click="closeChangePwdModal"
+    ></div>
+  </transition>
+  <transition
+    mode="out-in"
+    enter-active-class="animate__animated animate__fadeInUp"
+    leave-active-class="animate__animated animate__fadeOutDown"
+  >
+    <div class="modal" v-if="isCPSOpen == true">
+      <close-button
+        :closed="isClose"
+        class="profile-close-btn"
+        @click="closeChangePwdModal"
+      ></close-button>
+      <h2>비밀번호 변경 및 계정 탈퇴</h2>
+      <!-- 변경할 비밀번호 입력 -->
+      <label for="password" class="label-text">변경할 비밀번호</label>
+      <input-password
+        :password="account.password"
+        :placetext="'영문, 특수문자 포함 8자리 이상'"
+        id="password"
+        @inputVal="updatePassword"
+      ></input-password>
+      <span class="alert" v-show="valid.password"
+        >영문, 특수문자 포함 8자리 이상 입력해주세요.</span
+      >
+      <!-- 변경할 비밀번호 확인 -->
+      <label for="checkPwd" class="label-text">변경할 비밀번호 확인</label>
+      <input-password
+        :password="checkPwd"
+        :placetext="'비밀번호를 다시 입력해주세요.'"
+        id="checkPwd"
+        @inputVal="updatecheckPwd"
+      ></input-password>
+      <span class="alert" v-show="valid.checkPwd"
+        >비밀번호가 일치하지 않습니다.</span
+      >
+      <!-- 현재 비밀번호 -->
+      <label for="password" class="label-text">현재 비밀번호</label>
+      <input-password
+        :password="account.password"
+        :placetext="'영문, 특수문자 포함 8자리 이상'"
+        id="password"
+        @inputVal="updatePassword"
+      ></input-password>
+      <span class="alert" v-show="valid.password"
+        >영문, 특수문자 포함 8자리 이상 입력해주세요.</span
+      >
+      <div>
+        <button class="done-change-password-btn" @click="changePwdSignOut">
+          변경 완료
+        </button>
+      </div>
+      <div class="signout">
+        <p class="change-pwd-signout-text" @click="openSignOutModal">
+          회원 탈퇴
+        </p>
+      </div>
+    </div>
+  </transition>
+  <!-- Sign Out Confirmation Modal -->
+  <transition name="fade" appear>
+    <div
+      class="overlay"
+      v-if="isSignoutOpen == true"
+      @click="closeSignOutModal"
+    ></div>
+  </transition>
+  <transition
+    mode="out-in"
+    enter-active-class="animate__animated animate__fadeInUp"
+    leave-active-class="animate__animated animate__fadeOutDown"
+  >
+    <div class="modal" v-if="isSignoutOpen == true">
+      <h2 class="confirm-signout">정말 탈퇴하시겠습니까?</h2>
+      <close-button
+        :closed="isClose"
+        class="profile-close-btn"
+        @click="closeSignOutModal"
+      ></close-button>
+      <div class="signout-btn">
+        <button class="confirm-signout-btn" @click="signOut">탈퇴하기</button>
+        <button class="return-signout-btn" @click="closeSignOutModal">
+          돌아가기
+        </button>
+      </div>
+    </div>
+  </transition>
+
+  <!-- Profile Info -->
   <div>
     <p>Profile Info Component</p>
     <div class="container">
@@ -25,14 +150,13 @@
         </div>
         <div class="profile-user-settings">
           <h1 class="profile-user-name">닉네임닉네임닉네임</h1>
-          <!-- 이메일 조회 빼도 될 듯? -->
           <p class="profile-user-email">email@email.com</p>
           <button class="btn profile-edit-btn" @click="openEditModal">
             내 정보 수정
           </button>
           <follow-button
             class="btn profile-edit-btn"
-            :followed="!valid"
+            :followed="!follow"
             @click="handleFollow"
           ></follow-button>
         </div>
@@ -50,6 +174,11 @@
             perferendis.
           </p>
         </div>
+        <div class="change-pwd-signout">
+          <p class="change-pwd-signout-text" @click="openChangePwdModal">
+            비밀번호 변경 및 계정 탈퇴
+          </p>
+        </div>
       </div>
     </div>
   </div>
@@ -58,23 +187,43 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import FollowButton from "./child/FollowButton.vue";
+// import { CloseCircle } from "mdue";
+import InputPassword from "../accounts/child/InputPassword.vue";
+import CloseButton from "../common/CloseButton.vue";
 
 export default defineComponent({
   data() {
     return {
-      valid: true,
+      follow: true,
       isOpen: false,
+      isCPSOpen: false,
+      isSignoutOpen: false,
+      // is Change Password Signout Open
+      account: {
+        email: "",
+        password: "",
+      },
+      valid: {
+        emailType: false,
+        email: false,
+        password: false,
+        checkPwd: false,
+      },
+      isShowPwd: false,
+      isClose: false,
     };
   },
   components: {
     FollowButton,
+    // CloseCircle,
+    InputPassword,
+    CloseButton,
   },
   methods: {
     handleFollow() {
-      this.valid = !this.valid;
+      this.follow = !this.follow;
     },
     openEditModal() {
-      console.log("내 정보 수정 modal");
       this.isOpen = true;
     },
     closeEditModal() {
@@ -88,24 +237,152 @@ export default defineComponent({
       // 프로필 사진 변경 정보 담아서 BE로 보내는 method
       this.closeEditModal();
     },
+    openChangePwdModal() {
+      this.isCPSOpen = true;
+    },
+    closeChangePwdModal() {
+      this.isCPSOpen = false;
+    },
+    changePwdSignOut() {
+      // 비밀번호 변경 method
+      this.closeChangePwdModal();
+    },
+    openSignOutModal() {
+      this.closeChangePwdModal();
+      this.isSignoutOpen = true;
+    },
+    closeSignOutModal() {
+      this.isSignoutOpen = false;
+    },
+    signOut() {
+      // 회원탈퇴 요청
+      // 회원 탈퇴 처리되었습니다 팝업 open
+    },
   },
 });
 </script>
 
 <style scoped lang="scss">
+// accounts에서 input css 이용
+@import "@/assets/css/accounts.scss";
+
+// signout confirmation modal
+.signout-btn {
+  display: flex;
+  & .confirm-signout-btn {
+    font-size: $font-regular;
+    line-height: 1.8;
+    border: 1.5px solid $black;
+    border-radius: 0.3rem;
+    background: $white;
+    color: $black;
+    width: 30%;
+    margin: 0 auto;
+  }
+
+  & .return-signout-btn {
+    font-size: $font-regular;
+    line-height: 1.8;
+    border: 0.1rem solid $black;
+    border-radius: 0.3rem;
+    background: $black;
+    color: $white;
+    width: 30%;
+    margin: 0 auto;
+  }
+}
+
 // my profile info edit modal
-.black-bg {
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 98;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  position: fixed;
+  background: rgba(0, 0, 0, 0.6);
   padding: 20px;
 }
-.white-bg {
-  width: 100%;
-  background: white;
-  border-radius: 8px;
+.modal {
+  position: fixed;
+  right: 0;
+  left: 0;
+  margin: 0 auto;
+  z-index: 99;
+  max-width: 40rem;
+  // mobile 크기
+  min-width: 320px;
+  background-color: $white;
+  border-radius: 16px;
   padding: 20px;
+  & .confirm-signout {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 3rem;
+  }
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s;
+}
+
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.change-profile-pic-btn {
+  font-size: $font-regular;
+  line-height: 1.8;
+  border: 1.5px solid $black;
+  border-radius: 0.3rem;
+  background: $white;
+  color: $black;
+}
+
+.done-profile-edit-btn {
+  font-size: $font-regular;
+  line-height: 1.8;
+  border: 0.1rem solid $black;
+  border-radius: 0.3rem;
+  background: $black;
+  color: $white;
+}
+
+.done-change-password-btn {
+  font-size: $font-regular;
+  line-height: 1.8;
+  border: 0.1rem solid $black;
+  border-radius: 0.3rem;
+  background: $black;
+  color: $white;
+  margin: 1rem 0 1rem 0;
+}
+
+.change-pwd-signout-text {
+  color: $grey;
+  font-size: $font-small;
+  margin: 0;
+  &:hover {
+    transition: opacity 2s;
+    color: $dark-grey;
+    text-decoration-line: underline;
+  }
+}
+
+.signout {
+  float: right;
+}
+
+.profile-close-btn {
+  font-size: $font-large;
+  cursor: pointer;
+  position: absolute;
+  right: 1rem;
+  top: 1rem;
 }
 
 // profile
@@ -140,17 +417,12 @@ img {
 }
 
 .btn {
-  display: inline-block;
   font: inherit;
   background: none;
   border: none;
   color: inherit;
   padding: 0;
   cursor: pointer;
-}
-
-.btn:focus {
-  outline: 0.5rem auto #4d90fe;
 }
 
 .visually-hidden {
@@ -194,27 +466,31 @@ img {
 
 .profile-user-settings {
   margin-top: 1.1rem;
+  width: auto;
 }
 
 .profile-user-name {
   display: block;
-  // display: block;
-  // display: none;
+  float: left;
   font-size: $font-large;
   font-weight: $weight-semi-bold;
+  // user-name 글자가 안무너지게하기위해 임시값(15rem) 지정 username 길이가 달라지면 수치도 변할텐데 이건 모르겠음 ㅠㅠ
+  min-width: 15rem;
 }
 
 .profile-user-email {
-  display: inline-block;
+  display: block;
+  color: $dark-grey;
+  margin: auto;
+  font-weight: $weight-light;
 }
 
 .profile-edit-btn {
   font-size: $font-regular;
   line-height: 1.8;
-  border: 0.1rem solid $black;
+  border: 1.5px solid $black;
   border-radius: 0.3rem;
-  padding: 0 2.4rem;
-  margin-left: 2rem;
+  margin: 1rem 0 0.2rem 0;
   // hover시 색상 전환 천천히
   transition: border-color 0.5s, background-color 0.5s, color 0.5s;
   // hover시 색상 전환
@@ -226,14 +502,14 @@ img {
 }
 
 .profile-stats {
-  margin-top: 2.3rem;
+  margin: 1rem auto 0 auto;
 }
 
 .profile-stats li {
   display: inline-block;
   font-size: 1.6rem;
   line-height: 1.5;
-  margin-right: 4rem;
+  margin-right: 2rem;
   cursor: pointer;
 }
 
@@ -245,7 +521,7 @@ img {
   font-size: 1.6rem;
   font-weight: 400;
   line-height: 1.5;
-  margin-top: 2.3rem;
+  margin-top: 1rem;
 }
 
 .profile-stat-count,
@@ -254,7 +530,7 @@ img {
 }
 
 /* Media Query */
-// mobile
+// 40rem이하
 
 @media screen and (max-width: 40rem) {
   .profile {
@@ -293,7 +569,7 @@ img {
 
   .profile-user-email {
     display: block;
-    // font-size: $font-large;
+    font-size: $size-medium;
   }
 
   .profile-edit-btn {
@@ -349,7 +625,7 @@ img {
     display: grid;
     grid-template-columns: 1fr 2fr;
     grid-template-rows: repeat(3, auto);
-    grid-column-gap: 3rem;
+    grid-column-gap: 1.5rem;
     align-items: center;
   }
 
@@ -357,22 +633,18 @@ img {
     grid-row: 1 / -1;
   }
 
-  .gallery {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(22rem, 1fr));
-    grid-gap: 2rem;
-  }
-
   .profile-image,
   .profile-user-settings,
   .profile-stats,
-  .profile-bio,
-  .gallery-item,
-  .gallery {
+  .profile-bio {
     width: auto;
-    margin: 0;
   }
-
+  .change-pwd-signout {
+    grid-column: -2 / -1;
+    display: flex;
+    justify-content: flex-end;
+  }
+  // CSS grid 40rem 이하 적용
   @media (max-width: 40rem) {
     .profile {
       grid-template-columns: auto 1fr;
@@ -400,6 +672,10 @@ img {
     .profile-bio,
     .profile-stats {
       margin: 0;
+    }
+
+    .change-pwd-signout {
+      grid-row: 4 / 5;
     }
   }
 }

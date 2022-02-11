@@ -1,9 +1,11 @@
 <template>
   <div>
     <p>Profile page</p>
-    <profile-info></profile-info>
-    <gallery></gallery>
-    <profile-artwork></profile-artwork>
+    <div class="container">
+      <profile-info></profile-info>
+      <gallery></gallery>
+      <profile-artwork></profile-artwork>
+    </div>
   </div>
 </template>
 
@@ -21,4 +23,8 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.container {
+  margin: auto;
+}
+</style>

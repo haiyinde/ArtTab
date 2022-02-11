@@ -1,11 +1,9 @@
 <template>
-  <div>
-    <button
-      :class="{ followed: followed }"
-      v-text="buttonText"
-      @click="followUser"
-    ></button>
-  </div>
+  <button
+    :class="{ followed: followed }"
+    v-text="buttonText"
+    @click="followUser"
+  ></button>
 </template>
 
 <script lang="ts">

@@ -61,7 +61,7 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import axios from "axios";
-import LikeButton from "./child/LikeButton.vue";
+import LikeButton from "../common/LikeButton.vue";
 
 export default defineComponent({
   data() {
