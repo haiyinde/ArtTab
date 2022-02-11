@@ -9,14 +9,13 @@ export default defineComponent({
   name: "ToastMessage",
   data() {
     return {
+      message: "",
       isShow: false,
     };
   },
-  props: {
-    message: String,
-  },
   methods: {
-    showToast() {
+    showToast(msg: string) {
+      this.message = msg;
       this.isShow = true;
       setTimeout(() => {
         this.isShow = false;

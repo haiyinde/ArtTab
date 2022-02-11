@@ -29,10 +29,7 @@
         ></like-button>
         <div class="text">{{ artwork.likeNum }}</div>
         <link-variant class="icon" @click="copyClipboard"></link-variant>
-        <toast-message
-          :message="'주소가 복사되었습니다.'"
-          ref="toast"
-        ></toast-message>
+        <toast-message ref="toast"></toast-message>
         <calendar-clock class="icon icon-date"></calendar-clock>
         <div class="text">
           {{ computedDate }}
@@ -116,8 +113,26 @@ export default defineComponent({
     copyClipboard() {
       // 현재 URL 가져오기
       const url = window.document.location.href;
-      navigator.clipboard.writeText(url);
-      (this.$refs["toast"] as typeof ToastMessage).showToast();
+      const input = document.createElement("input");
+
+      input.value = url;
+      input.setAttribute("readonly", "");
+      input.style.position = "absolute";
+      input.style.left = "-999px";
+      document.body.appendChild(input);
+      input.select();
+      const result = document.execCommand("copy");
+      document.body.removeChild(input);
+
+      if (result) {
+        (this.$refs["toast"] as typeof ToastMessage).showToast(
+          "주소가 복사되었습니다."
+        );
+      } else {
+        (this.$refs["toast"] as typeof ToastMessage).showToast(
+          "주소 복사가 지원되지 않는 브라우저입니다."
+        );
+      }
     },
   },
 });
