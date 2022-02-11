@@ -29,6 +29,7 @@ public class SearchController {
 
     @GetMapping("/api/v1/searchNickname")
     public List<SearchMemberListResponseDto> selectAllByMember(@RequestParam String nickname){
-        return searchService.selectMemberList(nickname);
+        var memberlist = searchService.selectMemberList(nickname);
+        return memberlist;
     }
 }

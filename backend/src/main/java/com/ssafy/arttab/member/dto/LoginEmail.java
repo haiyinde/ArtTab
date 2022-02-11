@@ -21,7 +21,7 @@ import lombok.Setter;
 public class LoginEmail {
     private String email;
 
-    private LoginEmail(String email) {
+    public LoginEmail(String email) {
         this.email = email;
     }
 }

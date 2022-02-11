@@ -1,16 +1,20 @@
 package com.ssafy.arttab.gallery;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ssafy.arttab.artwork.Artwork;
 import com.ssafy.arttab.member.domain.Member;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 
 @Getter
 @NoArgsConstructor
 @Entity
+@Table(name = "galleryitem")
 public class GalleryItem {
 
     @Id
@@ -18,10 +22,13 @@ public class GalleryItem {
     private Long id; // 갤러리 식별번호
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name="writer")
     private Member writer; // 작성자
 
     @ManyToOne
+    @JsonIgnore
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name="artwork")
     private Artwork artwork; // 갤러리에 들어간 작품들
 

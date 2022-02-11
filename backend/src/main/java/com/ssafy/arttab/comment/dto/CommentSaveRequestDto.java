@@ -15,13 +15,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CommentSaveRequestDto {
     private String content;
-    private Long artworkId;
     private Long memberId;
 
     @Builder
-    public CommentSaveRequestDto(String content, Long artworkId, Long memberId) {
+    public CommentSaveRequestDto(String content, Long memberId) {
         this.content = content;
-        this.artworkId = artworkId;
         this.memberId = memberId;
     }
 
