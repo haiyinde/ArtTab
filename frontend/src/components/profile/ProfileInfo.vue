@@ -14,10 +14,15 @@
       <div class="profile-image" style="float: none">
         <img src="https://via.placeholder.com/150/92c952" />
       </div>
-      <close-circle
+      <!-- <close-circle
         class="profile-close-btn"
         @click="closeEditModal"
-      ></close-circle>
+      ></close-circle> -->
+      <close-button
+        :closed="isClose"
+        class="profile-close-btn"
+        @click="closeEditModal"
+      ></close-button>
       <div>
         <button class="change-profile-pic-btn" @click="changeProfilePic">
           프로필 사진 변경
@@ -38,7 +43,7 @@
     </div>
   </transition>
 
-  <!-- Change Password and Sign Out -->
+  <!-- Change Password and Sign Out Modal -->
   <transition name="fade" appear>
     <div
       class="overlay"
@@ -52,6 +57,11 @@
     leave-active-class="animate__animated animate__fadeOutDown"
   >
     <div class="modal" v-if="isCPSOpen == true">
+      <close-button
+        :closed="isClose"
+        class="profile-close-btn"
+        @click="closeChangePwdModal"
+      ></close-button>
       <h2>비밀번호 변경 및 계정 탈퇴</h2>
       <!-- 변경할 비밀번호 입력 -->
       <label for="password" class="label-text">변경할 비밀번호</label>
@@ -95,6 +105,34 @@
         <p class="change-pwd-signout-text" @click="openSignOutModal">
           회원 탈퇴
         </p>
+      </div>
+    </div>
+  </transition>
+  <!-- Sign Out Confirmation Modal -->
+  <transition name="fade" appear>
+    <div
+      class="overlay"
+      v-if="isSignoutOpen == true"
+      @click="closeSignOutModal"
+    ></div>
+  </transition>
+  <transition
+    mode="out-in"
+    enter-active-class="animate__animated animate__fadeInUp"
+    leave-active-class="animate__animated animate__fadeOutDown"
+  >
+    <div class="modal" v-if="isSignoutOpen == true">
+      <h2 class="confirm-signout">정말 탈퇴하시겠습니까?</h2>
+      <close-button
+        :closed="isClose"
+        class="profile-close-btn"
+        @click="closeSignOutModal"
+      ></close-button>
+      <div class="signout-btn">
+        <button class="confirm-signout-btn" @click="signOut">탈퇴하기</button>
+        <button class="return-signout-btn" @click="closeSignOutModal">
+          돌아가기
+        </button>
       </div>
     </div>
   </transition>
@@ -149,8 +187,9 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import FollowButton from "./child/FollowButton.vue";
-import { CloseCircle } from "mdue";
+// import { CloseCircle } from "mdue";
 import InputPassword from "../accounts/child/InputPassword.vue";
+import CloseButton from "../common/CloseButton.vue";
 
 export default defineComponent({
   data() {
@@ -158,6 +197,7 @@ export default defineComponent({
       follow: true,
       isOpen: false,
       isCPSOpen: false,
+      isSignoutOpen: false,
       // is Change Password Signout Open
       account: {
         email: "",
@@ -170,12 +210,14 @@ export default defineComponent({
         checkPwd: false,
       },
       isShowPwd: false,
+      isClose: false,
     };
   },
   components: {
     FollowButton,
-    CloseCircle,
+    // CloseCircle,
     InputPassword,
+    CloseButton,
   },
   methods: {
     handleFollow() {
@@ -206,8 +248,15 @@ export default defineComponent({
       this.closeChangePwdModal();
     },
     openSignOutModal() {
-      // 회원 삭제 method
       this.closeChangePwdModal();
+      this.isSignoutOpen = true;
+    },
+    closeSignOutModal() {
+      this.isSignoutOpen = false;
+    },
+    signOut() {
+      // 회원탈퇴 요청
+      // 회원 탈퇴 처리되었습니다 팝업 open
     },
   },
 });
@@ -216,6 +265,32 @@ export default defineComponent({
 <style scoped lang="scss">
 // accounts에서 input css 이용
 @import "@/assets/css/accounts.scss";
+
+// signout confirmation modal
+.signout-btn {
+  display: flex;
+  & .confirm-signout-btn {
+    font-size: $font-regular;
+    line-height: 1.8;
+    border: 1.5px solid $black;
+    border-radius: 0.3rem;
+    background: $white;
+    color: $black;
+    width: 30%;
+    margin: 0 auto;
+  }
+
+  & .return-signout-btn {
+    font-size: $font-regular;
+    line-height: 1.8;
+    border: 0.1rem solid $black;
+    border-radius: 0.3rem;
+    background: $black;
+    color: $white;
+    width: 30%;
+    margin: 0 auto;
+  }
+}
 
 // my profile info edit modal
 .overlay {
@@ -242,6 +317,11 @@ export default defineComponent({
   background-color: $white;
   border-radius: 16px;
   padding: 20px;
+  & .confirm-signout {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 3rem;
+  }
 }
 
 .fade-enter-active,
