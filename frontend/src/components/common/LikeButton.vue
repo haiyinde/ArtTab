@@ -14,9 +14,11 @@ import { defineComponent } from "vue";
 import { Heart, HeartOutline } from "mdue";
 
 export default defineComponent({
+  name: "LikeButton",
   props: {
     liked: {
       type: Boolean,
+      required: true,
     },
   },
   components: {

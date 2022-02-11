@@ -127,7 +127,7 @@ export default defineComponent({
 .container {
   width: 70%;
   max-width: 900px;
-  margin: $size-medium auto;
+  margin: 2rem auto;
 }
 
 .img-box {
