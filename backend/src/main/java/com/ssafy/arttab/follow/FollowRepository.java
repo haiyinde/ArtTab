@@ -52,7 +52,7 @@ public interface FollowRepository extends JpaRepository<Follow, Long> {
 
     /***
      *
-     * @param id 현재 follower 수를 조회할 회원번호
+     * @param id 현재 팔로잉하고 있는 사람을 알고 싶은 회원번호
      * @return id가 팔로우하는 회원의 리스트를 리턴합니다
      */
     @Query(value = "SELECT * FROM Follow WHERE follower = :id", nativeQuery = true)
