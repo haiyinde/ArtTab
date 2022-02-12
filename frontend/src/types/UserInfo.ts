@@ -1,5 +1,6 @@
 export default interface UserInfo {
+  id: number;
   email: string;
-  password: string;
+  intro: string;
   nickname: string;
 }

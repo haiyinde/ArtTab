@@ -49,13 +49,17 @@
           </div>
         </div>
       </div>
-      <button class="class-butten" @click="registImage">등록하기</button>
+      <button class="class-butten" @click="addArtwork">등록하기</button>
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import artworkAPI from "@/apis/artworkAPI";
+import { mapState } from "vuex";
+
+const accountsStore = "accountsStore";
 
 export default defineComponent({
   name: "ArtworkCreate",
@@ -68,6 +72,9 @@ export default defineComponent({
       tempimage: "",
     };
   },
+  computed: {
+    ...mapState(accountsStore, ["userInfo"]),
+  },
   methods: {
     onInputImage(e: any) {
       let files = e.target.files[0];
@@ -77,13 +84,16 @@ export default defineComponent({
       this.tempimage = URL.createObjectURL(files);
       console.log(this.tempimage);
     },
-    // image file은 form data로 보내야함 
-    saveForm() {
-      const formData = new FormData();
-      formData.append("file", this.file);
-      let data = {
-        formData: formData,
-      };
+    // image file은 form data로 보내야함
+    addArtwork() {
+      const artwork = new FormData();
+      artwork.append("file", this.file);
+      artwork.append("title", this.title);
+      artwork.append("writerId", this.userInfo.id);
+      artwork.append("description", this.desc);
+      artworkAPI.addArtwork(artwork).then((res) => {
+        console.log(res);
+      });
     },
   },
 });
@@ -141,7 +151,7 @@ export default defineComponent({
 .class-input-title {
   width: 100%;
   padding-bottom: 0.5rem;
-  padding-top: 0.5rem ;
+  padding-top: 0.5rem;
   font-size: $font-large;
   font-weight: bold;
   padding-left: 10px;
@@ -185,14 +195,14 @@ button {
   font-size: 20px;
 }
 
-.tempimage{
+.tempimage {
   display: flex;
   width: 100%;
   height: 100%;
   object-fit: contain;
 }
 
-.altimg{
+.altimg {
   display: flex;
   width: 55px;
   height: 55px;
@@ -204,7 +214,7 @@ button {
   transform: scale(1.3);
 }
 
-.imgbox{
+.imgbox {
   display: flex;
   width: 798px;
   height: 400px;
@@ -212,7 +222,7 @@ button {
   align-items: center;
 }
 
-@media(max-width: 800px) {
+@media (max-width: 800px) {
   .class-card {
     width: 400px;
   }
@@ -221,7 +231,7 @@ button {
   }
 }
 
-@media(max-width: 380px) {
+@media (max-width: 380px) {
   .imgbox {
     width: 300px;
   }
@@ -232,5 +242,4 @@ button {
     font-size: 12px;
   }
 }
-
 </style>

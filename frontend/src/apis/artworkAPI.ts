@@ -1,12 +1,12 @@
 import api from "@/http-common";
+import { fileApiInstance } from "@/http-common";
 
 class ArtworkAPI {
-  // 작품 등록 API
-  insert(desc: string, file: File, title: string, writerId: number) {
-    return api.post(
-      `/artwork?desc=` + desc + `&title=` + title + `&writerId=` + writerId
-    );
+  // 작품 등록 API(artwork: file, title, writerId, description)
+  addArtwork(artwork: FormData) {
+    return fileApiInstance.post(`/artwork`, artwork);
   }
+
   // 작품 수정 API
   update(
     desc: string,
@@ -27,8 +27,8 @@ class ArtworkAPI {
     );
   }
   // id에 해당하는 작품 조회 (개별 작품 조회)
-  findByNo(id: number) {
-    return api.get(`/artwork/` + id);
+  getArtworkById(id: number, loginId: number) {
+    return api.get(`/artwork/${id}`, { params: { loginId: loginId } });
   }
   // 작품 전체 조회 API
   getArtworkList() {

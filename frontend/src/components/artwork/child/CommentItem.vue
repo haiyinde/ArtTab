@@ -44,7 +44,7 @@ export default defineComponent({
   },
   computed: {
     computedDate(): string {
-      return diffTime(this.comment.modifiedDate);
+      return diffTime(this.comment.regdate);
     },
   },
   methods: {

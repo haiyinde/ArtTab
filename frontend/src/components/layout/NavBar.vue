@@ -29,7 +29,7 @@
           <router-link :to="{ name: 'ArtworkCreate' }">그림 올리기</router-link>
         </li>
         <li class="tooltip" @click="closeNavBar">
-          <router-link :to="{ name: 'ArtworkCreate' }"
+          <router-link :to="{ name: 'Profile' }"
             ><account-circle-outline
               class="icon navbar-icon"
             ></account-circle-outline>

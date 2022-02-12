@@ -9,4 +9,12 @@ const apiInstance: AxiosInstance = axios.create({
   },
 });
 
+const fileApiInstance: AxiosInstance = axios.create({
+  baseURL: BASE_URL,
+  headers: {
+    "Content-Type": "multipart/form-data",
+  },
+});
+
 export default apiInstance;
+export { fileApiInstance };

@@ -43,7 +43,12 @@ export const accountsStore: Module<AccountsState, RootState> = {
     async getLogin({ commit }, user: LoginInfo) {
       // 임시 ---------
       commit("SET_IS_LOGIN", true);
-      commit("SET_USER_INFO", user);
+      commit("SET_USER_INFO", {
+        id: 1,
+        email: user.email,
+        intro: "소개",
+        nickname: "나야나",
+      });
       commit("SET_JOIN_EMAIL", "");
       // 임시 ----------
 
