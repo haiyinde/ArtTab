@@ -15,6 +15,7 @@ public class CommentListResponseDto {
     private LocalDateTime regdate;
     private String content;
     private String email;
+    private String nickName;
     private String imgUrl;
 
     public CommentListResponseDto(Comment entity, Member member) {
@@ -25,5 +26,6 @@ public class CommentListResponseDto {
         this.content = entity.getContent();
         this.email = member.getEmail();
         this.imgUrl = member.getSaveFolder();
+        this.nickName = member.getNickname();
     }
 }

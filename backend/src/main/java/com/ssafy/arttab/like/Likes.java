@@ -24,12 +24,10 @@ public class Likes extends BaseTimeEntity {
 
     @ManyToOne
     @JoinColumn(name = "artwork")
-    @OnDelete(action = OnDeleteAction.CASCADE)
     private Artwork artwork;
 
     @ManyToOne
     @JoinColumn(name = "member")
-    @OnDelete(action = OnDeleteAction.CASCADE)
     private Member member;
 
     @Builder
