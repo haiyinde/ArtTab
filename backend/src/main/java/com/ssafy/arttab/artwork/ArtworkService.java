@@ -1,9 +1,10 @@
 package com.ssafy.arttab.artwork;
 
 import com.ssafy.arttab.artwork.dto.*;
+import com.ssafy.arttab.follow.Follow;
 import com.ssafy.arttab.follow.FollowRepository;
-import com.ssafy.arttab.like.LikeRepository;
 import com.ssafy.arttab.like.Likes;
+import com.ssafy.arttab.like.LikesRepository;
 import com.ssafy.arttab.member.domain.Member;
 import com.ssafy.arttab.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +12,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -23,7 +25,7 @@ public class ArtworkService {
 
     private final ArtworkRepository artworkRepository;
     private final MemberRepository memberRepository;
-    private final LikeRepository likeRepository;
+    private final LikesRepository likeRepository;
     private final FollowRepository followRepository;
 
     @Transactional
@@ -119,10 +121,6 @@ public class ArtworkService {
         artworkRepository.delete(artwork);
     }
 
-//    public List<FollowArtworkListResponseDto> selectFolloweArtworkList(String nickname){
-//
-//    }
-
     public List<LikeArtworkResponseDto> getLikeArtworkList(String nickname){
 
         Member member = memberRepository.findMemberByNickname(nickname);
@@ -154,19 +152,40 @@ public class ArtworkService {
     }// end getLikeArtworkList
 
     // 팔로우한 회원의 작품 리스트
-//    public List<FollowArtworkListResponseDto> selectFollowArtworkList(String nickname) {
-//
-//        Member member=memberRepository.findMemberByNickname(nickname); // nickname
-//        List<Follow> followList=followRepository.findAllFollowing(member.getId()); // 팔로우하는 사람들 리스트
-//
-//        if(followList==null) return null; // 팔로우하는 회원이 없으면 null 리턴
-//
-//        for(Follow follow: followList){
-//
-//            FollowArtworkListResponseDto responseDto=FollowArtworkListResponseDto.builder()
-//                    .saveFolder()
-//                    .build();
-//        }
-//
-//    }
+    public List<FollowArtworkListResponseDto> selectFollowArtworkList(String nickname) {
+
+        Member member=memberRepository.findMemberByNickname(nickname); // nickname에 해당하는 사람
+        List<Follow> followList=followRepository.findAllFollowing(member.getId()); // nickname이 팔로우하는 사람들 리스트
+        List<FollowArtworkListResponseDto> result=new ArrayList<>(); // 팔로우한 회원의 작품 리스트를 위한 리스트
+
+        if(followList==null) return null; // 팔로우하는 회원이 없으면 null 리턴
+
+        for(Follow follow: followList){ // 팔로우하는 사람들 하나하나에 대해서
+            Member followee = follow.getFollowee(); // 팔로우하는 사람
+            List<Artwork> artworks=artworkRepository.find4ByMemberId(followee.getId()); // 4개 작품 가져오기
+            List<SimpleArtworkDto> artworkInfo=new ArrayList<>();
+
+            LocalDateTime recentUpdated=null;
+            if(!artworks.isEmpty()){ // 작품을 작성했다면
+                recentUpdated=artworks.get(0).getRegdate(); // 제일 최근에 작성한 날짜
+                for(Artwork artwork: artworks){ // 작품들에 대해서
+                    artworkInfo.add(new SimpleArtworkDto(artwork)); // 작품 아이디와 작품 폴더 저장
+                }
+            }
+
+            FollowArtworkListResponseDto response = FollowArtworkListResponseDto.builder()
+                    .artworkInfo(artworkInfo)
+                    .artworkNum(artworkRepository.findNumByMemberId(followee.getId()))
+                    .followerNum(followRepository.findAllFollowedCnt(followee.getId()))
+                    .memberMail(followee.getEmail())
+                    .recentUpdated(recentUpdated)
+                    .build();
+
+            result.add(response);
+        }
+
+        Collections.sort(result);
+        return result;
+    }
+
 }

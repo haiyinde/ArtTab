@@ -13,6 +13,6 @@ public class SimpleArtworkDto {
     @Builder
     public SimpleArtworkDto(Artwork entity){
         artworkId=entity.getId();
-        saveFolder=entity.getSaveFolder();
+        saveFolder="file:///"+entity.getSaveFolder();
     }
 }

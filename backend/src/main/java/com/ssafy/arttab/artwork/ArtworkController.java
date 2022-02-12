@@ -1,6 +1,7 @@
 package com.ssafy.arttab.artwork;
 
 import com.ssafy.arttab.artwork.dto.*;
+import com.ssafy.arttab.member.dto.response.MemberInfoResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -41,7 +42,7 @@ public class ArtworkController {
         LocalDateTime time=LocalDateTime.now();
         String originFileName=file.getOriginalFilename();
         String saveFileName=new MD5Generator(originFileName+time).toString();
-        String upperPath="C:"+File.separator+"artwork"; // artwork 디렉토리
+        String upperPath=System.getProperty("user.home")+File.separator+"artwork"; // artwork 디렉토리
         String savePath=upperPath+File.separator+writerId; // artwork의 사용자 디렉토리
 
         // 디버깅용
@@ -105,9 +106,9 @@ public class ArtworkController {
         LocalDateTime time=LocalDateTime.now();
         String originFileName=file.getOriginalFilename();
         String saveFileName=new MD5Generator(originFileName+time).toString();
-        String upperPath="C:"+File.separator+"artwork"; // artwork 디렉토리
+        String upperPath=System.getProperty("user.home")+File.separator+"artwork"; // artwork 디렉토리
         String savePath=upperPath+File.separator+writerId; // artwork의 사용자 디렉토리
-        String saveFolder=savePath+"\\"+saveFileName;
+        String saveFolder=savePath+File.separator+saveFileName;
         file.transferTo(new File(saveFolder)); // 파일 저장
 
         ArtworkUpdateRequestDto requestDto=ArtworkUpdateRequestDto.builder()
@@ -182,14 +183,13 @@ public class ArtworkController {
         return new ResponseEntity<>(likeList, HttpStatus.OK);
     }
 
-//    @ApiOperation(value = "팔로우한 회원의 작품 목록 조회")
-//    @GetMapping("api/v1/artwork/{nickname}/follow")
-//    public List<FollowArtworkListResponseDto> selectFollowArtworkList(@PathVariable("nickname") String nickname){
-//        List<FollowArtworkListResponseDto> list = artworkService.selectFollowArtworkList(nickname);
-//
-//
-//
-//    }
+    @ApiOperation(value = "팔로우한 회원의 작품 목록 조회")
+    @GetMapping("api/v1/artwork/{nickname}/follow")
+    public ResponseEntity<List<FollowArtworkListResponseDto>> selectFollowArtworkList(@PathVariable("nickname") String nickname){
+        List<FollowArtworkListResponseDto> list = artworkService.selectFollowArtworkList(nickname);
+        if(list.isEmpty()) return new ResponseEntity<>(null, HttpStatus.OK);
+        return new ResponseEntity<>(list, HttpStatus.OK);
+    }
 
 }
 
