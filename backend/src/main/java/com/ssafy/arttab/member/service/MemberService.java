@@ -1,16 +1,16 @@
 package com.ssafy.arttab.member.service;
 
+import com.ssafy.arttab.artwork.ArtworkRepository;
 import com.ssafy.arttab.exception.member.DuplicateException;
 import com.ssafy.arttab.exception.member.NoSuchMemberException;
 import com.ssafy.arttab.exception.member.PasswordMismatchException;
+import com.ssafy.arttab.follow.FollowRepository;
 import com.ssafy.arttab.member.domain.MailAuth;
 import com.ssafy.arttab.member.domain.Member;
 import com.ssafy.arttab.member.dto.LoginEmail;
-import com.ssafy.arttab.member.dto.request.AuthNumCheckRequest;
-import com.ssafy.arttab.member.dto.request.MemberSaveRequest;
-import com.ssafy.arttab.member.dto.request.IntroUpdateRequest;
-import com.ssafy.arttab.member.dto.request.PasswordUpdateRequest;
+import com.ssafy.arttab.member.dto.request.*;
 import com.ssafy.arttab.member.dto.response.MemberInfoResponse;
+import com.ssafy.arttab.member.dto.response.ProfileInfoResponse;
 import com.ssafy.arttab.member.repository.MailAuthRepogitory;
 import com.ssafy.arttab.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -41,6 +41,8 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final MailSendService mailSendService;
     private final MailAuthRepogitory mailAuthRepogitory;
+    private final FollowRepository followRepository;
+    private final ArtworkRepository artworkRepository;
 
     /**
      * 회원 등록
@@ -56,9 +58,13 @@ public class MemberService {
         //비밀번호 암호화
         var password = BCrypt.hashpw(memberSaveRequest.getPassword(),BCrypt.gensalt());
 
+        // 프로필 사진 기본 이미지로 설정
+        String defaultSaveFolder=System.getProperty("user.dir") + "\\profile\\default.jpg";
+
         Member member = Member.builder()
                 .email(memberSaveRequest.getEmail())
                 .password(password)
+                .saveFolder(defaultSaveFolder)
                 .build();
 
         try{
@@ -245,5 +251,50 @@ public class MemberService {
                 .orElseThrow(NoSuchMemberException::new);
 
         memberRepository.delete(member);
+    }
+
+    // 해당 이메일의 회원이 기존에 등록해둔 saveFolder 리턴
+    public String getParentFolder(String email){
+
+        var member=memberRepository.findByEmail(email).orElseThrow();
+        return member.getSaveFolder();
+
+    }
+
+    // saveFolder 수정: 이메일에 해당하는 프로필 사진 수정
+    @Transactional
+    public void updateSaveFolder(final LoginEmail loginEmail, String saveFolder){
+        var member=memberRepository.findByEmail(loginEmail.getEmail()).orElseThrow(); 
+        member.updateSaveFolder(saveFolder);
+    }
+
+    // 프로필 페이지 불러오기
+    public ProfileInfoResponse getProfileInfo(String loginEmail, String profileMemberEmail){
+
+        Long loginMember=memberRepository.findMemberByEmail(loginEmail).getId(); // 로그인된 회원 아이디
+        Long profileMember=memberRepository.findMemberByEmail(profileMemberEmail).getId(); // 프로필을 주인 아이디
+
+        String isFollow = "FALSE";
+        if(loginMember==profileMember) { // 로그인한 사용자가 본인 프로필 조회하려고 할 때
+            isFollow="ME";
+        }
+        else {
+            int followOrNot = followRepository.isFollow(loginMember, profileMember);
+            if (followOrNot != 0) { // 팔로우 관계일 때
+                isFollow = "TRUE";
+            }
+        }
+
+        ProfileInfoResponse response = ProfileInfoResponse.builder()
+                .nickname(memberRepository.findMemberByEmail(profileMemberEmail).getNickname())
+                .isFollow(isFollow)
+                .followedNum(followRepository.findAllFollowedCnt(profileMember))
+                .followingNum(followRepository.findAllFollowingCnt(profileMember))
+                .artworkNum(artworkRepository.findNumByMemberId(profileMember))
+                .email(profileMemberEmail)
+                .profileImageUrl("file:///"+memberRepository.findMemberByEmail(profileMemberEmail).getSaveFolder())
+                .build();
+
+        return response;
     }
 }

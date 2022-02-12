@@ -35,17 +35,28 @@ public class ArtworkController {
             @RequestPart(value = "file", required = true) MultipartFile file,
             @RequestParam("writerId") Long writerId,
             @RequestParam("title") String title,
-            @RequestParam("desc") String desc)
+            @RequestParam("description") String description)
             throws IOException, NoSuchAlgorithmException {
 
         LocalDateTime time=LocalDateTime.now();
         String originFileName=file.getOriginalFilename();
         String saveFileName=new MD5Generator(originFileName+time).toString();
-        String savePath=System.getProperty("user.dir")+"\\artwork\\"+writerId;
+        String upperPath="C:"+File.separator+"artwork"; // artwork 디렉토리
+        String savePath=upperPath+File.separator+writerId; // artwork의 사용자 디렉토리
 
         // 디버깅용
         System.out.println("originFileName: "+originFileName);
         System.out.println(savePath);
+
+        // artwork 디렉토리 없으면 폴더 생성
+        if(!new File(upperPath).exists()){
+            try{
+                new File(upperPath).mkdir();
+            }
+            catch(Exception e){
+                e.getStackTrace();
+            }
+        }
 
         // 파일이 저장되는 폴더가 없으면 폴더 생성
         if(!new File(savePath).exists()){
@@ -57,14 +68,14 @@ public class ArtworkController {
             }
         }
 
-        String saveFolder=savePath+"\\"+saveFileName;
+        String saveFolder=savePath+File.separator+saveFileName;
         file.transferTo(new File(saveFolder)); // 파일 저장
 
         boolean result = artworkService.save(
                 ArtworkFileDto.builder()
                         .writerId(writerId)
                         .title(title)
-                        .desc(desc)
+                        .description(description)
                         .originFileName(originFileName)
                         .saveFileName(saveFileName)
                         .saveFolder(saveFolder)
@@ -84,7 +95,7 @@ public class ArtworkController {
                                          @RequestPart(value = "file", required = true) MultipartFile file, // 변경하고 싶은 파일
                                          @RequestParam("writerId") Long writerId, // 작성자 아이디
                                          @RequestParam("title") String title, // 변경하고 싶은 제목
-                                         @RequestParam("desc") String desc) throws IOException, NoSuchAlgorithmException {
+                                         @RequestParam("description") String description) throws IOException, NoSuchAlgorithmException {
 
         String parentSaveFolder = artworkService.getParentFile(id); // 원래 있던 파일 위치
 
@@ -94,13 +105,14 @@ public class ArtworkController {
         LocalDateTime time=LocalDateTime.now();
         String originFileName=file.getOriginalFilename();
         String saveFileName=new MD5Generator(originFileName+time).toString();
-        String savePath=System.getProperty("user.dir")+"\\artwork\\"+writerId;
+        String upperPath="C:"+File.separator+"artwork"; // artwork 디렉토리
+        String savePath=upperPath+File.separator+writerId; // artwork의 사용자 디렉토리
         String saveFolder=savePath+"\\"+saveFileName;
         file.transferTo(new File(saveFolder)); // 파일 저장
 
         ArtworkUpdateRequestDto requestDto=ArtworkUpdateRequestDto.builder()
                 .title(title)
-                .desc(desc)
+                .description(description)
                 .originFileName(originFileName)
                 .saveFileName(saveFileName)
                 .saveFolder(saveFolder)
@@ -116,17 +128,17 @@ public class ArtworkController {
     }
 
     // id에 해당하는 작품 조회
+    @ApiOperation(value = "id라는 작품 아이디를 가진 작품의 상세 정보를 조회한다.")
     @GetMapping("api/v1/artwork/{id}")
-    public ResponseEntity<ArtworkResponseDto> findByNo(@PathVariable("id") Long id){
-        Optional<Artwork> artwork = artworkService.findByNo(id);
+    public ResponseEntity<ArtworkResponseDto> findByNo(@PathVariable("id") Long id,
+                                                       @RequestParam("loginId") Long loginId){
 
-        if(artwork.isEmpty()) // 조회된 값이 없을 때
-            return new ResponseEntity<>(null, HttpStatus.OK);
-
-        return new ResponseEntity<ArtworkResponseDto>(new ArtworkResponseDto(artwork.get()), HttpStatus.OK);
+        ArtworkResponseDto response=artworkService.findByNo(id, loginId);
+        return new ResponseEntity<ArtworkResponseDto>(response, HttpStatus.OK);
     }
 
     // 작품 전체 조회 api -최근순 정렬
+    @ApiOperation(value ="전체 작품을 최근순으로 정렬한다.")
     @GetMapping("api/v1/artwork")
     public ResponseEntity<List<ArtworkListResponseDto>> getArtworkList(){
         List<ArtworkListResponseDto> list=artworkService.getArtworkList();
@@ -161,6 +173,23 @@ public class ArtworkController {
 
         artworkService.delete(id);
     }
+
+    @ApiOperation(value="닉네임에 해당하는 회원이 좋아요 한 작품의 리스트를 리턴한다. 좋아요 한 작품이 없을 경우 null을 리턴한다.")
+    @GetMapping("api/v1/artwork/{nickname}/like")
+    public ResponseEntity<List<LikeArtworkResponseDto>> getLikeArtworkList(@PathVariable("nickname")String nickname){
+
+        List<LikeArtworkResponseDto> likeList=artworkService.getLikeArtworkList(nickname);
+        return new ResponseEntity<>(likeList, HttpStatus.OK);
+    }
+
+//    @ApiOperation(value = "팔로우한 회원의 작품 목록 조회")
+//    @GetMapping("api/v1/artwork/{nickname}/follow")
+//    public List<FollowArtworkListResponseDto> selectFollowArtworkList(@PathVariable("nickname") String nickname){
+//        List<FollowArtworkListResponseDto> list = artworkService.selectFollowArtworkList(nickname);
+//
+//
+//
+//    }
 
 }
 

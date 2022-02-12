@@ -1,18 +1,16 @@
 package com.ssafy.arttab.comment;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.ssafy.arttab.artwork.Artwork;
 import com.ssafy.arttab.BaseTimeEntity;
+import com.ssafy.arttab.artwork.Artwork;
 import com.ssafy.arttab.member.domain.Member;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
-import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
@@ -40,9 +38,6 @@ public class Comment extends BaseTimeEntity {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Member member;
 
-
-    @LastModifiedDate
-    private LocalDateTime modifiedDate;
 
     @Builder
     public Comment(String content, Artwork artwork, Member member){

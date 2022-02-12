@@ -87,7 +87,7 @@ export default defineComponent({
         })
         .catch(() => {
           this.valid.email = false;
-          alert("이메일 중복 확인 중 오류가 발생했습니다.");
+          alert("이메일 가입 여부 확인 중 오류가 발생했습니다.");
         });
     },
     // 이메일 전송

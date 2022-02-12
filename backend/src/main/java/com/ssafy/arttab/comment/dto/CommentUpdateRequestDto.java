@@ -9,8 +9,12 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 public class CommentUpdateRequestDto {
+    private String email;
     private String content;
 
     @Builder
-    public CommentUpdateRequestDto(String content) { this.content = content; }
+    public CommentUpdateRequestDto(String content, String email) {
+        this.content = content;
+        this.email = email;
+    }
 }

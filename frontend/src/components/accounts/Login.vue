@@ -35,7 +35,7 @@
     <button
       :class="{ disabled: !isCompleted }"
       :disabled="!isCompleted"
-      @click="login"
+      @click="checkEmail"
     >
       로그인
     </button>
@@ -59,7 +59,12 @@
 import { defineComponent } from "vue";
 import PageTitle from "@/components/accounts/child/PageTitle.vue";
 import InputPassword from "@/components/accounts/child/InputPassword.vue";
+import AccountsAPI from "@/apis/accountsAPI";
+import ResponseData from "@/types/ResponseData";
 import { useCookies } from "vue3-cookies";
+import { mapState, mapActions } from "vuex";
+
+const accountsStore = "accountsStore";
 
 export default defineComponent({
   name: "Login",
@@ -86,20 +91,41 @@ export default defineComponent({
       this.storeId = "true";
     }
   },
+  computed: {
+    ...mapState(accountsStore, ["isConfirmEmail"]),
+  },
   watch: {
+    email: function () {
+      this.actButton();
+    },
     password: function () {
-      console.log("dd");
-      if (this.password && this.email && !this.valid.email) {
-        this.isCompleted = true;
-      } else {
-        this.isCompleted = false;
-      }
+      this.actButton();
     },
   },
   methods: {
+    ...mapActions(accountsStore, ["getLogin"]),
     // 비밀번호 컴포넌트에 입력된 텍스트 가져오기
     updatePassword(value: string) {
       this.password = value;
+    },
+    actButton() {
+      this.valid.email = false;
+      this.isCompleted = this.password && this.email ? true : false;
+    },
+    checkEmail() {
+      // 아이디 가입여부 확인(이메일 중복 확인과 반대)
+      AccountsAPI.checkEmail(this.email)
+        .then((res: ResponseData) => {
+          if (res.data === "success") {
+            this.valid.email = true;
+          } else {
+            this.login();
+          }
+        })
+        .catch(() => {
+          this.valid.email = false;
+          alert("이메일 가입 여부 확인 중 오류가 발생했습니다.");
+        });
     },
     login() {
       // 아이디 저장을 체크한 경우 쿠키에 저장하기
@@ -110,7 +136,18 @@ export default defineComponent({
       else {
         this.cookies.remove("idCookie");
       }
-      console.log("로그인 처리하기");
+      // 로그인 처리하기
+      // 이메일 인증을 완료하지 않은 사용자일 경우 이메일 인증 페이지로 이동
+      if (!this.isConfirmEmail) {
+        this.$router.push({
+          name: "ConfirmEmail",
+        });
+      }
+      // 이메일 인증을 완료한 사용자일 경우 이전페이지로 또는 메인페이지로 이동
+      else {
+        this.$router.back();
+        this.$router.push({ name: "Main" });
+      }
     },
     moveSignUp() {
       this.$router.push({ name: "SignUp" });
