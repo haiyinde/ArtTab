@@ -15,15 +15,17 @@ public class CommentListResponseDto {
     private LocalDateTime regdate;
     private String content;
     private String email;
+    private String nickName;
     private String imgUrl;
 
     public CommentListResponseDto(Comment entity, Member member) {
         this.id = entity.getId();
         this.artwork_id = entity.getArtwork().getId();
         this.member_id = entity.getMember().getId();
-        this.regdate = LocalDateTime.now();
+        this.regdate = entity.getRegdate();
         this.content = entity.getContent();
         this.email = member.getEmail();
         this.imgUrl = member.getSaveFolder();
+        this.nickName = member.getNickname();
     }
 }
