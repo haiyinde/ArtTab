@@ -258,6 +258,10 @@ ul {
   .navbar-text {
     display: block;
     cursor: pointer;
+    &.logout {
+      padding: $size-large;
+      text-align: center;
+    }
   }
 }
 </style>
