@@ -63,8 +63,19 @@
         @click="closeChangePwdModal"
       ></close-button>
       <h2>비밀번호 변경 및 계정 탈퇴</h2>
+      <!-- 현재 비밀번호 -->
+      <label for="password" class="label-text">현재 비밀번호</label>
+      <input-password
+        :password="currentPwd"
+        :placetext="'영문, 특수문자 포함 8자리 이상'"
+        id="password"
+        @inputVal="updateCurrentPwd"
+      ></input-password>
+      <span class="alert" v-show="valid.password"
+        >현재 비밀번호를 입력해주세요.</span
+      >
       <!-- 변경할 비밀번호 입력 -->
-      <label for="password" class="label-text">변경할 비밀번호</label>
+      <label for="password" class="label-text">새 비밀번호</label>
       <input-password
         :password="account.password"
         :placetext="'영문, 특수문자 포함 8자리 이상'"
@@ -75,7 +86,7 @@
         >영문, 특수문자 포함 8자리 이상 입력해주세요.</span
       >
       <!-- 변경할 비밀번호 확인 -->
-      <label for="checkPwd" class="label-text">변경할 비밀번호 확인</label>
+      <label for="checkPwd" class="label-text">새 비밀번호 다시 입력</label>
       <input-password
         :password="checkPwd"
         :placetext="'비밀번호를 다시 입력해주세요.'"
@@ -84,17 +95,6 @@
       ></input-password>
       <span class="alert" v-show="valid.checkPwd"
         >비밀번호가 일치하지 않습니다.</span
-      >
-      <!-- 현재 비밀번호 -->
-      <label for="password" class="label-text">현재 비밀번호</label>
-      <input-password
-        :password="account.password"
-        :placetext="'영문, 특수문자 포함 8자리 이상'"
-        id="password"
-        @inputVal="updatePassword"
-      ></input-password>
-      <span class="alert" v-show="valid.password"
-        >영문, 특수문자 포함 8자리 이상 입력해주세요.</span
       >
       <div>
         <button class="done-change-password-btn" @click="changePwdSignOut">
@@ -203,6 +203,8 @@ export default defineComponent({
         email: "",
         password: "",
       },
+      checkPwd: "",
+      currentPwd: "",
       valid: {
         emailType: false,
         email: false,
@@ -257,6 +259,16 @@ export default defineComponent({
     signOut() {
       // 회원탈퇴 요청
       // 회원 탈퇴 처리되었습니다 팝업 open
+    },
+    // 비밀번호 컴포넌트에 입력된 텍스트 가져오기
+    updateCurrentPwd(value: string) {
+      this.currentPwd = value;
+    },
+    updatePassword(value: string) {
+      this.account.password = value;
+    },
+    updatecheckPwd(value: string) {
+      this.checkPwd = value;
     },
   },
 });

@@ -46,8 +46,8 @@ class AccountsAPI {
   }
 
   // 비밀번호 찾기
-  findPassword(nickname: string) {
-    return api.put(`/member/:${nickname}/password/find`);
+  findPassword(email: string) {
+    return api.put(`/member/password?email=` + email);
   }
   // 회원 정보 조회: 회원 정보(이메일, 닉네임, 소개)를 담은 Token 반환
   // -> get 변경 필요

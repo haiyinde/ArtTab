@@ -15,7 +15,7 @@
     </div>
     <nav :class="{ showNav: isShowNav }">
       <!-- 사용자 로그인 전 -->
-      <ul>
+      <ul v-if="!isLogin">
         <li @click="closeNavBar">
           <router-link :to="{ name: 'Login' }">로그인</router-link>
         </li>
@@ -24,9 +24,9 @@
         </li>
       </ul>
       <!-- 사용자 로그인 후 -->
-      <!-- <ul>
+      <ul v-else>
         <li @click="closeNavBar">
-          <router-link :to="{ name: 'Profile' }">그림 올리기</router-link>
+          <router-link :to="{ name: 'ArtworkCreate' }">그림 올리기</router-link>
         </li>
         <li class="tooltip" @click="closeNavBar">
           <router-link :to="{ name: 'Profile' }"
@@ -38,13 +38,11 @@
           <span class="tooltip-text">내 정보</span>
         </li>
         <li class="tooltip" @click="closeNavBar">
-          <router-link :to="{ name: 'SignUp' }"
-            ><logout class="icon navbar-icon"></logout>
-            <div class="navbar-text">로그아웃</div></router-link
-          >
+          <logout class="icon navbar-icon" @click="onClickLogout"></logout>
+          <div class="navbar-text logout" @click="onClickLogout">로그아웃</div>
           <span class="tooltip-text">로그아웃</span>
         </li>
-      </ul> -->
+      </ul>
     </nav>
     <text-search class="icon navbar-toggle" @click="toggleNavBar"></text-search>
   </div>
@@ -53,13 +51,16 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { Magnify, AccountCircleOutline, Logout, TextSearch } from "mdue";
+import { mapState, mapMutations } from "vuex";
+
+const accountsStore = "accountsStore";
 
 export default defineComponent({
   name: "NavBar",
   components: {
     Magnify,
-    // AccountCircleOutline,
-    // Logout,
+    AccountCircleOutline,
+    Logout,
     TextSearch,
   },
   data() {
@@ -67,12 +68,24 @@ export default defineComponent({
       isShowNav: false,
     };
   },
+  computed: {
+    ...mapState(accountsStore, ["isLogin"]),
+  },
   methods: {
+    ...mapMutations(accountsStore, ["SET_IS_LOGIN"]),
     toggleNavBar() {
       this.isShowNav = !this.isShowNav;
     },
     closeNavBar() {
       this.isShowNav = false;
+    },
+    // 로그아웃 처리
+    onClickLogout() {
+      this.SET_IS_LOGIN(false);
+      sessionStorage.removeItem("access-token");
+      if (this.$route.path != "/") {
+        this.$router.push({ name: "Main" });
+      }
     },
   },
 });
@@ -245,6 +258,10 @@ ul {
   .navbar-text {
     display: block;
     cursor: pointer;
+    &.logout {
+      padding: $size-large;
+      text-align: center;
+    }
   }
 }
 </style>

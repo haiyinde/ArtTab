@@ -13,6 +13,10 @@
           <div>
             <div class="profile-writer">by. {{ artwork.writerNickname }}</div>
             <!-- 본인 작품일 경우 follow버튼 대신 수정 버튼 넣기-->
+            <!-- 수정하기 버튼 클릭시 수정 페이지로 데이터 전달 -->
+            <button :class="btn-white" @click="artworkUpdate">
+              <router-link to="/">수정하기</router-link>
+            </button>
             <button
               :class="{ 'btn-white': artwork.isFollow }"
               @click="toggleFollow"
@@ -29,10 +33,7 @@
         ></like-button>
         <div class="text">{{ artwork.likeNum }}</div>
         <link-variant class="icon" @click="copyClipboard"></link-variant>
-        <toast-message
-          :message="'주소가 복사되었습니다.'"
-          ref="toast"
-        ></toast-message>
+        <toast-message ref="toast"></toast-message>
         <calendar-clock class="icon icon-date"></calendar-clock>
         <div class="text">
           {{ computedDate }}
@@ -40,7 +41,7 @@
       </div>
       <div>{{ artwork.desc }}</div>
     </div>
-    <artwork-comments></artwork-comments>
+    <artwork-comments :artworkid="artworkId"></artwork-comments>
   </article>
 </template>
 
@@ -49,8 +50,13 @@ import { defineComponent } from "vue";
 import ArtworkComments from "@/components/artwork/ArtworkComments.vue";
 import LikeButton from "@/components/common/LikeButton.vue";
 import ToastMessage from "@/components/common/ToastMessage.vue";
+import artworkAPI from "@/apis/artworkAPI";
+import ResponseData from "@/types/ResponseData";
 import { CalendarClock, LinkVariant } from "mdue";
 import { diffTime } from "@/utils/timeDifference";
+import { mapState } from "vuex";
+
+const accountsStore = "accountsStore";
 
 export default defineComponent({
   name: "ArtworkDetail",
@@ -65,7 +71,7 @@ export default defineComponent({
     return {
       // 백에서 보내주는 정보 구조에 따라 변경 필요
       // url에 추가해서 얻어오기(url복사를 위해 작품별 별도 url 필요)
-      artworkId: this.$route.params.id,
+      artworkId: Number(this.$route.params.id),
       artwork: {
         artworkSaveFolder:
           // "https://cdn.pixabay.com/photo/2018/07/18/15/43/animal-3546613_960_720.jpg",
@@ -85,9 +91,11 @@ export default defineComponent({
   },
   mounted() {
     // 작품 상세 정보 불러온 후
+    this.getArtworkDetail();
     // 팔로우 및 좋아요 여부에 따라 버튼 변경하기
   },
   computed: {
+    ...mapState(accountsStore, ["userInfo"]),
     followText(): string {
       return this.artwork.isFollow ? "언팔로우" : "팔로우";
     },
@@ -97,7 +105,15 @@ export default defineComponent({
   },
   methods: {
     getArtworkDetail() {
-      // 작품 상세 정보 불러오기(가능하면 댓글도 다 받아와서 컴포넌트로 넘겨주기)
+      // 작품 상세 정보 불러오기
+      artworkAPI
+        .getArtworkById(Number(this.artworkId), Number(this.userInfo.id))
+        .then((res: ResponseData) => {
+          console.log(res);
+        })
+        .catch((e) => {
+          console.log(e);
+        });
     },
     // 좋아요 상태 변경
     toggleLike(res: boolean) {
@@ -116,8 +132,26 @@ export default defineComponent({
     copyClipboard() {
       // 현재 URL 가져오기
       const url = window.document.location.href;
-      navigator.clipboard.writeText(url);
-      (this.$refs["toast"] as typeof ToastMessage).showToast();
+      const input = document.createElement("input");
+
+      input.value = url;
+      input.setAttribute("readonly", "");
+      input.style.position = "absolute";
+      input.style.left = "-999px";
+      document.body.appendChild(input);
+      input.select();
+      const result = document.execCommand("copy");
+      document.body.removeChild(input);
+
+      if (result) {
+        (this.$refs["toast"] as typeof ToastMessage).showToast(
+          "주소가 복사되었습니다."
+        );
+      } else {
+        (this.$refs["toast"] as typeof ToastMessage).showToast(
+          "주소 복사가 지원되지 않는 브라우저입니다."
+        );
+      }
     },
   },
 });

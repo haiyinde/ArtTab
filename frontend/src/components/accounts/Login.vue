@@ -10,7 +10,7 @@
       id="email"
       class="input-text"
       name="email"
-      v-model="email"
+      v-model="account.email"
       autocapitalize="none"
     />
     <span class="alert" v-show="valid.email">가입되지 않은 이메일입니다.</span>
@@ -18,9 +18,10 @@
     <!-- 비밀번호 입력 -->
     <label for="password" class="label-text">비밀번호</label>
     <input-password
-      :password="password"
+      :password="account.password"
       id="password"
       @inputVal="updatePassword"
+      @keyup.enter="checkEmail"
     ></input-password>
 
     <div class="addition-box">
@@ -35,7 +36,7 @@
     <button
       :class="{ disabled: !isCompleted }"
       :disabled="!isCompleted"
-      @click="login"
+      @click="checkEmail"
     >
       로그인
     </button>
@@ -59,7 +60,12 @@
 import { defineComponent } from "vue";
 import PageTitle from "@/components/accounts/child/PageTitle.vue";
 import InputPassword from "@/components/accounts/child/InputPassword.vue";
+import AccountsAPI from "@/apis/accountsAPI";
+import ResponseData from "@/types/ResponseData";
 import { useCookies } from "vue3-cookies";
+import { mapState, mapActions } from "vuex";
+
+const accountsStore = "accountsStore";
 
 export default defineComponent({
   name: "Login",
@@ -69,8 +75,10 @@ export default defineComponent({
   },
   data() {
     return {
-      email: "",
-      password: "",
+      account: {
+        email: "",
+        password: "",
+      },
       storeId: "",
       valid: {
         email: false,
@@ -81,36 +89,74 @@ export default defineComponent({
   },
   // 이전에 아이디 저장을 한 경우 아이디 불러오기
   mounted() {
-    this.email = this.cookies.get("idCookie");
-    if (this.email) {
+    this.account.email = this.cookies.get("idCookie");
+    if (this.account.email) {
       this.storeId = "true";
     }
   },
+  computed: {
+    ...mapState(accountsStore, ["isConfirmEmail"]),
+  },
   watch: {
-    password: function () {
-      console.log("dd");
-      if (this.password && this.email && !this.valid.email) {
-        this.isCompleted = true;
-      } else {
-        this.isCompleted = false;
-      }
+    "account.email": function () {
+      this.actButton();
+    },
+    "account.password": function () {
+      this.actButton();
     },
   },
   methods: {
+    ...mapActions(accountsStore, ["getLogin"]),
     // 비밀번호 컴포넌트에 입력된 텍스트 가져오기
     updatePassword(value: string) {
-      this.password = value;
+      this.account.password = value;
     },
-    login() {
+    actButton() {
+      this.valid.email = false;
+      this.isCompleted =
+        this.account.password && this.account.email ? true : false;
+    },
+    checkEmail() {
+      // 임시 -----------
+      this.login();
+      // 임시 -----------
+
+      // 아이디 가입여부 확인(이메일 중복 확인과 반대)
+      // AccountsAPI.checkEmail(this.account.email)
+      //   .then((res: ResponseData) => {
+      //     if (res.data === "success") {
+      //       this.valid.email = true;
+      //     } else {
+      //       this.login();
+      //     }
+      //   })
+      //   .catch(() => {
+      //     this.valid.email = false;
+      //     alert("이메일 가입 여부 확인 중 오류가 발생했습니다.");
+      //   });
+    },
+    async login() {
       // 아이디 저장을 체크한 경우 쿠키에 저장하기
       if (this.storeId) {
-        this.cookies.set("idCookie", this.email, "30d");
+        this.cookies.set("idCookie", this.account.email, "30d");
       }
       // 아이디 저장을 체크하지 않은 경우(체크 해제) 쿠키에서 삭제하기
       else {
         this.cookies.remove("idCookie");
       }
-      console.log("로그인 처리하기");
+      // 로그인 처리하기
+      await this.getLogin(this.account);
+      // 이메일 인증을 완료하지 않은 사용자일 경우 이메일 인증 페이지로 이동
+      if (this.isConfirmEmail) {
+        this.$router.push({
+          name: "ConfirmEmail",
+        });
+      }
+      // 이메일 인증을 완료한 사용자일 경우 이전페이지로 또는 메인페이지로 이동
+      else {
+        this.$router.back();
+        this.$router.push({ name: "Main" });
+      }
     },
     moveSignUp() {
       this.$router.push({ name: "SignUp" });
