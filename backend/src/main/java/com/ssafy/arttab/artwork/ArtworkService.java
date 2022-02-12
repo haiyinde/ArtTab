@@ -3,10 +3,9 @@ package com.ssafy.arttab.artwork;
 import com.ssafy.arttab.artwork.dto.*;
 import com.ssafy.arttab.follow.Follow;
 import com.ssafy.arttab.follow.FollowRepository;
-import com.ssafy.arttab.like.LikeRepository;
 import com.ssafy.arttab.like.Likes;
+import com.ssafy.arttab.like.LikesRepository;
 import com.ssafy.arttab.member.domain.Member;
-import com.ssafy.arttab.member.dto.response.MemberInfoResponse;
 import com.ssafy.arttab.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
@@ -26,7 +25,7 @@ public class ArtworkService {
 
     private final ArtworkRepository artworkRepository;
     private final MemberRepository memberRepository;
-    private final LikeRepository likeRepository;
+    private final LikesRepository likeRepository;
     private final FollowRepository followRepository;
 
     @Transactional
