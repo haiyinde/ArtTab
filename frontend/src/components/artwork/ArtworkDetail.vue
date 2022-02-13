@@ -19,34 +19,41 @@
               class="btn-white"
               @click="artworkUpdate"
             >
-              <router-link to="/">수정하기</router-link>
+              수정하기
             </button>
-            <button
+            <follow-button
               v-else
-              :class="{ 'btn-white': artwork.isFollow }"
-              @click="toggleFollow"
-              v-text="followText"
-            ></button>
+              :class="{ 'btn-white': artwork.followOrNot }"
+              :followed="artwork.followOrNot"
+              :writerId="artwork.writerId"
+              :userId="userInfo.id"
+              @toggle="toggleFollow"
+              @message="showToastMessage"
+            >
+            </follow-button>
           </div>
         </div>
       </div>
       <div class="additionalinfo">
         <like-button
           class="icon"
-          :liked="artwork.isLike"
+          :liked="artwork.likeOrNot"
+          :artworkId="artworkId"
+          :userId="userInfo.id"
           @toggle="toggleLike"
+          @message="showToastMessage"
         ></like-button>
         <div class="text">{{ artwork.likeNum }}</div>
         <link-variant class="icon" @click="copyClipboard"></link-variant>
-        <toast-message ref="toast"></toast-message>
         <calendar-clock class="icon icon-date"></calendar-clock>
         <div class="text">
           {{ computedDate }}
         </div>
       </div>
-      <div>{{ artwork.desc }}</div>
+      <div class="desc">{{ artwork.desciption }}</div>
     </div>
     <artwork-comments :artworkid="artworkId"></artwork-comments>
+    <toast-message ref="toast"></toast-message>
   </article>
 </template>
 
@@ -54,8 +61,9 @@
 import { defineComponent } from "vue";
 import ArtworkComments from "@/components/artwork/ArtworkComments.vue";
 import LikeButton from "@/components/common/LikeButton.vue";
+import FollowButton from "@/components/common/FollowButton.vue";
 import ToastMessage from "@/components/common/ToastMessage.vue";
-import artworkAPI from "@/apis/artworkAPI";
+import ArtworkAPI from "@/apis/artworkAPI";
 import ResponseData from "@/types/ResponseData";
 import { CalendarClock, LinkVariant } from "mdue";
 import { diffTime } from "@/utils/timeDifference";
@@ -68,6 +76,7 @@ export default defineComponent({
   components: {
     ArtworkComments,
     LikeButton,
+    FollowButton,
     ToastMessage,
     CalendarClock,
     LinkVariant,
@@ -81,16 +90,18 @@ export default defineComponent({
         artworkSaveFolder:
           // "https://cdn.pixabay.com/photo/2018/07/18/15/43/animal-3546613_960_720.jpg",
           "https://cdn.pixabay.com/photo/2019/05/04/15/24/art-4178302_960_720.jpg",
+        desciption:
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec odio urna, lobortis at finibus vitae, consectetur eu neque. Pellentesque feugiat id eros nec imperdiet. Proin in magna eget nibh volutpat varius eget eu urna. Quisque tempor tincidunt tellus. Vivamus ac dignissim mauris. Sed non porttitor erat. Fusce in rhoncus lectus. Sed feugiat leo at ante auctor tincidunt.",
+        followOrNot: false,
+        likeNum: 4652,
+        likeOrNot: false,
         regdate: "2022-02-10T09:54:24.762Z",
         title: "여우",
-        writerProfileSaveFolder:
-          "https://cdn.pixabay.com/photo/2021/03/14/11/14/fish-6093991_960_720.jpg",
+        writerEmail: "ssafy@gmail.com",
         writerId: 1,
         writerNickname: "내이름은여우",
-        isFollow: false,
-        isLike: false,
-        likeNum: 4652,
-        desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec odio urna, lobortis at finibus vitae, consectetur eu neque. Pellentesque feugiat id eros nec imperdiet. Proin in magna eget nibh volutpat varius eget eu urna. Quisque tempor tincidunt tellus. Vivamus ac dignissim mauris. Sed non porttitor erat. Fusce in rhoncus lectus. Sed feugiat leo at ante auctor tincidunt.",
+        writerProfileSaveFolder:
+          "https://cdn.pixabay.com/photo/2021/03/14/11/14/fish-6093991_960_720.jpg",
       },
     };
   },
@@ -102,7 +113,7 @@ export default defineComponent({
   computed: {
     ...mapState(accountsStore, ["userInfo"]),
     followText(): string {
-      return this.artwork.isFollow ? "언팔로우" : "팔로우";
+      return this.artwork.followOrNot ? "언팔로우" : "팔로우";
     },
     computedDate(): string {
       return diffTime(this.artwork.regdate);
@@ -111,8 +122,10 @@ export default defineComponent({
   methods: {
     getArtworkDetail() {
       // 작품 상세 정보 불러오기
-      artworkAPI
-        .getArtworkById(Number(this.artworkId), Number(this.userInfo.id))
+      ArtworkAPI.getArtworkById(
+        Number(this.artworkId),
+        Number(this.userInfo.id)
+      )
         .then((res: ResponseData) => {
           console.log(res);
         })
@@ -122,16 +135,13 @@ export default defineComponent({
     },
     // 좋아요 상태 변경
     toggleLike(res: boolean) {
-      this.artwork.isLike = res;
+      this.artwork.likeOrNot = res;
+      this.artwork.likeNum = res
+        ? this.artwork.likeNum + 1
+        : this.artwork.likeNum - 1;
     },
-    toggleFollow() {
-      if (this.artwork.isFollow) {
-        // 언팔로우 처리 성공 시 상태 변경
-        this.artwork.isFollow = false;
-      } else {
-        // 팔로우 처리 성공 시 상태 변경
-        this.artwork.isFollow = true;
-      }
+    toggleFollow(res: boolean) {
+      this.artwork.followOrNot = res;
     },
     // 클립보드 복사
     copyClipboard() {
@@ -149,14 +159,13 @@ export default defineComponent({
       document.body.removeChild(input);
 
       if (result) {
-        (this.$refs["toast"] as typeof ToastMessage).showToast(
-          "주소가 복사되었습니다."
-        );
+        this.showToastMessage("주소가 복사되었습니다.");
       } else {
-        (this.$refs["toast"] as typeof ToastMessage).showToast(
-          "주소 복사가 지원되지 않는 브라우저입니다."
-        );
+        this.showToastMessage("주소 복사가 지원되지 않는 브라우저입니다.");
       }
+    },
+    showToastMessage(msg: string) {
+      (this.$refs["toast"] as typeof ToastMessage).showToast(msg);
     },
   },
 });
@@ -206,6 +215,9 @@ export default defineComponent({
       margin-top: $size-small;
       margin-right: $size-small;
     }
+  }
+  .desc {
+    line-height: $size-large;
   }
 }
 

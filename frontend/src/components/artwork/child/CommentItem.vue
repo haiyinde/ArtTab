@@ -94,6 +94,7 @@ export default defineComponent({
       });
     },
     deleteComment() {
+      if (!confirm("정말 삭제하시겠습니까?")) return;
       CommentsAPI.deleteComment(this.comment.id).then((res: ResponseData) => {
         this.$emit("getList");
         console.log(res);
