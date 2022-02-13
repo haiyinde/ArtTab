@@ -23,7 +23,7 @@ public class ArtworkResponseDto { // 작품 정보를 리턴하기 위한 dto
 
     @Builder
 
-    public ArtworkResponseDto(Long writerId, String writerNickname, String title, String desc, LocalDateTime regdate, String artworkSaveFolder, String writerProfileSaveFolder, String writerEmail, int likeNum, boolean likeOrNot, boolean followOrNot) {
+    public ArtworkResponseDto(Long writerId, String writerNickname, String title, String description, LocalDateTime regdate, String artworkSaveFolder, String writerProfileSaveFolder, String writerEmail, int likeNum, boolean likeOrNot, boolean followOrNot) {
         this.writerId = writerId;
         this.writerNickname = writerNickname;
         this.title = title;

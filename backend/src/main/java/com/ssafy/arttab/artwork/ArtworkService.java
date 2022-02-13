@@ -89,7 +89,7 @@ public class ArtworkService {
                 .writerId(writer.getId())
                 .writerNickname(writer.getNickname())
                 .title(artwork.getTitle())
-                .desc(artwork.getDescription())
+                .description(artwork.getDescription())
                 .regdate(artwork.getRegdate())
                 .artworkSaveFolder("file:///"+artwork.getSaveFolder())
                 .writerProfileSaveFolder("file:///"+writer.getSaveFolder())
