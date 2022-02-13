@@ -20,4 +20,8 @@ public class PasswordMismatchException extends CustomException {
     public PasswordMismatchException() {
         super(MESSAGE, HttpStatus.BAD_REQUEST);
     }
+
+    public PasswordMismatchException(String message) {
+        super(MESSAGE, HttpStatus.BAD_REQUEST);
+    }
 }

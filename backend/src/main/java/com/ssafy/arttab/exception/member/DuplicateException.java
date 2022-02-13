@@ -22,4 +22,8 @@ public class DuplicateException extends CustomException {
     public DuplicateException() {
         super(MESSAGE, HttpStatus.BAD_REQUEST);
     }
+
+    public DuplicateException(String MESSAGE) {
+        super(MESSAGE, HttpStatus.BAD_REQUEST);
+    }
 }
