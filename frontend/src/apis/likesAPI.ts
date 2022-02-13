@@ -8,9 +8,7 @@ class LikesAPI {
   }
   // 좋아요 취소
   deleteLike(likeInfo: LikeInfo) {
-    return api.delete(`/like`, {
-      params: likeInfo,
-    });
+    return api.delete(`/like`, { data: likeInfo });
   }
 }
 

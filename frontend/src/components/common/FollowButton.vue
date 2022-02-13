@@ -35,7 +35,6 @@ export default defineComponent({
           followerId: this.userId,
         })
           .then((res: ResponseData) => {
-            console.log(res.data);
             if (res.data === "success") {
               this.$emit("toggle", true);
             } else {

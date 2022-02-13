@@ -8,7 +8,7 @@
         maxlength="100"
         placeholder="댓글 달기"
         @keydown="resizeTextarea"
-        @keyup.enter="addComment"
+        @keydown.enter="addComment"
       />
       <send class="icon-send" @click="addComment"></send>
     </div>
@@ -66,7 +66,6 @@ export default defineComponent({
       CommentsAPI.getComments(this.artworkid).then((res: ResponseData) => {
         this.commentList = res.data;
         this.commentCount = this.commentList.length;
-        console.log(res.data);
       });
     },
     async addComment() {
