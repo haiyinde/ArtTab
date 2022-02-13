@@ -29,7 +29,8 @@
           <router-link :to="{ name: 'ArtworkCreate' }">그림 올리기</router-link>
         </li>
         <li class="tooltip" @click="closeNavBar">
-          <router-link :to="{ name: 'Profile' }"
+          <router-link
+            :to="{ name: 'Profile', params: { email: userInfo.email } }"
             ><account-circle-outline
               class="icon navbar-icon"
             ></account-circle-outline>
@@ -70,6 +71,7 @@ export default defineComponent({
   },
   computed: {
     ...mapState(accountsStore, ["isLogin"]),
+    ...mapState(accountsStore, ["userInfo"]),
   },
   methods: {
     ...mapMutations(accountsStore, ["SET_IS_LOGIN"]),
