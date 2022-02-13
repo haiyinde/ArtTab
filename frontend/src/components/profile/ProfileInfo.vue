@@ -146,7 +146,7 @@
         </div>
         <div class="profile-user-settings">
           <h1 class="profile-user-name">닉네임닉네임닉네임</h1>
-          <p class="profile-user-email">{{ account.email }}</p>
+          <p class="profile-user-email">email@email.com</p>
           <button class="btn profile-edit-btn" @click="openEditModal">
             내 정보 수정
           </button>
@@ -188,16 +188,20 @@ import CloseButton from "../common/CloseButton.vue";
 import AccountsAPI from "@/apis/accountsAPI";
 import PV from "password-validator"; // 비밀번호 유효성 검사 라이브러리
 import ResponseData from "@/types/ResponseData";
+import { mapState, mapMutations } from "vuex";
+
+const accountsStore = "accountsStore";
 
 export default defineComponent({
   data() {
     return {
       // 내 프로필 조회 정보
       account: {
-        email: this.$route.params.email as string,
-        nickname: "",
-        intro: "",
+        // email: "",
+        // nickname: "",
+        // intro: "",
         password: "",
+        // id: "",
       },
       updateInfo: {
         password: "",
@@ -208,6 +212,7 @@ export default defineComponent({
         email: "",
         nickname: "",
         intro: "",
+        id: this.$route.params.id as unknown as number,
       },
       // 유효성 여부
       checkPwd: "",
@@ -227,10 +232,12 @@ export default defineComponent({
       passwordSchema: new PV(),
     };
   },
+  computed: {
+    ...mapState(accountsStore, ["userInfo"]),
+  },
   props: {
-    email: {
-      type: String,
-      default: "",
+    id: {
+      type: Number,
     },
   },
   components: {
@@ -277,8 +284,8 @@ export default defineComponent({
       // 프로필 사진 변경 정보 담아서 BE로 보내는 method
       // 사진 변경 완료, 실패 modal도 있으면 좋을듯
       await AccountsAPI.updateProfileIntro(
-        this.account.email,
-        this.account.intro
+        this.userInfo.email,
+        this.userInfo.intro
       ).then((res: ResponseData) => {
         if (res.data === "success") {
           console.log("자기소개 변경에 성공했습니다.");
@@ -306,7 +313,7 @@ export default defineComponent({
     async changePassword() {
       if (!this.valid.password && !this.valid.checkPwd) {
         await AccountsAPI.updatePassword(
-          this.account.email,
+          this.userInfo.email,
           this.updateInfo
         ).then((res: ResponseData) => {
           if (res.data === "success") {
@@ -352,7 +359,7 @@ export default defineComponent({
     // Profile 정보 가져오기
     // 수정 필요
     getProfileInfo() {
-      AccountsAPI.getProfileInfo(this.account.email, this.profileInfo.email)
+      AccountsAPI.getProfileInfo(this.userInfo.email, this.profileInfo.email)
         .then((res: ResponseData) => {
           this.profileInfo.intro = res.data.intro;
           this.profileInfo.nickname = res.data.nickname;

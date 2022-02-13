@@ -30,7 +30,7 @@
         </li>
         <li class="tooltip" @click="closeNavBar">
           <router-link
-            :to="{ name: 'Profile', params: { email: userInfo.email } }"
+            :to="{ name: 'Profile', params: { id: userInfo.id } }"
             ><account-circle-outline
               class="icon navbar-icon"
             ></account-circle-outline>

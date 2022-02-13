@@ -8,20 +8,29 @@
     >
       <template #default="{ item }">
         <div class="thumbnail-wrapper">
-          <img :src="item.image" :alt="`${item.id}`" />
-          <div class="overlay">
-            <div class="info">
-              <span style="color: white" class="artwork-title"
-                >{{ item.title }}</span
-              >
-              <span style="color: white" class="artwork-artist">By {{
-                item.nickname
-              }}</span>
+            <img :src="item.image" :alt="`${item.id}`" />
+            <!-- <div class="overlay" @click="goDetail"> -->
+            <div class="overlay">
+              <div class="info">
+              <router-link
+                :to="{ name: 'ArtworkDetail', params: { id: item.artworkId } }"
+                >
+                <span style="color: white" class="artwork-title"
+                  >{{ item.title }}</span
+                >
+              </router-link>
+              <router-link
+                :to="{ name: 'Profile', params: { id: item.memberId } }"
+                >
+                <span style="color: white" class="artwork-artist">By {{
+                  item.nickname
+                }}</span>
+              </router-link>
+              </div>
+              <div class="button-top-right">
+                <like-button :liked="!valid" @click="handleLike"></like-button>
+              </div>
             </div>
-            <div class="button-top-right">
-              <like-button :liked="!valid" @click="handleLike"></like-button>
-            </div>
-          </div>
         </div>
       </template>
     </masonry-wall>
@@ -86,8 +95,9 @@ export default defineComponent({
       let size = Object.keys(temp).length;
       for (let i = 0 ; i < size; i++) {
         new_artwork.push({
-          id: temp[i].artworkId,
+          artworkId: temp[i].artworkId,
           title: temp[i].artworkTitle,
+          memberId: temp[i].memberId,
           nickname: temp[i].memberNickname,
           image: temp[i].saveFolder
         })
@@ -102,6 +112,9 @@ export default defineComponent({
         this.getArtwork();
       }
     },
+    // goDetail(item: { id: number; }) {
+    //   this.$router.push({ name: 'ArtworkDetail', params: {id: item.id}});
+    // }
   },
   mounted() {
     this.getArtwork();
