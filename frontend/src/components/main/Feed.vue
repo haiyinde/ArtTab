@@ -104,6 +104,7 @@ export default defineComponent({
       }
       this.artwork_list = [...this.artwork_list, ...new_artwork];
     },
+    // 무한스크롤 수정 
     handleScroll() {
       if (
         window.scrollY + window.innerHeight >=
@@ -112,9 +113,6 @@ export default defineComponent({
         this.getArtwork();
       }
     },
-    // goDetail(item: { id: number; }) {
-    //   this.$router.push({ name: 'ArtworkDetail', params: {id: item.id}});
-    // }
   },
   mounted() {
     this.getArtwork();
