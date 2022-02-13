@@ -4,7 +4,8 @@
       <div class="class-card">
         <label for="file">
           <div class="imgbox">
-            <img v-if="tempimage"
+            <img
+              v-if="tempimage"
               class="tempimage"
               :src="tempimage"
               style="cursor: pointer"
@@ -49,7 +50,7 @@
         </div>
       </div>
       <div class="button-box">
-        <button class="btn-white" @click="없음">수정하기</button>
+        <button class="btn-white" @click="없음;">수정하기</button>
         <button class="class-butten" @click="modalPop">삭제하기</button>
       </div>
     </div>
@@ -60,7 +61,7 @@
       <span>정말 삭제 하시겠습니까?</span>
       <div class="modal-butten">
         <button class="btn-white" @click="artworkDelete">삭제하기</button>
-        <button class="class-butten" @click="modaloff">돌아가기</button> 
+        <button class="class-butten" @click="modaloff">돌아가기</button>
       </div>
     </div>
   </div>
@@ -149,7 +150,6 @@ export default defineComponent({
   box-shadow: 0 2px 3px 0 rgba(34, 36, 38, 0.15);
   text-align: center;
 
-
   transform: translateX(-50%) translateY(-50%);
 }
 
@@ -212,7 +212,7 @@ export default defineComponent({
 .class-input-title {
   width: 100%;
   padding-bottom: 0.5rem;
-  padding-top: 0.5rem ;
+  padding-top: 0.5rem;
   font-size: $font-large;
   font-weight: bold;
   padding-left: 10px;
@@ -268,7 +268,7 @@ button {
   font-size: 20px;
 }
 
-.tempimage{
+.tempimage {
   display: flex;
   width: 100%;
   height: 100%;

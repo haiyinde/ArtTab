@@ -12,12 +12,17 @@
           <div class="profile-title">{{ artwork.title }}</div>
           <div>
             <div class="profile-writer">by. {{ artwork.writerNickname }}</div>
-            <!-- 본인 작품일 경우 follow버튼 대신 수정 버튼 넣기-->
+            <!-- 본인 작품일 경우 follow버튼 대신 수정 버튼-->
             <!-- 수정하기 버튼 클릭시 수정 페이지로 데이터 전달 -->
-            <button :class="btn-white" @click="artworkUpdate">
+            <button
+              v-if="artwork.writerId === userInfo.id"
+              class="btn-white"
+              @click="artworkUpdate"
+            >
               <router-link to="/">수정하기</router-link>
             </button>
             <button
+              v-else
               :class="{ 'btn-white': artwork.isFollow }"
               @click="toggleFollow"
               v-text="followText"
