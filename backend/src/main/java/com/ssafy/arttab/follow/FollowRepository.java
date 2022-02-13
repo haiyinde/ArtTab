@@ -3,10 +3,21 @@ package com.ssafy.arttab.follow;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface FollowRepository extends JpaRepository<Follow, Long> {
+
+    /**
+     *
+     * @param follower
+     * @param followee
+     * @return 값이 존재하는지 확인하여 존재하면 true 없으면 false 반환
+    */
+    @Query(value = "select count(*) > 0 from follow where follower = :follower and followee = :followee", nativeQuery = true)
+    Optional<Long> checkFollow(@Param(value="follower") long follower, @Param(value="followee") long followee);
 
     /***
      *

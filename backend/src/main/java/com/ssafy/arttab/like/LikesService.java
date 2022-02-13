@@ -25,7 +25,7 @@ public class LikesService {
         Member member = memberRepository.findById(requestDto.getMemberId())
                 .orElseThrow(() -> new
                         IllegalArgumentException("insertlike member error id=" + requestDto.getMemberId()));
-        likeRepository.save(requestDto.toEntity(artwork, member)).getId();
+        likeRepository.save(requestDto.toEntity(artwork, member));
     }
 
     @Transactional
