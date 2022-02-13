@@ -12,10 +12,10 @@
           <div class="overlay">
             <div class="info">
               <span style="color: white" class="artwork-title"
-                >작품제목 #{{ item.id }}</span
+                >{{ item.title }}</span
               >
-              <span style="color: white" class="artwork-artist">{{
-                item.artist
+              <span style="color: white" class="artwork-artist">By {{
+                item.nickname
               }}</span>
             </div>
             <div class="button-top-right">
@@ -60,8 +60,8 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import axios from "axios";
 import LikeButton from "../common/LikeButton.vue";
+import ArtworkAPI from "@/apis/artworkAPI";
 
 export default defineComponent({
   data() {
@@ -78,35 +78,21 @@ export default defineComponent({
     handleLike() {
       this.valid = !this.valid;
     },
-    getArtwork() {
-      // API완성되면 전체작품조회 API 요청이 들어갈 곳
-      const options = {
-        params: {
-          _page: this.page++,
-          _limit: 30,
-        },
-      };
-      this.page++;
-      axios
-        .get("https://picsum.photos/v2/list", options)
-        .then((res) => {
-          const temp = res.data;
-          const artwork = [];
-          for (let i = 0; i < 30; i++) {
-            artwork.push({
-              id: temp[i].id,
-              // title: temp[i].title,
-              artist: temp[i].author,
-              image: temp[i].download_url,
-            });
-            console.log(artwork);
-          }
-          // 이미지 로드 시간 때문에 함수 호출이 잦은 것 같은데 해결할 방법 없나?
-          this.artwork_list = [...this.artwork_list, ...artwork];
+    async getArtwork() {
+      let new_artworks = await ArtworkAPI.getArtworkList();
+      let temp = new_artworks.data
+      console.log(temp);
+      const new_artwork = []
+      let size = Object.keys(temp).length;
+      for (let i = 0 ; i < size; i++) {
+        new_artwork.push({
+          id: temp[i].artworkId,
+          title: temp[i].artworkTitle,
+          nickname: temp[i].memberNickname,
+          image: temp[i].saveFolder
         })
-        .catch((err) => {
-          console.log(err);
-        });
+      }
+      this.artwork_list = [...this.artwork_list, ...new_artwork];
     },
     handleScroll() {
       if (

@@ -57,9 +57,10 @@ const routes: Array<RouteRecordRaw> = [
     ],
   },
   {
-    path: "/profile",
+    path: "/profile/:email",
     name: "Profile",
     component: Profile,
+    props: true,
   },
   {
     path: "/searchresult",
