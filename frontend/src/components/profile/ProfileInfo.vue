@@ -14,10 +14,6 @@
       <div class="profile-image" style="float: none">
         <img src="https://via.placeholder.com/150/92c952" />
       </div>
-      <!-- <close-circle
-        class="profile-close-btn"
-        @click="closeEditModal"
-      ></close-circle> -->
       <close-button
         :closed="isClose"
         class="profile-close-btn"
@@ -34,8 +30,8 @@
           class="input-text"
           name="nickname"
         />
-        <label for="bio" class="label-text">소개</label>
-        <input type="bio" id="bio" class="input-text" name="bio" />
+        <label for="intro" class="label-text">소개</label>
+        <input type="intro" id="intro" class="input-text" name="intro" />
         <button class="done-profile-edit-btn" @click="doneEditInfo">
           정보 수정 완료
         </button>
@@ -64,16 +60,13 @@
       ></close-button>
       <h2>비밀번호 변경 및 계정 탈퇴</h2>
       <!-- 현재 비밀번호 -->
-      <label for="password" class="label-text">현재 비밀번호</label>
+      <label for="currentPwd" class="label-text">현재 비밀번호</label>
       <input-password
         :password="currentPwd"
-        :placetext="'영문, 특수문자 포함 8자리 이상'"
-        id="password"
+        :placetext="'기존 비밀번호를 입력해주세요.'"
+        id="currentPwd"
         @inputVal="updateCurrentPwd"
       ></input-password>
-      <span class="alert" v-show="valid.password"
-        >현재 비밀번호를 입력해주세요.</span
-      >
       <!-- 변경할 비밀번호 입력 -->
       <label for="password" class="label-text">새 비밀번호</label>
       <input-password
@@ -96,8 +89,11 @@
       <span class="alert" v-show="valid.checkPwd"
         >비밀번호가 일치하지 않습니다.</span
       >
+      <!-- 비밀번호 변경 완료 여부 모달 추가해야함 -->
+      <p class="alert" v-show="canChangePwd">비밀번호 변경에 성공했습니다.</p>
+      <p class="alert" v-show="!canChangePwd">비밀번호 변경에 실패했습니다.</p>
       <div>
-        <button class="done-change-password-btn" @click="changePwdSignOut">
+        <button class="done-change-password-btn" @click="changePassword">
           변경 완료
         </button>
       </div>
@@ -167,7 +163,7 @@
             <li><span class="profile-stat-count">206</span> 팔로잉</li>
           </ul>
         </div>
-        <div class="profile-bio">
+        <div class="profile-intro">
           <p>
             Lorem, ipsum dolor sit amet consectetur adipisicing elit. Nostrum,
             maiores tenetur. Incidunt nihil vitae aliquid totam ex maxime sint
@@ -187,39 +183,87 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import FollowButton from "./child/FollowButton.vue";
-// import { CloseCircle } from "mdue";
 import InputPassword from "../accounts/child/InputPassword.vue";
 import CloseButton from "../common/CloseButton.vue";
+import AccountsAPI from "@/apis/accountsAPI";
+import PV from "password-validator"; // 비밀번호 유효성 검사 라이브러리
+import ResponseData from "@/types/ResponseData";
+import { mapState, mapMutations } from "vuex";
+
+const accountsStore = "accountsStore";
 
 export default defineComponent({
   data() {
     return {
-      follow: true,
-      isOpen: false,
-      isCPSOpen: false,
-      isSignoutOpen: false,
-      // is Change Password Signout Open
+      // 내 프로필 조회 정보
       account: {
-        email: "",
+        // email: "",
+        // nickname: "",
+        // intro: "",
         password: "",
+        // id: "",
       },
+      updateInfo: {
+        password: "",
+        newPassword: "",
+      },
+      // 타인 프로필 조회 정보
+      profileInfo: {
+        email: "",
+        nickname: "",
+        intro: "",
+        id: this.$route.params.id as unknown as number,
+      },
+      // 유효성 여부
       checkPwd: "",
       currentPwd: "",
+      follow: true,
       valid: {
-        emailType: false,
-        email: false,
         password: false,
         checkPwd: false,
       },
+      canChangePwd: false,
       isShowPwd: false,
+      // Modal
+      isOpen: false,
       isClose: false,
+      isCPSOpen: false, // is Change Password Signout Open
+      isSignoutOpen: false,
+      passwordSchema: new PV(),
     };
+  },
+  computed: {
+    ...mapState(accountsStore, ["userInfo"]),
+  },
+  props: {
+    id: {
+      type: Number,
+    },
   },
   components: {
     FollowButton,
-    // CloseCircle,
     InputPassword,
     CloseButton,
+  },
+  created() {
+    // 영문, 특수문자 포함 8자리 이상 50자리 이하
+    this.passwordSchema
+      .is()
+      .min(8)
+      .is()
+      .max(50)
+      .has()
+      .letters()
+      .has()
+      .symbols();
+  },
+  watch: {
+    "account.password": function () {
+      this.validatePassword();
+    },
+    checkPwd: function () {
+      this.checkPassword();
+    },
   },
   methods: {
     handleFollow() {
@@ -235,8 +279,20 @@ export default defineComponent({
       // 정보 수정 담아서 BE로 보내는 method
       this.closeEditModal();
     },
-    changeProfilePic() {
+    // 수정 필요
+    async changeProfilePic() {
       // 프로필 사진 변경 정보 담아서 BE로 보내는 method
+      // 사진 변경 완료, 실패 modal도 있으면 좋을듯
+      await AccountsAPI.updateProfileIntro(
+        this.userInfo.email,
+        this.userInfo.intro
+      ).then((res: ResponseData) => {
+        if (res.data === "success") {
+          console.log("자기소개 변경에 성공했습니다.");
+        } else {
+          console.log("자기소개 변경에 실패했습니다.");
+        }
+      });
       this.closeEditModal();
     },
     openChangePwdModal() {
@@ -245,9 +301,39 @@ export default defineComponent({
     closeChangePwdModal() {
       this.isCPSOpen = false;
     },
-    changePwdSignOut() {
-      // 비밀번호 변경 method
-      this.closeChangePwdModal();
+    // 변경할 비밀번호 유효성 검사
+    validatePassword() {
+      if (!this.passwordSchema.validate(this.account.password)) {
+        this.valid.password = true;
+        return;
+      }
+      this.valid.password = false;
+    },
+    // 비밀번호 변경
+    async changePassword() {
+      if (!this.valid.password && !this.valid.checkPwd) {
+        await AccountsAPI.updatePassword(
+          this.userInfo.email,
+          this.updateInfo
+        ).then((res: ResponseData) => {
+          if (res.data === "success") {
+            console.log("비밀번호 변경에 성공했습니다.");
+            this.canChangePwd = true;
+          } else {
+            console.log("비밀번호 변경에 실패했습니다.");
+            this.canChangePwd = false;
+          }
+        });
+      }
+    },
+    // 비밀번호와 비밀번호 확인 입력값의 일치 여부 체크
+    checkPassword() {
+      if (this.account.password !== this.checkPwd) {
+        this.valid.checkPwd = true;
+        return;
+      }
+      this.valid.checkPwd = false;
+      return;
     },
     openSignOutModal() {
       this.closeChangePwdModal();
@@ -269,6 +355,18 @@ export default defineComponent({
     },
     updatecheckPwd(value: string) {
       this.checkPwd = value;
+    },
+    // Profile 정보 가져오기
+    // 수정 필요
+    getProfileInfo() {
+      AccountsAPI.getProfileInfo(this.userInfo.email, this.profileInfo.email)
+        .then((res: ResponseData) => {
+          this.profileInfo.intro = res.data.intro;
+          this.profileInfo.nickname = res.data.nickname;
+        })
+        .catch((e) => {
+          console.log(e);
+        });
     },
   },
 });
@@ -471,7 +569,7 @@ img {
 
 .profile-user-settings,
 .profile-stats,
-.profile-bio {
+.profile-intro {
   float: left;
   width: calc(66.666% - 2rem);
 }
@@ -529,7 +627,7 @@ img {
   margin-right: 0;
 }
 
-.profile-bio {
+.profile-intro {
   font-size: 1.6rem;
   font-weight: 400;
   line-height: 1.5;
@@ -557,7 +655,7 @@ img {
 
   .profile-image,
   .profile-user-settings,
-  .profile-bio,
+  .profile-intro,
   .profile-stats {
     float: none;
     width: auto;
@@ -595,13 +693,13 @@ img {
     margin-left: 0;
   }
 
-  .profile-bio {
+  .profile-intro {
     font-size: 1.4rem;
     margin-top: 1.5rem;
   }
 
   .profile-edit-btn,
-  .profile-bio,
+  .profile-intro,
   .profile-stats {
     flex-basis: 100%;
   }
@@ -648,7 +746,7 @@ img {
   .profile-image,
   .profile-user-settings,
   .profile-stats,
-  .profile-bio {
+  .profile-intro {
     width: auto;
   }
   .change-pwd-signout {
@@ -675,13 +773,13 @@ img {
 
     .profile-edit-btn,
     .profile-stats,
-    .profile-bio {
+    .profile-intro {
       grid-column: 1 / -1;
     }
 
     .profile-user-settings,
     .profile-edit-btn,
-    .profile-bio,
+    .profile-intro,
     .profile-stats {
       margin: 0;
     }

@@ -7,6 +7,7 @@ import { defineComponent } from "vue";
 
 export default defineComponent({
   name: "ToastMessage",
+
   data() {
     return {
       message: "",
@@ -32,13 +33,13 @@ export default defineComponent({
   left: 50%;
   transform: translateX(-50%);
   padding: 13px 18px;
-  border-radius: 30px;
+  border-radius: $size-small;
   overflow: hidden;
   font-size: 0.8rem;
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.5s, visibility 0.5s, transform 0.5s;
-  background: rgba(0, 0, 0, 0.35);
+  transition: opacity 0.5s, visibility 1s, transform 0.5s;
+  background: rgba(0, 0, 0, 0.7);
   color: #fff;
   z-index: 999;
   &.reveal {

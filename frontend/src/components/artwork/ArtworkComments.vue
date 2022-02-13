@@ -1,21 +1,32 @@
 <template>
   <section class="comments-box">
     <div>댓글({{ commentCount }})</div>
+    <div class="input-box">
+      <textarea
+        v-model="inputComment"
+        rows="1"
+        maxlength="100"
+        placeholder="댓글 달기"
+        @keydown="resizeTextarea"
+        @keyup.enter="addComment"
+      />
+      <send class="icon-send" @click="addComment"></send>
+    </div>
     <comment-item
       v-for="(comment, idx) in commentList"
       :key="idx"
       :comment="comment"
+      :isMyComment="comment.member_id === userInfo.id"
+      @getList="getCommentList"
     ></comment-item>
-    <div class="input-box">
-      <input v-model="inputComment" type="text" placeholder="댓글 달기" />
-      <send class="icon-send" @click="addComment"></send>
-    </div>
+    <toast-message ref="toast"></toast-message>
   </section>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
 import CommentItem from "@/components/artwork/child/CommentItem.vue";
+import ToastMessage from "@/components/common/ToastMessage.vue";
 import CommentInfo from "@/types/CommentInfo";
 import { Send } from "mdue";
 import CommentsAPI from "@/apis/commentsAPI";
@@ -28,6 +39,7 @@ export default defineComponent({
   name: "ArtworkComments",
   components: {
     CommentItem,
+    ToastMessage,
     Send,
   },
   props: {
@@ -58,16 +70,30 @@ export default defineComponent({
       });
     },
     async addComment() {
-      console.log(this.inputComment);
-      console.log(this.userInfo.id);
+      if (!this.inputComment) {
+        alert("내용을 입력해주세요.");
+        this.inputComment = "";
+        return;
+      }
       await CommentsAPI.addComment(this.artworkid, {
         content: this.inputComment,
         memberId: this.userInfo.id,
       }).then((res: ResponseData) => {
-        console.log(res.data);
+        if (res.data === "success") {
+          this.inputComment = "";
+        } else {
+          (this.$refs["toast"] as typeof ToastMessage).showToast(
+            "댓글 등록에 실패했습니다."
+          );
+        }
       });
 
       this.getCommentList();
+    },
+    resizeTextarea() {
+      const area = document.querySelector("textarea") as HTMLTextAreaElement;
+      area.style.height = "auto";
+      area.style.height = `${area.scrollHeight}px`;
     },
   },
 });
@@ -81,15 +107,19 @@ export default defineComponent({
 .input-box {
   position: relative;
   margin-top: $size-large;
-  input {
+  textarea {
     width: 100%;
+    min-height: 1rem;
+    overflow-y: hidden;
     padding: $size-small;
-    border-bottom: 1px solid $grey;
+    padding-right: $size-big;
+    resize: none;
+    border: 1px solid $grey;
   }
   .icon-send {
     position: absolute;
     top: 50%;
-    right: 0;
+    right: $size-small;
     transform: translateY(-50%);
     cursor: pointer;
     &:hover {
