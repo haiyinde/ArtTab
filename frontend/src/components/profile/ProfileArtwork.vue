@@ -1,5 +1,9 @@
 <template>
-  <div class="container">
+  {{ userInfo.id }}
+  {{ userInfo.email }}
+  {{ userInfo.intro }}
+  {{ userInfo.nickname }}
+  <!-- <div class="container">
     <masonry-wall
       :items="artwork_list"
       :ssr-columns="1"
@@ -9,7 +13,6 @@
       <template #default="{ item }">
         <div class="thumbnail-wrapper">
             <img :src="item.image" :alt="`${item.id}`" />
-            <!-- <div class="overlay" @click="goDetail"> -->
             <div class="overlay">
               <div class="info">
               <router-link
@@ -34,12 +37,12 @@
         </div>
       </template>
     </masonry-wall>
-  </div>
+  </div> -->
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import LikeButton from "../common/LikeButton.vue";
+// import LikeButton from "../common/LikeButton.vue";
 import ArtworkAPI from "@/apis/artworkAPI";
 import { mapState, mapMutations } from "vuex";
 
@@ -67,7 +70,7 @@ export default defineComponent({
     };
   },
   components: {
-    LikeButton,
+    // LikeButton,
   },
   computed: {
     ...mapState(accountsStore, ["userInfo"]),
@@ -80,19 +83,21 @@ export default defineComponent({
       this.valid = !this.valid;
     },
     async getMyArtwork() {
-      let my_artworks = await ArtworkAPI.getArtworkListByMember(this.profileInfo.nickname);
-      let temp = my_artworks.data
+      let my_artworks = await ArtworkAPI.getArtworkListByMember(
+        this.profileInfo.nickname
+      );
+      let temp = my_artworks.data;
       console.log(temp);
-      const my_artwork = []
+      const my_artwork = [];
       let size = Object.keys(temp).length;
-      for (let i = 0 ; i < size; i++) {
+      for (let i = 0; i < size; i++) {
         my_artwork.push({
           artworkId: temp[i].artworkId,
           title: temp[i].artworkTitle,
           memberId: temp[i].memberId,
           nickname: temp[i].memberNickname,
-          image: temp[i].saveFolder
-        })
+          image: temp[i].saveFolder,
+        });
       }
       this.artwork_list = [...this.artwork_list, ...my_artwork];
     },
