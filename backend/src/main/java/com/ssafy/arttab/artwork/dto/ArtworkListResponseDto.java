@@ -29,6 +29,6 @@ public class ArtworkListResponseDto {
         this.artworkRegdate=entity.getRegdate();
         this.saveFileName=entity.getSaveFileName();
         this.saveFolder=entity.getSaveFolder();
-        this.imageUrl="http://localhost:8080/artworks/"+entity.getSaveFileName();
+        this.imageUrl="http://i6b204.p.ssafy.io:9091/artworks/"+entity.getSaveFileName();
     }
 }
