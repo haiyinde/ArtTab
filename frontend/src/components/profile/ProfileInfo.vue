@@ -1,4 +1,10 @@
 <template>
+  {{ userInfo.id }}
+  {{ userInfo.email }}
+  {{ userInfo.intro }}
+  {{ userInfo.nickname }}
+  {{ profileInfo.id }}
+
   <!-- Modal -->
   <!-- Profile Edit Modal -->
   <transition name="fade" appear>
@@ -147,7 +153,11 @@
         <div class="profile-user-settings">
           <h1 class="profile-user-name">닉네임닉네임닉네임</h1>
           <p class="profile-user-email">email@email.com</p>
-          <button class="btn profile-edit-btn" @click="openEditModal">
+          <button
+            v-if="userInfo.id == profileInfo.id"
+            class="btn profile-edit-btn"
+            @click="openEditModal"
+          >
             내 정보 수정
           </button>
           <follow-button
@@ -171,7 +181,11 @@
           </p>
         </div>
         <div class="change-pwd-signout">
-          <p class="change-pwd-signout-text" @click="openChangePwdModal">
+          <p
+            v-if="userInfo.id == profileInfo.id"
+            class="change-pwd-signout-text"
+            @click="openChangePwdModal"
+          >
             비밀번호 변경 및 계정 탈퇴
           </p>
         </div>
