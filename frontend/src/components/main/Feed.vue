@@ -8,28 +8,28 @@
     >
       <template #default="{ item }">
         <div class="thumbnail-wrapper">
-            <img :src="item.image" :alt="`${item.title}`" />
-            <div class="overlay">
-              <div class="info">
+          <img :src="item.image" :alt="`${item.title}`" />
+          <div class="overlay">
+            <div class="info">
               <router-link
                 :to="{ name: 'ArtworkDetail', params: { id: item.artworkId } }"
-                >
-                <span style="color: white" class="artwork-title"
-                  >{{ item.title }}</span
-                >
+              >
+                <span style="color: white" class="artwork-title">{{
+                  item.title
+                }}</span>
               </router-link>
               <router-link
                 :to="{ name: 'Profile', params: { id: item.memberId } }"
+              >
+                <span style="color: white" class="artwork-artist"
+                  >By {{ item.nickname }}</span
                 >
-                <span style="color: white" class="artwork-artist">By {{
-                  item.nickname
-                }}</span>
               </router-link>
-              </div>
-              <div class="button-top-right">
-                <like-button :liked="!valid" @click="handleLike"></like-button>
-              </div>
             </div>
+            <div class="button-top-right">
+              <like-button :liked="!valid" @click="handleLike"></like-button>
+            </div>
+          </div>
         </div>
       </template>
     </masonry-wall>
@@ -48,35 +48,35 @@ export default defineComponent({
     return {
       artwork_list: [] as any,
       valid: true,
-      // showloader: false,
+      page: 0,
     };
   },
   components: {
     LikeButton,
-    Loader
+    Loader,
   },
   methods: {
     handleLike() {
       this.valid = !this.valid;
     },
     async getArtwork() {
-      let new_artworks = await ArtworkAPI.getArtworkList();
-      let temp = new_artworks.data
+      let new_artworks = await ArtworkAPI.getArtworkList(this.page);
+      let temp = new_artworks.data;
       console.log(temp);
-      const new_artwork = []
+      const new_artwork = [];
       let size = Object.keys(temp).length;
-      for (let i = 0 ; i < size; i++) {
+      for (let i = 0; i < size; i++) {
         new_artwork.push({
           artworkId: temp[i].artworkId,
           title: temp[i].artworkTitle,
           memberId: temp[i].memberId,
           nickname: temp[i].memberNickname,
-          image: temp[i].saveFolder
-        })
+          image: temp[i].saveFolder,
+        });
       }
       this.artwork_list = [...this.artwork_list, ...new_artwork];
     },
-    // 무한스크롤 수정 
+    // 무한스크롤 수정
     handleScroll() {
       if (
         window.scrollY + window.innerHeight >=
@@ -106,9 +106,7 @@ export default defineComponent({
     this.getArtwork();
     // window.addEventListener("scroll", this.handleScroll);
   },
-  computed: {
-
-  },
+  computed: {},
 });
 </script>
 
@@ -121,7 +119,6 @@ footer {
     height: 100px;
   }
 }
-
 
 * {
   box-sizing: border-box;
