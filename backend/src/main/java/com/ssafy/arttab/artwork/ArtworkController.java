@@ -42,23 +42,24 @@ public class ArtworkController {
 
         LocalDateTime time=LocalDateTime.now();
         String originFileName=file.getOriginalFilename();
-        String saveFileName=new MD5Generator(originFileName+time).toString();
-        String upperPath=System.getProperty("user.home")+File.separator+"artwork"; // artwork 디렉토리
-        String savePath=upperPath+File.separator+writerId; // artwork의 사용자 디렉토리
+        String saveFileName=new MD5Generator(originFileName+time+writerId).toString();
+        String upperPath=System.getProperty("user.home")+File.separator+"image"; // artwork 디렉토리
+//        String savePath=upperPath+File.separator+writerId; // artwork의 사용자 디렉토리
+        String savePath=upperPath; // artwork의 사용자 디렉토리
 
         // 디버깅용
         System.out.println("originFileName: "+originFileName);
         System.out.println(savePath);
 
         // artwork 디렉토리 없으면 폴더 생성
-        if(!new File(upperPath).exists()){
-            try{
-                new File(upperPath).mkdir();
-            }
-            catch(Exception e){
-                e.getStackTrace();
-            }
-        }
+//        if(!new File(upperPath).exists()){
+//            try{
+//                new File(upperPath).mkdir();
+//            }
+//            catch(Exception e){
+//                e.getStackTrace();
+//            }
+//        }
 
         // 파일이 저장되는 폴더가 없으면 폴더 생성
         if(!new File(savePath).exists()){
@@ -106,9 +107,10 @@ public class ArtworkController {
 
         LocalDateTime time=LocalDateTime.now();
         String originFileName=file.getOriginalFilename();
-        String saveFileName=new MD5Generator(originFileName+time).toString();
-        String upperPath=System.getProperty("user.home")+File.separator+"artwork"; // artwork 디렉토리
-        String savePath=upperPath+File.separator+writerId; // artwork의 사용자 디렉토리
+        String saveFileName=new MD5Generator(originFileName+time+writerId).toString();
+        String upperPath=System.getProperty("user.home")+File.separator+"image"; // artwork 디렉토리
+//        String savePath=upperPath+File.separator+writerId; // artwork의 사용자 디렉토리
+        String savePath=upperPath; // artwork의 사용자 디렉토리
         String saveFolder=savePath+File.separator+saveFileName;
         file.transferTo(new File(saveFolder)); // 파일 저장
 

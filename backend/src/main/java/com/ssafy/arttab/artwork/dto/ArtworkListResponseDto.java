@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.File;
 import java.time.LocalDateTime;
 
 @Setter
@@ -18,6 +19,7 @@ public class ArtworkListResponseDto {
     private LocalDateTime artworkRegdate; // 작성일
     private String saveFileName; // 서버에 저장된 파일 이름
     private String saveFolder; // 저장된 폴더 경로
+    private String imageUrl; // 이미지 url
 
     @Builder
     public ArtworkListResponseDto(Artwork entity){
@@ -27,6 +29,7 @@ public class ArtworkListResponseDto {
         this.artworkTitle=entity.getTitle();
         this.artworkRegdate=entity.getRegdate();
         this.saveFileName=entity.getSaveFileName();
-        this.saveFolder="file:///" + entity.getSaveFolder();
+        this.saveFolder=entity.getSaveFolder();
+        this.imageUrl="localhost:8080/images/"+saveFileName;
     }
 }
