@@ -1,6 +1,7 @@
 package com.ssafy.arttab.member.service;
 
 import com.ssafy.arttab.artwork.ArtworkRepository;
+import com.ssafy.arttab.config.JWTUtil;
 import com.ssafy.arttab.exception.member.DuplicateException;
 import com.ssafy.arttab.exception.member.NoSuchMemberException;
 import com.ssafy.arttab.exception.member.PasswordMismatchException;
@@ -9,6 +10,11 @@ import com.ssafy.arttab.member.domain.MailAuth;
 import com.ssafy.arttab.member.domain.Member;
 import com.ssafy.arttab.member.dto.LoginEmail;
 import com.ssafy.arttab.member.dto.request.*;
+import com.ssafy.arttab.member.dto.User;
+import com.ssafy.arttab.member.dto.request.AuthNumCheckRequest;
+import com.ssafy.arttab.member.dto.request.IntroUpdateRequest;
+import com.ssafy.arttab.member.dto.request.MemberSaveRequest;
+import com.ssafy.arttab.member.dto.request.PasswordUpdateRequest;
 import com.ssafy.arttab.member.dto.response.MemberInfoResponse;
 import com.ssafy.arttab.member.dto.response.ProfileInfoResponse;
 import com.ssafy.arttab.member.repository.MailAuthRepogitory;
@@ -117,9 +123,11 @@ public class MemberService {
 
 
         // DB 확인
-        Member member = memberRepository.findMemberByEmail(email);
+        Member member = memberRepository.findMemberByEmail(email)
+                .orElseThrow(NoSuchMemberException::new);
 
-        Optional<MailAuth> mailAuth = mailAuthRepogitory.findById(member.getId());
+        var mailAuth = mailAuthRepogitory.findById(member.getId());
+
 
         // DB에 있으면 변경, 없으면 등록
         mailAuth.ifPresentOrElse(selectmailAuth ->{
@@ -158,6 +166,23 @@ public class MemberService {
            throw new PasswordMismatchException();
        }
     }
+
+    /**
+     * 회원 로그인
+     * @param user
+     */
+//    public void login(final User user){
+//        Member member = memberRepository.findByEmail(user.getEmail())
+//                .orElseThrow(() -> new NoSuchMemberException());
+//        if(member.getAuth()!=1){
+//            throw new IllegalArgumentException("인증 안된 회원");
+//        }
+//        if (!BCrypt.checkpw(user.getPassword(), member.getPassword())) {
+//            throw new IllegalArgumentException("잘못된 비밀번호입니다.");
+//        }
+//        //토큰 발급
+//        return jwtUtil.createToken(member.getId());
+//    }
     /**
      * 닉네임 등록
      * @param loginEmail
@@ -180,6 +205,7 @@ public class MemberService {
         var member = memberRepository.findByEmail(loginEmail.getEmail())
                 .orElseThrow(NoSuchMemberException::new);
         var memberInfoResponse = MemberInfoResponse.builder()
+                .id(member.getId())
                 .email(member.getEmail())
                 .nickname(member.getNickname())
                 .intro(member.getIntro())
@@ -271,8 +297,8 @@ public class MemberService {
     // 프로필 페이지 불러오기
     public ProfileInfoResponse getProfileInfo(String loginEmail, String profileMemberEmail){
 
-        Long loginMember=memberRepository.findMemberByEmail(loginEmail).getId(); // 로그인된 회원 아이디
-        Long profileMember=memberRepository.findMemberByEmail(profileMemberEmail).getId(); // 프로필을 주인 아이디
+        Long loginMember=memberRepository.findMemberByEmail(loginEmail).get().getId(); // 로그인된 회원 아이디
+        Long profileMember=memberRepository.findMemberByEmail(profileMemberEmail).get().getId(); // 프로필을 주인 아이디
 
         String isFollow = "FALSE";
         if(loginMember==profileMember) { // 로그인한 사용자가 본인 프로필 조회하려고 할 때
@@ -286,13 +312,13 @@ public class MemberService {
         }
 
         ProfileInfoResponse response = ProfileInfoResponse.builder()
-                .nickname(memberRepository.findMemberByEmail(profileMemberEmail).getNickname())
+                .nickname(memberRepository.findMemberByEmail(profileMemberEmail).get().getNickname())
                 .isFollow(isFollow)
                 .followedNum(followRepository.findAllFollowedCnt(profileMember))
                 .followingNum(followRepository.findAllFollowingCnt(profileMember))
                 .artworkNum(artworkRepository.findNumByMemberId(profileMember))
                 .email(profileMemberEmail)
-                .profileImageUrl("file:///"+memberRepository.findMemberByEmail(profileMemberEmail).getSaveFolder())
+                .profileImageUrl("file:///"+memberRepository.findMemberByEmail(profileMemberEmail).get().getSaveFolder())
                 .build();
 
         return response;

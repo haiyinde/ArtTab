@@ -1,5 +1,6 @@
 package com.ssafy.arttab.member.repository;
 
+import com.ssafy.arttab.exception.member.NoSuchMemberException;
 import com.ssafy.arttab.member.domain.Member;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -90,7 +91,8 @@ class MemberRepositoryTest {
     @DisplayName("회원 이메일로 식별번호 찾기 ")
     void findIdbyemail(){
         memberRepository.save(member);
-        Member member1 = memberRepository.findMemberByEmail("aa@daum.com");
+        Member member1 = memberRepository.findMemberByEmail("aa@daum.com")
+                .orElseThrow(NoSuchMemberException::new);
         Assertions.assertEquals(member.getId(),1L);
     }
 }

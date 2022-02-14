@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.awt.print.Pageable;
 import java.util.List;
 
 public interface ArtworkRepository extends JpaRepository<Artwork, Long> {
@@ -30,4 +31,5 @@ public interface ArtworkRepository extends JpaRepository<Artwork, Long> {
 
     @Query(value = "select top 4 * from Artwork where writer=:writerId order by id desc", nativeQuery = true)
     List<Artwork> find4ByMemberId(@Param("writerId")Long writerId);
+    
 }

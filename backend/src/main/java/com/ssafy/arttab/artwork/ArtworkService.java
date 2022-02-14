@@ -8,6 +8,8 @@ import com.ssafy.arttab.like.LikesRepository;
 import com.ssafy.arttab.member.domain.Member;
 import com.ssafy.arttab.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,10 +31,10 @@ public class ArtworkService {
     private final FollowRepository followRepository;
 
     @Transactional
-    public List<ArtworkListResponseDto> getArtworkList(){
-        return artworkRepository.findAll(Sort.by(Sort.Direction.DESC, "id"))
-                .stream().map(ArtworkListResponseDto::new)
-                .collect(Collectors.toList());
+    public List<ArtworkListResponseDto> getArtworkList(int page){
+
+        Page<Artwork> result = artworkRepository.findAll(PageRequest.of(page, 20, Sort.by(Sort.Direction.DESC, "id")));
+        return result.getContent().stream().map(ArtworkListResponseDto::new).collect(Collectors.toList());
     }
 
     @Transactional
@@ -89,7 +91,7 @@ public class ArtworkService {
                 .writerId(writer.getId())
                 .writerNickname(writer.getNickname())
                 .title(artwork.getTitle())
-                .desc(artwork.getDescription())
+                .description(artwork.getDescription())
                 .regdate(artwork.getRegdate())
                 .artworkSaveFolder("file:///"+artwork.getSaveFolder())
                 .writerProfileSaveFolder("file:///"+writer.getSaveFolder())
