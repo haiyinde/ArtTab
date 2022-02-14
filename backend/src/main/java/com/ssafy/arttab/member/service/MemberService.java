@@ -43,7 +43,7 @@ import java.util.UUID;
 @Transactional
 @RequiredArgsConstructor
 public class MemberService {
-    private final JWTUtil jwtUtil;
+
     private final MemberRepository memberRepository;
     private final MailSendService mailSendService;
     private final MailAuthRepogitory mailAuthRepogitory;
@@ -171,18 +171,18 @@ public class MemberService {
      * 회원 로그인
      * @param user
      */
-    public void login(final User user){
-        Member member = memberRepository.findByEmail(user.getEmail())
-                .orElseThrow(() -> new NoSuchMemberException());
-        if(member.getAuth()!=1){
-            throw new IllegalArgumentException("인증 안된 회원");
-        }
-        if (!BCrypt.checkpw(user.getPassword(), member.getPassword())) {
-            throw new IllegalArgumentException("잘못된 비밀번호입니다.");
-        }
-        //토큰 발급
-        return jwtUtil.createToken(member.getId());
-    }
+//    public void login(final User user){
+//        Member member = memberRepository.findByEmail(user.getEmail())
+//                .orElseThrow(() -> new NoSuchMemberException());
+//        if(member.getAuth()!=1){
+//            throw new IllegalArgumentException("인증 안된 회원");
+//        }
+//        if (!BCrypt.checkpw(user.getPassword(), member.getPassword())) {
+//            throw new IllegalArgumentException("잘못된 비밀번호입니다.");
+//        }
+//        //토큰 발급
+//        return jwtUtil.createToken(member.getId());
+//    }
     /**
      * 닉네임 등록
      * @param loginEmail
@@ -290,15 +290,15 @@ public class MemberService {
     // saveFolder 수정: 이메일에 해당하는 프로필 사진 수정
     @Transactional
     public void updateSaveFolder(final LoginEmail loginEmail, String saveFolder){
-        var member=memberRepository.findByEmail(loginEmail.getEmail()).orElseThrow();
+        var member=memberRepository.findByEmail(loginEmail.getEmail()).orElseThrow(); 
         member.updateSaveFolder(saveFolder);
     }
 
     // 프로필 페이지 불러오기
     public ProfileInfoResponse getProfileInfo(String loginEmail, String profileMemberEmail){
 
-        Long loginMember=memberRepository.findMemberByEmail(loginEmail).getId(); // 로그인된 회원 아이디
-        Long profileMember=memberRepository.findMemberByEmail(profileMemberEmail).getId(); // 프로필을 주인 아이디
+        Long loginMember=memberRepository.findMemberByEmail(loginEmail).get().getId(); // 로그인된 회원 아이디
+        Long profileMember=memberRepository.findMemberByEmail(profileMemberEmail).get().getId(); // 프로필을 주인 아이디
 
         String isFollow = "FALSE";
         if(loginMember==profileMember) { // 로그인한 사용자가 본인 프로필 조회하려고 할 때
@@ -312,13 +312,13 @@ public class MemberService {
         }
 
         ProfileInfoResponse response = ProfileInfoResponse.builder()
-                .nickname(memberRepository.findMemberByEmail(profileMemberEmail).getNickname())
+                .nickname(memberRepository.findMemberByEmail(profileMemberEmail).get().getNickname())
                 .isFollow(isFollow)
                 .followedNum(followRepository.findAllFollowedCnt(profileMember))
                 .followingNum(followRepository.findAllFollowingCnt(profileMember))
                 .artworkNum(artworkRepository.findNumByMemberId(profileMember))
                 .email(profileMemberEmail)
-                .profileImageUrl("file:///"+memberRepository.findMemberByEmail(profileMemberEmail).getSaveFolder())
+                .profileImageUrl("file:///"+memberRepository.findMemberByEmail(profileMemberEmail).get().getSaveFolder())
                 .build();
 
         return response;
