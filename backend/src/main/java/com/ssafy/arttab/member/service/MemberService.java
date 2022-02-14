@@ -52,6 +52,7 @@ public class MemberService {
 
     private final String artworkImgUrl="http://localhost:8080/artworks/";
     private final String profileImgUrl="http://localhost:8080/profiles/";
+    private final String profileDefaultImgUrl="http://localhost:8080/profileDefaultImg/";
 
     /**
      * 회원 등록
@@ -68,7 +69,7 @@ public class MemberService {
         var password = BCrypt.hashpw(memberSaveRequest.getPassword(),BCrypt.gensalt());
 
         // 프로필 사진 기본 이미지로 설정
-        String defaultSaveFolder=System.getProperty("user.home") + File.separator+"profile"+File.separator+"default.jpg";
+        String defaultSaveFolder=System.getProperty("user.dir")+File.separator+"src"+File.separator+"main"+File.separator+"resources"+File.separator+"static"+File.separator+"default.jpg";
 
         Member member = Member.builder()
                 .email(memberSaveRequest.getEmail())
@@ -318,6 +319,13 @@ public class MemberService {
             }
         }
 
+        String defaultProfileImgUrl=System.getProperty("user.dir")+File.separator+"src"+File.separator+"main"+File.separator+"resources"+File.separator+"static"+File.separator+"default.jpg";
+        String profileImg=memberRepository.findById(profileMemberId).get().getSaveFolder();
+        String profileImageUrl=profileDefaultImgUrl+memberRepository.findById(profileMemberId).get().getSaveFilename(); // 기본 이미지 상태일 때
+        if(!profileImg.equals(defaultProfileImgUrl)){ // 프로필 이미지가 기본 프로필 이미지 상태가 아닐 때
+            profileImageUrl=profileImg+memberRepository.findById(profileMemberId).get().getSaveFilename();
+        }
+
         ProfileInfoResponse response = ProfileInfoResponse.builder()
                 .nickname(memberRepository.findById(profileMemberId).get().getNickname())
                 .isFollow(isFollow)
@@ -325,7 +333,7 @@ public class MemberService {
                 .followingNum(followRepository.findAllFollowingCnt(profileMember))
                 .artworkNum(artworkRepository.findNumByMemberId(profileMember))
                 .email(memberRepository.findById(profileMemberId).get().getEmail())
-                .profileImageUrl(profileImgUrl+memberRepository.findById(profileMemberId).get().getSaveFilename())
+                .profileImageUrl(profileImageUrl)
                 .build();
 
         return response;
