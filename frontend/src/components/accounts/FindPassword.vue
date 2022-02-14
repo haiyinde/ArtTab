@@ -63,7 +63,13 @@ export default defineComponent({
   },
   watch: {
     email: function () {
-      this.checkEmail();
+      if (!this.email) {
+        this.isCompleted = false;
+        this.valid.emailType = false;
+        this.valid.email = false;
+      } else {
+        this.checkEmail();
+      }
     },
   },
   methods: {
@@ -81,12 +87,13 @@ export default defineComponent({
         .then((res: ResponseData) => {
           if (res.data === "success") {
             this.valid.email = true;
+            this.isCompleted = false;
           } else {
             this.valid.email = false;
+            this.isCompleted = true;
           }
         })
         .catch(() => {
-          this.valid.email = false;
           alert("이메일 가입 여부 확인 중 오류가 발생했습니다.");
         });
     },

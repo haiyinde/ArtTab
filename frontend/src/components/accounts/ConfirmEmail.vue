@@ -82,7 +82,6 @@ export default defineComponent({
     sendEmail() {
       AccountsAPI.sendEmail(this.joinEmail)
         .then((res: ResponseData) => {
-          console.log(res);
           if (res.data === "success") {
             alert("이메일이 정상적으로 전송되었습니다.");
           } else {
