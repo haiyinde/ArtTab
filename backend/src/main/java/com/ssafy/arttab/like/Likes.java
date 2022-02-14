@@ -15,7 +15,7 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor
 @Table(name = "likes")
-public class Like extends BaseTimeEntity {
+public class Likes extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,16 +24,14 @@ public class Like extends BaseTimeEntity {
 
     @ManyToOne
     @JoinColumn(name = "artwork")
-    @OnDelete(action = OnDeleteAction.CASCADE)
     private Artwork artwork;
 
     @ManyToOne
     @JoinColumn(name = "member")
-    @OnDelete(action = OnDeleteAction.CASCADE)
     private Member member;
 
     @Builder
-    public Like(Artwork artwork, Member member) {
+    public Likes(Artwork artwork, Member member) {
         this.artwork = artwork;
         this.member = member;
     }

@@ -5,14 +5,15 @@ import com.ssafy.arttab.artwork.ArtworkRepository;
 import com.ssafy.arttab.comment.dto.CommentListResponseDto;
 import com.ssafy.arttab.comment.dto.CommentSaveRequestDto;
 import com.ssafy.arttab.comment.dto.CommentUpdateRequestDto;
+import com.ssafy.arttab.exception.member.NoSuchMemberException;
 import com.ssafy.arttab.member.domain.Member;
 import com.ssafy.arttab.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -22,7 +23,7 @@ public class CommentService {
     private final MemberRepository memberRepository;
 
     @Transactional
-    public Long insert(Long id, CommentSaveRequestDto requestDto) {
+    public void insert(Long id, CommentSaveRequestDto requestDto) {
         // 작품 객체값 유무
         Artwork artwork = artworkRepository.findById(id)
                 .orElseThrow(IllegalArgumentException::new);
@@ -30,23 +31,30 @@ public class CommentService {
        Member member = memberRepository.findById(requestDto.getMemberId())
                .orElseThrow(IllegalArgumentException::new);
 
-        return commentRepository.save(requestDto.toEntity(artwork, member)).getId();
+        commentRepository.save(requestDto.toEntity(artwork, member));
     }
 
     @Transactional
     public List<CommentListResponseDto> findAllDesc(Long id) {
-        return commentRepository.findAllDesc(id).stream()
-                .map(CommentListResponseDto::new)
-                .collect(Collectors.toList());
+        List<Comment> commetList = commentRepository.findAllDesc(id)
+                .orElseThrow(IllegalArgumentException::new);
+        List<CommentListResponseDto> responseDtos = new ArrayList<>();
+
+        for (Comment comment : commetList) {
+            Member member = memberRepository.findById(comment.getMember().getId())
+                    .orElseThrow(NoSuchMemberException::new);
+
+            responseDtos.add(new CommentListResponseDto(comment, member));
+        }
+        return responseDtos;
     }
 
     @Transactional
-    public Long update(Long id, CommentUpdateRequestDto requestDto) {
+    public void update(Long id, CommentUpdateRequestDto requestDto) {
         Comment comment = commentRepository.findById(id)
                 .orElseThrow(() -> new
                         IllegalArgumentException("해당 댓글이 존재하지 않습니다. id=" + id));
         comment.update(requestDto.getContent());
-        return id;
     }
 
     @Transactional

@@ -46,16 +46,18 @@ class AccountsAPI {
   }
 
   // 비밀번호 찾기
-  findPassword(nickname: string) {
-    return api.put(`/member/:${nickname}/password/find`);
+  findPassword(email: string) {
+    return api.put(`/member/password?email=` + email);
   }
   // 회원 정보 조회: 회원 정보(이메일, 닉네임, 소개)를 담은 Token 반환
   // -> get 변경 필요
   getAccount(email: string) {
     return api.get(`/member/me?email=` + email);
   }
-  // 프로필 이미지 조회
   // 회원 정보 수정(소개글 수정)
+  updateProfileIntro(email: string, intro: string) {
+    return api.put(`member/me?email=${email}&intro=${intro}`);
+  }
   // 비밀번호 수정: 성공 시 'success' 반환
   updatePassword(email: string, password: NewPassword) {
     return api.put(`/member/me/password`, JSON.stringify({ email, password }));
@@ -65,6 +67,12 @@ class AccountsAPI {
   // 회원탈퇴(삭제)
   deleteAccount(email: string) {
     return api.delete(`/member/me`, { data: { email: email } });
+  }
+  // 회원 프로필 정보 리턴하기
+  getProfileInfo(loginEmail: string, profileMemberEmail: string) {
+    return api.get(
+      `/member/profile?loginEmail=${loginEmail}&profileMemberEmail=${profileMemberEmail}`
+    );
   }
 }
 

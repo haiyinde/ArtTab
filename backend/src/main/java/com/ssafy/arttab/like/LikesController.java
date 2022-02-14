@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
 @RestController
-public class LikeController {
+public class LikesController {
     private static final String SUCCESS = "success";
     private static final String FAIL = "fail";
-    private final LikeService likeService;
+    private final LikesService likeService;
 
     @ApiOperation(value = "좋아요")
     @PostMapping("/api/v1/like")
@@ -30,8 +30,14 @@ public class LikeController {
     }
 
     @DeleteMapping("/api/v1/like")
-    public ResponseEntity<Void> deleteLike(@RequestBody LikeRequestDto requestDto ) {
-        likeService.delete(requestDto);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<String> deleteLike(@RequestBody LikeRequestDto requestDto ) {
+        String message = "success";
+        try{
+            likeService.delete(requestDto);
+        }catch (Exception e){
+            message ="fail";
+        }
+        return new ResponseEntity<>(message, HttpStatus.OK);
+
     }
 }

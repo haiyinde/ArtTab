@@ -91,7 +91,8 @@ class MemberRepositoryTest {
     @DisplayName("회원 이메일로 식별번호 찾기 ")
     void findIdbyemail(){
         memberRepository.save(member);
-        Member member1 = memberRepository.findMemberByEmail("aa@daum.com").orElseThrow(NoSuchMemberException::new);
+        Member member1 = memberRepository.findMemberByEmail("aa@daum.com")
+                .orElseThrow(NoSuchMemberException::new);
         Assertions.assertEquals(member.getId(),1L);
     }
 }

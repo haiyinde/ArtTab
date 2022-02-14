@@ -20,7 +20,4 @@ public class NoSuchMemberException extends CustomException {
     public NoSuchMemberException() {
         super(MESSAGE, HttpStatus.BAD_REQUEST);
     }
-    public NoSuchMemberException(String MESSAGE) {
-        super(MESSAGE, HttpStatus.BAD_REQUEST);
-    }
 }

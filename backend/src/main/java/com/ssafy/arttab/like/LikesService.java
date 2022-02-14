@@ -7,15 +7,17 @@ import com.ssafy.arttab.member.domain.Member;
 import com.ssafy.arttab.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class LikeService {
+public class LikesService {
 
     private final ArtworkRepository artworkRepository;
     private final MemberRepository memberRepository;
-    private final LikeRepository likeRepository;
+    private final LikesRepository likeRepository;
 
+    @Transactional
     public void InsertLike(LikeRequestDto requestDto) {
         Artwork artwork = artworkRepository.findById(requestDto.getArtworkId())
                 .orElseThrow(() -> new
@@ -23,9 +25,10 @@ public class LikeService {
         Member member = memberRepository.findById(requestDto.getMemberId())
                 .orElseThrow(() -> new
                         IllegalArgumentException("insertlike member error id=" + requestDto.getMemberId()));
-        likeRepository.save(requestDto.toEntity(artwork, member)).getId();
+        likeRepository.save(requestDto.toEntity(artwork, member));
     }
 
+    @Transactional
     public void delete(LikeRequestDto requestDto) {
         Artwork artwork = artworkRepository.findById(requestDto.getArtworkId())
                 .orElseThrow(() -> new
@@ -33,7 +36,7 @@ public class LikeService {
         Member member = memberRepository.findById(requestDto.getMemberId())
                 .orElseThrow(() -> new
                         IllegalArgumentException("deleteLike member error id=" + requestDto.getMemberId()));
-        likeRepository.delete(requestDto.toEntity(artwork, member));
+        likeRepository.deleteLike(artwork.getId(), member.getId());
     }
 
 }

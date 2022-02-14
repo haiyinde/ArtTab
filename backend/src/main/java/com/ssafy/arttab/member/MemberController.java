@@ -1,22 +1,28 @@
 package com.ssafy.arttab.member;
 
 
+import com.ssafy.arttab.artwork.dto.MD5Generator;
+import com.ssafy.arttab.exception.member.DuplicateException;
 import com.ssafy.arttab.member.dto.LoginEmail;
-import com.ssafy.arttab.member.dto.request.AuthNumCheckRequest;
-import com.ssafy.arttab.member.dto.request.IntroUpdateRequest;
-import com.ssafy.arttab.member.dto.request.MemberSaveRequest;
-import com.ssafy.arttab.member.dto.request.PasswordUpdateRequest;
+import com.ssafy.arttab.member.dto.request.*;
 import com.ssafy.arttab.member.dto.response.MemberInfoResponse;
+import com.ssafy.arttab.member.dto.response.ProfileInfoResponse;
 import com.ssafy.arttab.member.service.MemberService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import lombok.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
+import java.io.File;
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+import java.time.LocalDateTime;
 
 @RequiredArgsConstructor
 @RestController
@@ -33,7 +39,7 @@ public class MemberController {
         try{
             memberService.saveMember(memberSaveRequest);
         }catch (Exception e){
-            message =e.getMessage();
+            message ="fail";
         }
 
         return new ResponseEntity<String>(message, HttpStatus.OK);
@@ -43,10 +49,12 @@ public class MemberController {
     @PostMapping("/email")
     public ResponseEntity<String> sendEmail(@Valid @RequestBody LoginEmail loginEmail) {
         String message = "success";
-
+        try{
             memberService.SendNumtoEmail(loginEmail.getEmail());
 
-
+        }catch (Exception e){
+            message ="fail";
+        }
         return new ResponseEntity<>(message,HttpStatus.OK);
     }
 
@@ -70,37 +78,45 @@ public class MemberController {
             memberService.addNickname(loginEmail,nickname);
 
         }catch (Exception e){
-            message =e.getMessage();
+            message ="fail";
         }
         return new ResponseEntity<>(message,HttpStatus.OK);
     }
 
 //    @ApiOperation(value = "로그인", notes = "Access-token과 로그인 결과 메시지를 반환한다.", response = String.class)
 //    @PostMapping("/login")
-//    public ResponseEntity<String> login(@RequestBody @ApiParam(value = "로그인 시 필요한 회원정보 (이메일, 비밀번호).", required = true) User user) {
+//    public ResponseEntity<Map<String, Object>> login(@RequestBody @ApiParam(value = "로그인 시 필요한 회원정보 (이메일, 비밀번호).", required = true) Member member) {
+//        Map<String, Object> resultMap = new HashMap<>();
+//        HttpStatus status = null;
 //
-////        return ResponseEntity.ok().body(memberService.login(user));
+//        return new ResponseEntity<Map<String, Object>>(resultMap, status);
 //    }
 
     @ApiOperation(value = "닉네임 중복체크")
-    @GetMapping("/idCk")
-    public ResponseEntity<String> selectOnebynick(@RequestParam String nickname){
+    @PostMapping("/idCk")
+    public ResponseEntity<String> selectOnebynick(@RequestBody String nickname){
         String message = "success";
-        memberService.MemberIdCheck(nickname);
+        try{
+            memberService.MemberIdCheck(nickname);
+        }catch (DuplicateException e){
+            message= e.getMessage();
+        }
 
         return new ResponseEntity<String>(message,HttpStatus.OK);
     }
 
     @ApiOperation(value = "이메일 중복체크")
-    @GetMapping("/emailCk")
-    public ResponseEntity<String> selectOnebyemail(@Email @RequestParam String email){
-        System.out.println(email);
+    @PostMapping("/emailCk")
+    public ResponseEntity<String> selectOnebyemail(@Email @RequestBody String email){
         String message = "success";
-        memberService.MemberEmailCheck(email);
+        try{
+            memberService.MemberIdCheck(email);
+        }catch (DuplicateException e){
+            message = e.getMessage();
+        }
 
         return new ResponseEntity<String>(message,HttpStatus.OK);
     }
-
     @ApiOperation(value = "비밀번호 수정", notes = "비밀번호 DB수정 성공여부에 따라 'success 또는 'fail' 문자열을 반환한다.", response = String.class)
     @PutMapping("/me/password")
     public ResponseEntity<String> updatePassword(@RequestBody LoginEmail loginEmail, PasswordUpdateRequest passwordUpdateRequest) {
@@ -115,6 +131,7 @@ public class MemberController {
         return ResponseEntity.ok().body(memberInfoResponse);
     }
 
+
     @ApiOperation(value = "회원삭제", notes = "회원번호로 DB 삭제 성공여부에 따라 'success' 또는 'fail' 문자열을 반환한다.", response = String.class)
     @DeleteMapping("/me")
     public ResponseEntity<Void> deleteMember(LoginEmail loginEmail) {
@@ -128,12 +145,80 @@ public class MemberController {
         memberService.updateMember(loginEmail,introUpdateRequest);
         return ResponseEntity.ok().build();
     }
-
     @ApiOperation(value = "비밀번호 찾기")
     @PutMapping("/password")
     public ResponseEntity<String> findPassword(String email){
         memberService.findPassword(email);
         return ResponseEntity.ok().body("success");
+    }
+
+    // 프로필 변경하기
+    @ApiOperation(value = "회원 정보 변경하기")
+    @PutMapping("api/v1/profile")
+    public ResponseEntity<String> insertProfile(@RequestPart("file") MultipartFile file,
+                                                @RequestParam("email") String email,
+                                                @RequestParam(value = "nickname", required = false) String nickname,
+                                                @RequestParam(value = "intro", required = false) String intro) throws IOException, NoSuchAlgorithmException {
+
+        // 닉네임 중복 체크
+        String message="success";
+        try{
+            memberService.MemberIdCheck(nickname);
+        }catch (DuplicateException e){
+            message= e.getMessage();
+        }
+
+        // 원래 프로필 사진 삭제하기
+        String parentSaveFolder=memberService.getParentFolder(email); // 이메일에 해당하는 사용자의 원래 프로필 사진
+        String defaultSaveFolder=System.getProperty("user.dir") + "\\profile\\default.jpg"; // 기존에 프로필 사진 설정하지 않았을 경우
+        if(!parentSaveFolder.equals(defaultSaveFolder)) { // 기본 이미지로 설정되어 있는 경우에는 삭제 안함
+            File parentFile=new File(parentSaveFolder);
+            parentFile.delete();
+        }
+
+        // 프로필 사진 저장하기
+        LocalDateTime time = LocalDateTime.now();
+        String originFileName = file.getOriginalFilename();
+        String saveFileName = new MD5Generator(originFileName + time).toString();
+        String upperSavePath="C:"+File.separator+"profile"; // 프로필 폴더
+        String savePath = upperSavePath + File.separator +email; // 프로필 사진 주인 이메일
+
+        // profile 폴더가 없으면 폴더 생성
+            if(!upperSavePath.isEmpty()){
+                try{
+                    new File(upperSavePath).mkdir();
+                } catch(Exception e){
+                    e.getStackTrace();
+                }
+            }
+
+        // profile 폴더 아래에 사용자 폴더 만들기
+        if (!new File(savePath).exists()) {
+            try {
+                new File(savePath).mkdir();
+            } catch (Exception e) {
+                e.getStackTrace();
+            }
+        }
+
+        String saveFolder = savePath + File.separator + saveFileName;
+        file.transferTo(new File(saveFolder)); // 파일 저장
+
+        LoginEmail loginEmail=new LoginEmail(email);
+        memberService.addNickname(loginEmail, nickname); // 닉네임 변경
+        memberService.updateMember(loginEmail, new IntroUpdateRequest(intro)); // 자기소개 변경
+        memberService.updateSaveFolder(loginEmail, saveFolder);
+
+       return new ResponseEntity<>(message, HttpStatus.OK);
+
+    }
+
+    @ApiOperation(value="회원 프로필 정보 리턴하기")
+    @GetMapping("/profile")
+    public ResponseEntity<ProfileInfoResponse> selectProfileInfo(@RequestParam("loginEmail") String loginEmail, @RequestParam("profileMemberEmail") String profileMemberEmail){
+
+        ProfileInfoResponse result = memberService.getProfileInfo(loginEmail, profileMemberEmail);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
 }

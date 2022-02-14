@@ -1,7 +1,7 @@
 package com.ssafy.arttab.like.dto;
 
 import com.ssafy.arttab.artwork.Artwork;
-import com.ssafy.arttab.like.Like;
+import com.ssafy.arttab.like.Likes;
 import com.ssafy.arttab.member.domain.Member;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,8 +19,8 @@ public class LikeRequestDto {
         this.memberId = memberId;
     }
 
-    public Like toEntity(Artwork artwork, Member member) {
-        return Like.builder()
+    public Likes toEntity(Artwork artwork, Member member) {
+        return Likes.builder()
                 .artwork(artwork)
                 .member(member)
                 .build();
