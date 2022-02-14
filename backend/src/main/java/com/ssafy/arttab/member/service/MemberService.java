@@ -302,10 +302,10 @@ public class MemberService {
     }
 
     // 프로필 페이지 불러오기
-    public ProfileInfoResponse getProfileInfo(String loginEmail, String profileMemberEmail){
+    public ProfileInfoResponse getProfileInfo(Long loginId, Long profileMemberId){
 
-        Long loginMember=memberRepository.findMemberByEmail(loginEmail).get().getId(); // 로그인된 회원 아이디
-        Long profileMember=memberRepository.findMemberByEmail(profileMemberEmail).get().getId(); // 프로필을 주인 아이디
+        Long loginMember=memberRepository.findById(loginId).get().getId(); // 로그인된 회원 아이디
+        Long profileMember=memberRepository.findById(profileMemberId).get().getId(); // 프로필을 주인 아이디
 
         String isFollow = "FALSE";
         if(loginMember==profileMember) { // 로그인한 사용자가 본인 프로필 조회하려고 할 때
@@ -319,13 +319,13 @@ public class MemberService {
         }
 
         ProfileInfoResponse response = ProfileInfoResponse.builder()
-                .nickname(memberRepository.findMemberByEmail(profileMemberEmail).get().getNickname())
+                .nickname(memberRepository.findById(profileMemberId).get().getNickname())
                 .isFollow(isFollow)
                 .followedNum(followRepository.findAllFollowedCnt(profileMember))
                 .followingNum(followRepository.findAllFollowingCnt(profileMember))
                 .artworkNum(artworkRepository.findNumByMemberId(profileMember))
-                .email(profileMemberEmail)
-                .profileImageUrl(profileImgUrl+memberRepository.findMemberByEmail(profileMemberEmail).get().getSaveFilename())
+                .email(memberRepository.findById(profileMemberId).get().getEmail())
+                .profileImageUrl(profileImgUrl+memberRepository.findById(profileMemberId).get().getSaveFilename())
                 .build();
 
         return response;
