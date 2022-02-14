@@ -30,8 +30,8 @@ public class ArtworkService {
     private final LikesRepository likeRepository;
     private final FollowRepository followRepository;
 
-    private final String artworkImgUrl="localhost:8080/artworks/";
-    private final String profileImgUrl="localhost:8080/profiles/";
+    private final String artworkImgUrl="http://localhost:8080/artworks/";
+    private final String profileImgUrl="http://localhost:8080/profiles/";
 
     @Transactional
     public List<ArtworkListResponseDto> getArtworkList(int page){
@@ -97,7 +97,7 @@ public class ArtworkService {
                 .description(artwork.getDescription())
                 .regdate(artwork.getRegdate())
                 .artworkSaveFolder(artworkImgUrl+artwork.getSaveFileName())
-                .writerProfileSaveFolder(profileImgUrl+writer.getSaveFolder())
+                .writerProfileSaveFolder(profileImgUrl+writer.getSaveFilename())
                 .writerEmail(writer.getEmail())
                 .likeNum(likeRepository.selectLikeNumByArtworkId(artwork.getId()))
                 .likeOrNot(isLike)

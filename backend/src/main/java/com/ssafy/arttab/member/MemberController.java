@@ -163,7 +163,7 @@ public class MemberController {
 
         // 원래 프로필 사진 삭제하기
         String parentSaveFolder=memberService.getParentFolder(email); // 이메일에 해당하는 사용자의 원래 프로필 사진
-        String defaultSaveFolder=System.getProperty("user.dir") + "\\profile\\default.jpg"; // 기존에 프로필 사진 설정하지 않았을 경우
+        String defaultSaveFolder=System.getProperty("user.home") +File.separator+"profile"+File.separator+"default.jpg"; // 기존에 프로필 사진 설정하지 않았을 경우
         if(!parentSaveFolder.equals(defaultSaveFolder)) { // 기본 이미지로 설정되어 있는 경우에는 삭제 안함
             File parentFile=new File(parentSaveFolder);
             parentFile.delete();
@@ -172,9 +172,9 @@ public class MemberController {
         // 프로필 사진 저장하기
         LocalDateTime time = LocalDateTime.now();
         String originFileName = file.getOriginalFilename();
-        String saveFileName = new MD5Generator(originFileName + time).toString();
-        String upperSavePath="C:"+File.separator+"profile"; // 프로필 폴더
-        String savePath = upperSavePath + File.separator +email; // 프로필 사진 주인 이메일
+        String saveFileName = new MD5Generator(originFileName + time).toString()+file.getOriginalFilename();
+        String upperSavePath=System.getProperty("user.home")+ File.separator+"profile"; // 프로필 폴더
+        String savePath = upperSavePath; // 프로필 사진 주인 이메일
 
         // profile 폴더가 없으면 폴더 생성
             if(!upperSavePath.isEmpty()){
@@ -201,6 +201,7 @@ public class MemberController {
         memberService.addNickname(loginEmail, nickname); // 닉네임 변경
         memberService.updateMember(loginEmail, new IntroUpdateRequest(intro)); // 자기소개 변경
         memberService.updateSaveFolder(loginEmail, saveFolder);
+        memberService.updateSaveFilename(loginEmail, saveFileName);
 
        return new ResponseEntity<>(message, HttpStatus.OK);
 
