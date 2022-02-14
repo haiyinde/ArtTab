@@ -8,8 +8,7 @@
     >
       <template #default="{ item }">
         <div class="thumbnail-wrapper">
-            <img :src="item.image" :alt="`${item.id}`" />
-            <!-- <div class="overlay" @click="goDetail"> -->
+            <img :src="item.image" :alt="`${item.title}`" />
             <div class="overlay">
               <div class="info">
               <router-link
@@ -35,36 +34,42 @@
       </template>
     </masonry-wall>
   </div>
-  <!-- loader -->
-  <div class="scene">
-    <div class="objects">
-      <div class="square"></div>
-      <div class="circle"></div>
-      <div class="triangle"></div>
-    </div>
-    <div class="wizard">
-      <div class="body"></div>
-      <div class="right-arm">
-        <div class="right-hand"></div>
-      </div>
-      <div class="left-arm">
-        <div class="left-hand"></div>
-      </div>
-      <div class="head">
-        <div class="beard"></div>
-        <div class="face">
-          <div class="adds"></div>
+  <!-- <footer> -->
+    <!-- <div ref="infinitescrolltrigger" id="scroll-trigeger">
+      <div v-if="showloader"> -->
+        <!-- loader -->
+        <div class="scene">
+          <div class="objects">
+            <div class="square"></div>
+            <div class="circle"></div>
+            <div class="triangle"></div>
+          </div>
+          <div class="wizard">
+            <div class="body"></div>
+            <div class="right-arm">
+              <div class="right-hand"></div>
+            </div>
+            <div class="left-arm">
+              <div class="left-hand"></div>
+            </div>
+            <div class="head">
+              <div class="beard"></div>
+              <div class="face">
+                <div class="adds"></div>
+              </div>
+              <div class="hat">
+                <div class="hat-of-the-hat"></div>
+                <div class="four-point-star --first"></div>
+                <div class="four-point-star --second"></div>
+                <div class="four-point-star --third"></div>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="hat">
-          <div class="hat-of-the-hat"></div>
-          <div class="four-point-star --first"></div>
-          <div class="four-point-star --second"></div>
-          <div class="four-point-star --third"></div>
-        </div>
-      </div>
+        <div class="progress"></div>
+      <!-- </div>
     </div>
-  </div>
-  <div class="progress"></div>
+  </footer> -->
 </template>
 
 <script lang="ts">
@@ -76,8 +81,8 @@ export default defineComponent({
   data() {
     return {
       artwork_list: [] as any,
-      page: 1,
       valid: true,
+      // showloader: false,
     };
   },
   components: {
@@ -113,15 +118,44 @@ export default defineComponent({
         this.getArtwork();
       }
     },
+    // handleScroll() {
+    //   const observer = new IntersectionObserver((entries) => {
+    //     entries.forEach(entry => {
+    //       if(entry.intersectionRatio > 0 && this.currentPage < this.pageCount) {
+    //         this.showloader = true;
+    //         setTimeout(() => {
+    //           this.currentPage += 1;
+    //           this.showloader = false;
+    //         }, 2000); // simulate Ajax-Call;
+    //       }
+    //     });
+    //   });
+
+    //   observer.observe(this.$refs.infinitescrolltrigger);
+    // },
   },
   mounted() {
+    // this.scrollTrigger();
     this.getArtwork();
-    window.addEventListener("scroll", this.handleScroll);
+    // window.addEventListener("scroll", this.handleScroll);
+  },
+  computed: {
+
   },
 });
 </script>
 
 <style scoped lang="scss">
+footer {
+  position: relative;
+  width: 400px;
+
+  #scroll-trigger {
+    height: 100px;
+  }
+}
+
+
 * {
   box-sizing: border-box;
 }
