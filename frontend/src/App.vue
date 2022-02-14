@@ -1,15 +1,11 @@
 <template>
-  <nav-bar />
   <router-view />
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import NavBar from "@/components/layout/NavBar.vue";
 
-export default defineComponent({
-  components: { NavBar },
-});
+export default defineComponent({});
 </script>
 
 <style lang="scss">

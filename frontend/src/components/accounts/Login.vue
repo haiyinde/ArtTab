@@ -3,6 +3,8 @@
     <!-- 페이지 제목 -->
     <page-title title="로그인"></page-title>
 
+    <p class="desc">로그인하면 멋진 작품들을 볼 수 있어요 :)</p>
+
     <!-- 이메일 입력 -->
     <label for="email" class="label-text">이메일</label>
     <input
@@ -95,7 +97,7 @@ export default defineComponent({
     }
   },
   computed: {
-    ...mapState(accountsStore, ["isConfirmEmail"]),
+    ...mapState(accountsStore, ["isConfirmEmail", "isLogin"]),
   },
   watch: {
     "account.email": function () {
@@ -106,7 +108,7 @@ export default defineComponent({
     },
   },
   methods: {
-    ...mapActions(accountsStore, ["getLogin"]),
+    ...mapActions(accountsStore, ["getLogin", "getUserInfo"]),
     // 비밀번호 컴포넌트에 입력된 텍스트 가져오기
     updatePassword(value: string) {
       this.account.password = value;
@@ -117,23 +119,19 @@ export default defineComponent({
         this.account.password && this.account.email ? true : false;
     },
     checkEmail() {
-      // 임시 -----------
-      this.login();
-      // 임시 -----------
-
       // 아이디 가입여부 확인(이메일 중복 확인과 반대)
-      // AccountsAPI.checkEmail(this.account.email)
-      //   .then((res: ResponseData) => {
-      //     if (res.data === "success") {
-      //       this.valid.email = true;
-      //     } else {
-      //       this.login();
-      //     }
-      //   })
-      //   .catch(() => {
-      //     this.valid.email = false;
-      //     alert("이메일 가입 여부 확인 중 오류가 발생했습니다.");
-      //   });
+      AccountsAPI.checkEmail(this.account.email)
+        .then((res: ResponseData) => {
+          if (res.data === "success") {
+            this.valid.email = true;
+          } else {
+            this.login();
+          }
+        })
+        .catch(() => {
+          this.valid.email = false;
+          alert("이메일 가입 여부 확인 중 오류가 발생했습니다.");
+        });
     },
     async login() {
       // 아이디 저장을 체크한 경우 쿠키에 저장하기
@@ -146,6 +144,10 @@ export default defineComponent({
       }
       // 로그인 처리하기
       await this.getLogin(this.account);
+      if (!this.isLogin) return;
+      // 사용자 정보 불러와서 세션에 저장
+      await this.getUserInfo(this.account.email);
+
       // 이메일 인증을 완료하지 않은 사용자일 경우 이메일 인증 페이지로 이동
       if (this.isConfirmEmail) {
         this.$router.push({
@@ -154,7 +156,6 @@ export default defineComponent({
       }
       // 이메일 인증을 완료한 사용자일 경우 이전페이지로 또는 메인페이지로 이동
       else {
-        this.$router.back();
         this.$router.push({ name: "Main" });
       }
     },
@@ -167,6 +168,12 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @import "@/assets/css/accounts.scss";
+
+.desc {
+  font-size: $font-medium;
+  font-weight: $weight-semi-bold;
+  color: $dark-grey;
+}
 
 .addition-box {
   display: flex;

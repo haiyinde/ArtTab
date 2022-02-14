@@ -1,46 +1,17 @@
 <template>
   <div id="navbar">
     <div class="navbar-left">
-      <router-link :to="{ name: 'Main' }">
+      <router-link :to="{ name: 'Login' }">
         <img src="@/assets/mainlogo.png" alt="mainlogo" />
       </router-link>
-      <div class="searchbar-box" :class="{ showNav: isShowNav }">
-        <input
-          type="text"
-          class="searchbar"
-          placeholder="작가 또는 작품명을 입력하세요."
-        />
-        <magnify class="icon searchbar-icon"></magnify>
-      </div>
     </div>
     <nav :class="{ showNav: isShowNav }">
-      <!-- 사용자 로그인 전 -->
-      <!-- <ul v-if="!isLogin">
+      <ul v-if="!isLogin">
         <li @click="closeNavBar">
           <router-link :to="{ name: 'Login' }">로그인</router-link>
         </li>
         <li @click="closeNavBar">
           <router-link :to="{ name: 'SignUp' }">회원가입</router-link>
-        </li>
-      </ul> -->
-      <!-- 사용자 로그인 후 -->
-      <ul>
-        <li @click="closeNavBar">
-          <router-link :to="{ name: 'ArtworkCreate' }">그림 올리기</router-link>
-        </li>
-        <li class="tooltip" @click="closeNavBar">
-          <router-link :to="{ name: 'Profile', params: { id: userInfo.id } }"
-            ><account-circle-outline
-              class="icon navbar-icon"
-            ></account-circle-outline>
-            <div class="navbar-text">내 정보</div></router-link
-          >
-          <span class="tooltip-text">내 정보</span>
-        </li>
-        <li class="tooltip" @click="closeNavBar">
-          <logout class="icon navbar-icon" @click="onClickLogout"></logout>
-          <div class="navbar-text logout" @click="onClickLogout">로그아웃</div>
-          <span class="tooltip-text">로그아웃</span>
         </li>
       </ul>
     </nav>
@@ -50,7 +21,7 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { Magnify, AccountCircleOutline, Logout, TextSearch } from "mdue";
+import { TextSearch } from "mdue";
 import { mapState, mapActions } from "vuex";
 
 const accountsStore = "accountsStore";
@@ -58,9 +29,6 @@ const accountsStore = "accountsStore";
 export default defineComponent({
   name: "NavBar",
   components: {
-    Magnify,
-    AccountCircleOutline,
-    Logout,
     TextSearch,
   },
   data() {

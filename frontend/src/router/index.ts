@@ -1,4 +1,6 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
+import store from "@/store";
+
 // 메인 페이지
 import Main from "@/views/Main.vue";
 // 계정 페이지
@@ -33,26 +35,41 @@ const routes: Array<RouteRecordRaw> = [
         path: "login",
         name: "Login",
         component: Login,
+        meta: {
+          notRequireLogin: true,
+        },
       },
       {
         path: "signup",
         name: "SignUp",
         component: SignUp,
+        meta: {
+          notRequireLogin: true,
+        },
       },
       {
         path: "confirmemail",
         name: "ConfirmEmail",
         component: ConfirmEmail,
+        meta: {
+          notRequireLogin: true,
+        },
       },
       {
         path: "insertnickname",
         name: "InsertNickname",
         component: InsertNickname,
+        meta: {
+          notRequireLogin: true,
+        },
       },
       {
         path: "findpassword",
         name: "FindPassword",
         component: FindPassword,
+        meta: {
+          notRequireLogin: true,
+        },
       },
     ],
   },
@@ -95,6 +112,27 @@ const routes: Array<RouteRecordRaw> = [
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
+});
+
+router.beforeEach(function (to, from, next) {
+  const isLogin = store.getters["accountsStore/checkLogin"];
+  const userInfo = store.getters["accountsStore/checkUserInfo"];
+
+  // to: 이동할 url에 해당하는 라우팅 객체
+  if (
+    to.matched.some(function (routeInfo) {
+      return routeInfo.meta.notRequireLogin;
+    })
+  ) {
+    // 로그인 필요없는 페이지(로그인, 회원가입 관련)
+    next();
+  } else if (isLogin && userInfo) {
+    // 로그인 한 경우 클릭한 페이지로 이동
+    next();
+  } else {
+    // 로그인 하지 않은 경우 로그인 페이지로 이동
+    next("/accounts/login");
+  }
 });
 
 export default router;
