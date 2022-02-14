@@ -59,6 +59,7 @@
       다음
     </button>
   </div>
+  <spinner :isLoading="isLoading"></spinner>
 </template>
 
 <script lang="ts">
@@ -68,6 +69,7 @@ import InputPassword from "@/components/accounts/child/InputPassword.vue";
 import { validateEmail } from "@/utils/validation";
 import AccountsAPI from "@/apis/accountsAPI";
 import ResponseData from "@/types/ResponseData";
+import Spinner from "@/components/common/Spinner.vue";
 import PV from "password-validator"; // 비밀번호 유효성 검사 라이브러리
 import LoginInfo from "@/types/LoginInfo";
 import { mapActions } from "vuex";
@@ -79,6 +81,7 @@ export default defineComponent({
   components: {
     PageTitle,
     InputPassword,
+    Spinner,
   },
   data() {
     return {
@@ -97,6 +100,7 @@ export default defineComponent({
         checkPwd: false,
       },
       isCompleted: false,
+      isLoading: false,
     };
   },
   created() {
@@ -192,25 +196,34 @@ export default defineComponent({
       this.checkForm();
     },
     // 가입 처리 후 다음 단계(이메일 인증)로 이동
-    moveConfirmEmail() {
+    async moveConfirmEmail() {
       // 회원가입 처리
-      AccountsAPI.signUp(this.account)
+      this.startSpinner();
+      await AccountsAPI.signUp(this.account)
         .then((res: ResponseData) => {
           if (res.data === "success") {
             // store에 이메일 저장 및 메일 전송 후 다음 단계 페이지로 이동
             this.storeEmail(this.account.email);
 
+            this.endSpinner();
             this.$router.push({
               name: "ConfirmEmail",
             });
           } else {
+            this.endSpinner();
             alert("가입 중 오류가 발생했습니다. 다시 시도해주시기 바랍니다.");
           }
         })
-        .catch((e) => {
-          console.log(e);
+        .catch(() => {
+          this.endSpinner();
           alert("가입 중 오류가 발생했습니다. 다시 시도해주시기 바랍니다.");
         });
+    },
+    startSpinner() {
+      this.isLoading = true;
+    },
+    endSpinner() {
+      this.isLoading = false;
     },
   },
 });

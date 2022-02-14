@@ -1,115 +1,67 @@
 <template>
-  <div class="container">
-    <masonry-wall
-      :items="artwork_list"
-      :ssr-columns="1"
-      :column-width="300"
-      :gap="16"
-    >
-      <template #default="{ item }">
-        <div class="thumbnail-wrapper">
-          <img :src="item.image" :alt="`${item.title}`" />
-          <div class="overlay">
-            <div class="info">
-              <router-link
-                :to="{ name: 'ArtworkDetail', params: { id: item.artworkId } }"
-              >
-                <span style="color: white" class="artwork-title">{{
-                  item.title
-                }}</span>
-              </router-link>
-              <router-link
-                :to="{ name: 'Profile', params: { id: item.memberId } }"
-              >
-                <span style="color: white" class="artwork-artist"
-                  >By {{ item.nickname }}</span
+  <div>
+    <div class="container">
+      <masonry-wall
+        :items="items"
+        :ssr-columns="1"
+        :column-width="300"
+        :gap="16"
+      >
+        <template #default="{ item }">
+          <div class="thumbnail-wrapper">
+            <img :src="item.imageUrl" :alt="`${item.artworkTitle}`" />
+            <div class="overlay">
+              <div class="info">
+                <router-link
+                  :to="{ name: 'ArtworkDetail', params: { id: item.artworkId } }"
                 >
-              </router-link>
-            </div>
-            <div class="button-top-right">
-              <like-button :liked="!valid" @click="handleLike"></like-button>
+                  <span style="color: white" class="artwork-title">{{
+                    item.artworkTitle
+                  }}</span>
+                </router-link>
+                <router-link
+                  :to="{ name: 'Profile', params: { id: item.memberId } }"
+                >
+                  <span style="color: white" class="artwork-artist"
+                    >By {{ item.memberNickname }}</span
+                  >
+                </router-link>
+              </div>
+              <div class="button-top-right">
+                <!-- <like-button :liked="!valid" @click="handleLike"></like-button> -->
+              </div>
             </div>
           </div>
-        </div>
-      </template>
-    </masonry-wall>
+        </template>
+      </masonry-wall>
+    </div>
+    <!-- <div v-for="(item, i) in items" :key="i">
+      <img :src="item.imageUrl" :alt="item.artworkTitle">
+    </div> -->
+    <Observer @intersect="intersected"/>
   </div>
-  <loader></loader>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
-import LikeButton from "../common/LikeButton.vue";
+<script>
 import ArtworkAPI from "@/apis/artworkAPI";
-import Loader from "@/components/main/child/Loader.vue";
+import Observer from "@/components/main/child/Observer.vue";
 
-export default defineComponent({
-  data() {
-    return {
-      artwork_list: [] as any,
-      valid: true,
-      page: 0,
-    };
+export default {
+  data: () => ({ page: 0, items: [] }),
+  methods: {
+    async intersected() {
+      const res = await ArtworkAPI.getArtworkList(this.page);
+      this.page++;
+      const items = res.data;
+      console.log(items);
+      this.items = [...this.items, ...items];
+    },
   },
   components: {
-    LikeButton,
-    Loader,
+    Observer,
   },
-  methods: {
-    handleLike() {
-      this.valid = !this.valid;
-    },
-    async getArtwork() {
-      let new_artworks = await ArtworkAPI.getArtworkList(this.page);
-      let temp = new_artworks.data;
-      console.log(temp);
-      const new_artwork = [];
-      let size = Object.keys(temp).length;
-      for (let i = 0; i < size; i++) {
-        new_artwork.push({
-          artworkId: temp[i].artworkId,
-          title: temp[i].artworkTitle,
-          memberId: temp[i].memberId,
-          nickname: temp[i].memberNickname,
-          image: temp[i].imageUrl,
-        });
-      }
-      this.artwork_list = [...this.artwork_list, ...new_artwork];
-    },
-    // 무한스크롤 수정
-    handleScroll() {
-      if (
-        window.scrollY + window.innerHeight >=
-        document.body.scrollHeight - 50
-      ) {
-        this.getArtwork();
-      }
-    },
-    // handleScroll() {
-    //   const observer = new IntersectionObserver((entries) => {
-    //     entries.forEach(entry => {
-    //       if(entry.intersectionRatio > 0 && this.currentPage < this.pageCount) {
-    //         this.showloader = true;
-    //         setTimeout(() => {
-    //           this.currentPage += 1;
-    //           this.showloader = false;
-    //         }, 2000); // simulate Ajax-Call;
-    //       }
-    //     });
-    //   });
-
-    //   observer.observe(this.$refs.infinitescrolltrigger);
-    // },
-  },
-  mounted() {
-    // this.scrollTrigger();
-    this.getArtwork();
-    // window.addEventListener("scroll", this.handleScroll);
-  },
-  computed: {},
-});
+};
 </script>
-
 <style scoped lang="scss">
 footer {
   position: relative;

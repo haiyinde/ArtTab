@@ -1,4 +1,5 @@
 <template>
+  <account-nav-bar></account-nav-bar>
   <div id="accounts">
     <router-view />
   </div>
@@ -6,10 +7,13 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import AccountNavBar from "@/components/layout/AccountNavBar.vue";
 
 export default defineComponent({
   name: "Accounts",
-  components: {},
+  components: {
+    AccountNavBar,
+  },
 });
 </script>
 

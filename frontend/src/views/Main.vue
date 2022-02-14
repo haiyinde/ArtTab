@@ -1,4 +1,5 @@
 <template>
+  <nav-bar />
   <!-- Tab menu -->
   <div class="tab">
     <input type="radio" name="tabmenu" id="feed" checked />
@@ -23,12 +24,14 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import NavBar from "@/components/layout/NavBar.vue";
 import Feed from "../components/main/Feed.vue";
 import FavouriteArtwork from "../components/main/FavouriteArtwork.vue";
 import FavouriteArtist from "../components/main/FavouriteArtist.vue";
 
 export default defineComponent({
   components: {
+    NavBar,
     Feed,
     FavouriteArtwork,
     FavouriteArtist,
@@ -78,7 +81,9 @@ input[id="FavouriteArtist"]:checked ~ .con3 {
   display: block;
 }
 
-div {
-  margin: 1rem;
+.tab {
+  div {
+    margin: 1rem;
+  }
 }
 </style>
