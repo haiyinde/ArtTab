@@ -67,5 +67,5 @@ public interface FollowRepository extends JpaRepository<Follow, Long> {
      * @return id가 팔로우하는 회원의 리스트를 리턴합니다
      */
     @Query(value = "SELECT * FROM follow WHERE follower = :id", nativeQuery = true)
-    List<Follow> findAllFollowing(Long id);
+    List<Follow> findAllFollowing(@Param("id") Long id);
 }

@@ -27,6 +27,6 @@ public class ArtworkListResponseDto {
         this.artworkTitle=entity.getTitle();
         this.artworkRegdate=entity.getRegdate();
         this.saveFileName=entity.getSaveFileName();
-        this.saveFolder="file:///" + entity.getSaveFolder();
+        this.saveFolder=entity.getSaveFolder();
     }
 }
