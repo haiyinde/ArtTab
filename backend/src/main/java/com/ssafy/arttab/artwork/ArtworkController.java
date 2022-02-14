@@ -43,7 +43,8 @@ public class ArtworkController {
         LocalDateTime time=LocalDateTime.now();
         String originFileName=file.getOriginalFilename();
         String saveFileName=new MD5Generator(originFileName+time+writerId).toString();
-        String upperPath=System.getProperty("user.home")+File.separator+"image"; // artwork 디렉토리
+//        String upperPath=System.getProperty("user.home")+File.separator+"artwork"; // artwork 디렉토리 -> 소스 바깥에 저장
+        String upperPath=System.getProperty("user.dir")+"/src/main/resources/static/artwork";
 //        String savePath=upperPath+File.separator+writerId; // artwork의 사용자 디렉토리
         String savePath=upperPath; // artwork의 사용자 디렉토리
 
@@ -108,7 +109,7 @@ public class ArtworkController {
         LocalDateTime time=LocalDateTime.now();
         String originFileName=file.getOriginalFilename();
         String saveFileName=new MD5Generator(originFileName+time+writerId).toString();
-        String upperPath=System.getProperty("user.home")+File.separator+"image"; // artwork 디렉토리
+        String upperPath=System.getProperty("user.home")+File.separator+"artwork"; // artwork 디렉토리
 //        String savePath=upperPath+File.separator+writerId; // artwork의 사용자 디렉토리
         String savePath=upperPath; // artwork의 사용자 디렉토리
         String saveFolder=savePath+File.separator+saveFileName;

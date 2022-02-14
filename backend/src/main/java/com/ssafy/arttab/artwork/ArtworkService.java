@@ -93,7 +93,7 @@ public class ArtworkService {
                 .title(artwork.getTitle())
                 .description(artwork.getDescription())
                 .regdate(artwork.getRegdate())
-                .artworkSaveFolder("file:///"+artwork.getSaveFolder())
+                .artworkSaveFolder(artwork.getSaveFileName())
                 .writerProfileSaveFolder("file:///"+writer.getSaveFolder())
                 .writerEmail(writer.getEmail())
                 .likeNum(likeRepository.selectLikeNumByArtworkId(artwork.getId()))

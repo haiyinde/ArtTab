@@ -20,6 +20,7 @@ public class ArtworkResponseDto { // 작품 정보를 리턴하기 위한 dto
     private int likeNum; // 좋아요 수
     private boolean likeOrNot; // 로그인한 사용자가 작품 좋아요 했는지 여부
     private boolean followOrNot; // 로그인한 사용자가 작가를 팔로우 했는지 여부
+//    private String imageUrl;
 
     @Builder
 
@@ -35,5 +36,6 @@ public class ArtworkResponseDto { // 작품 정보를 리턴하기 위한 dto
         this.likeNum = likeNum;
         this.likeOrNot = likeOrNot;
         this.followOrNot = followOrNot;
+//        this.imageUrl="localhost:8080/images/"+saveFileName;
     }
 }
