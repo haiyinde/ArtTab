@@ -91,8 +91,8 @@ export default defineComponent({
       AccountsAPI.addNickname(this.joinEmail, this.nickname)
         .then((res: ResponseData) => {
           if (res.data === "success") {
-            // 로그인 처리 후 메인페이지로 이동
-            this.$router.push({ name: "Main" });
+            // 로그인 처리 후 메인페이지로 이동 추가하기
+            this.$router.push({ name: "Login" });
           } else {
             alert("닉네임 등록 중 오류가 발생했습니다.");
           }
