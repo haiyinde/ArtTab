@@ -3,7 +3,10 @@ package com.ssafy.arttab.config;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import java.io.File;
 
 /**
  * @packageName : com.ssafy.arttab.config
@@ -32,5 +35,13 @@ public class WebConfig implements WebMvcConfigurer {
                 );
 
 
+    }
+
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/artworks/**")
+                .addResourceLocations("file:///"+System.getProperty("user.home")+ File.separator+"artwork"+File.separator);
+        registry.addResourceHandler("/profiles/**")
+                .addResourceLocations("file:///"+System.getProperty("user.home")+ File.separator+"profile"+File.separator);
     }
 }
