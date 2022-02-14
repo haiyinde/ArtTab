@@ -71,7 +71,8 @@ export default defineComponent({
           title: temp[i].artworkTitle,
           memberId: temp[i].memberId,
           nickname: temp[i].memberNickname,
-          image: temp[i].saveFolder,
+          // image: temp[i].imageUrl,
+          image: "http://" + temp[i].imageUrl,
         });
       }
       this.artwork_list = [...this.artwork_list, ...new_artwork];
