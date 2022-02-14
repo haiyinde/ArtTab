@@ -40,6 +40,9 @@ public class Member {
     @Column
     private String saveFolder; // 회원의 프로필 사진 경로
 
+    @Column
+    private String saveFilename; // 프로필 사진 이름
+
     @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
     private List<Comment> commentList;
 
@@ -75,4 +78,6 @@ public class Member {
     }
 
     public void updateSaveFolder(String saveFolder) {this.saveFolder=saveFolder;}
+
+    public void updateSaveFileName(String saveFilename) {this.saveFilename=saveFilename;}
 }

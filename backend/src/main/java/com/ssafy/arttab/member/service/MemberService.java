@@ -23,6 +23,7 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -49,6 +50,9 @@ public class MemberService {
     private final FollowRepository followRepository;
     private final ArtworkRepository artworkRepository;
 
+    private final String artworkImgUrl="http://localhost:8080/artworks/";
+    private final String profileImgUrl="http://localhost:8080/profiles/";
+
     /**
      * 회원 등록
      * @param memberSaveRequest
@@ -64,12 +68,13 @@ public class MemberService {
         var password = BCrypt.hashpw(memberSaveRequest.getPassword(),BCrypt.gensalt());
 
         // 프로필 사진 기본 이미지로 설정
-        String defaultSaveFolder=System.getProperty("user.dir") + "\\profile\\default.jpg";
+        String defaultSaveFolder=System.getProperty("user.home") + File.separator+"profile"+File.separator+"default.jpg";
 
         Member member = Member.builder()
                 .email(memberSaveRequest.getEmail())
                 .password(password)
                 .saveFolder(defaultSaveFolder)
+                .saveFilename("default.jpg")
                 .build();
 
         try{
@@ -320,9 +325,14 @@ public class MemberService {
                 .followingNum(followRepository.findAllFollowingCnt(profileMember))
                 .artworkNum(artworkRepository.findNumByMemberId(profileMember))
                 .email(profileMemberEmail)
-                .profileImageUrl("file:///"+memberRepository.findMemberByEmail(profileMemberEmail).get().getSaveFolder())
+                .profileImageUrl(profileImgUrl+memberRepository.findMemberByEmail(profileMemberEmail).get().getSaveFilename())
                 .build();
 
         return response;
+    }
+
+    public void updateSaveFilename(LoginEmail loginEmail, String saveFileName) {
+        var member=memberRepository.findByEmail(loginEmail.getEmail()).orElseThrow();
+        member.updateSaveFileName(saveFileName);
     }
 }
