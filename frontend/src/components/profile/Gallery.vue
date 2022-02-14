@@ -1,8 +1,17 @@
 <template>
+  <p>Gallery Component</p>
+  {{ userInfo.id }}
+  {{ userInfo.email }}
+  {{ userInfo.intro }}
+  {{ userInfo.nickname }}
+  {{ profileInfo.id }}
   <div class="container">
     <div class="gallery-header">
       <h3>마이 갤러리</h3>
-      <router-link class="decorate-gallery-btn" :to="{ name: 'Profile' }"
+      <router-link
+        v-if="userInfo.id == profileInfo.id"
+        class="decorate-gallery-btn"
+        :to="{ name: 'Profile' }"
         >꾸미기</router-link
       >
     </div>
@@ -17,23 +26,37 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import { mapState, mapMutations } from "vuex";
 
-export default defineComponent({
-  // data(): {
-  //   return {
-  //     galleryImage: [] as any,
-  //   }
-  // },
-  // methods: {
-  //   getGalleryImage() {
-  //     // Image API
-  //     return this.galleryImage
-  //   }
-  // },
-  // mounted: {
+const accountsStore = "accountsStore";
+export default defineComponent(
+  {
+    data() {
+      return {
+        // 타인 프로필 조회 정보
+        profileInfo: {
+          email: "",
+          nickname: "",
+          intro: "",
+          id: this.$route.params.id as unknown as number,
+        },
+        // galleryImage: [] as any,
+      };
+    },
+    computed: {
+      ...mapState(accountsStore, ["userInfo"]),
+    },
+    methods: {
+      // getGalleryImage() {
+      //   // Image API
+      //   return this.galleryImage
+    },
+  }
+  // mounted() {
   //   this.getGalleryImage();
   // },
-});
+  // }
+);
 </script>
 
 <style lang="scss" scoped>

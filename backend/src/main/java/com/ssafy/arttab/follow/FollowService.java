@@ -1,11 +1,16 @@
 package com.ssafy.arttab.follow;
 
+import com.ssafy.arttab.exception.member.NoSuchMemberException;
 import com.ssafy.arttab.follow.dto.FollowSaveRequestDto;
+import com.ssafy.arttab.follow.dto.FollowingListResponseDto;
 import com.ssafy.arttab.member.domain.Member;
 import com.ssafy.arttab.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -50,9 +55,19 @@ public class FollowService {
         var checkFollow = followRepository.checkFollow(follower.getId(), followee.getId())
                 .orElseThrow(() -> new
                         IllegalArgumentException("follow 값이 존재하지 않습니다."));
-        System.out.println(checkFollow);
         if (checkFollow > 0){
             followRepository.unFollow(follower.getId(), followee.getId());
         }
+    }
+
+    @Transactional
+    public List<FollowingListResponseDto> selectAllFollowing(Long id){
+        var list = followRepository.findAllFollowing(id);
+        List<FollowingListResponseDto> responseDtos = new ArrayList<>();
+        for (Follow follow : list) {
+            boolean followState = (followRepository.isFollow(follow.getFollower().getId(), follow.getFollowee().getId()) > 0) ? true : false;
+            responseDtos.add(new FollowingListResponseDto(follow.getFollowee(), followState));
+        }
+        return responseDtos;
     }
 }

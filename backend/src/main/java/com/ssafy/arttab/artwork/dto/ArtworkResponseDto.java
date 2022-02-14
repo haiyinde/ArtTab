@@ -22,7 +22,6 @@ public class ArtworkResponseDto { // 작품 정보를 리턴하기 위한 dto
     private boolean followOrNot; // 로그인한 사용자가 작가를 팔로우 했는지 여부
 
     @Builder
-
     public ArtworkResponseDto(Long writerId, String writerNickname, String title, String description, LocalDateTime regdate, String artworkSaveFolder, String writerProfileSaveFolder, String writerEmail, int likeNum, boolean likeOrNot, boolean followOrNot) {
         this.writerId = writerId;
         this.writerNickname = writerNickname;

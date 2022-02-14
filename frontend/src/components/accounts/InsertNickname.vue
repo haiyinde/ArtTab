@@ -60,14 +60,17 @@ export default defineComponent({
   },
   watch: {
     nickname: function () {
-      this.checkNickname();
+      if (!this.nickname) {
+        this.isCompleted = false;
+        this.valid.nickname = false;
+      } else {
+        this.checkNickname();
+      }
     },
   },
   methods: {
     // 닉네임 유효성 검사
     checkNickname() {
-      // 닉네임 형식 검사 필요시 추가
-
       // 닉네임 중복 검사
       AccountsAPI.checkNickname(this.nickname)
         .then((res: ResponseData) => {
