@@ -46,7 +46,7 @@ export default defineComponent({
   data() {
     return {
       artwork_list: [] as any,
-      page: 1,
+      page: 0,
       valid: true,
     };
   },
@@ -58,7 +58,7 @@ export default defineComponent({
       this.valid = !this.valid;
     },
     async getArtwork() {
-      let new_artworks = await ArtworkAPI.getArtworkList();
+      let new_artworks = await ArtworkAPI.getArtworkList(this.page);
       let temp = new_artworks.data
       console.log(temp);
       const new_artwork = []
