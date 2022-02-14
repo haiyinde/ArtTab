@@ -18,6 +18,10 @@ public class NoSuchMemberException extends CustomException {
     private static final String MESSAGE = "fail";
 
     public NoSuchMemberException() {
-        super(MESSAGE, HttpStatus.BAD_REQUEST);
+        super(MESSAGE, HttpStatus.OK);
     }
+    public NoSuchMemberException(String MESSAGE) {
+        super(MESSAGE, HttpStatus.OK);
+    }
+
 }

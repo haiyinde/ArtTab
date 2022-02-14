@@ -9,7 +9,6 @@ import com.ssafy.arttab.follow.FollowRepository;
 import com.ssafy.arttab.member.domain.MailAuth;
 import com.ssafy.arttab.member.domain.Member;
 import com.ssafy.arttab.member.dto.LoginEmail;
-import com.ssafy.arttab.member.dto.request.*;
 import com.ssafy.arttab.member.dto.User;
 import com.ssafy.arttab.member.dto.request.AuthNumCheckRequest;
 import com.ssafy.arttab.member.dto.request.IntroUpdateRequest;
@@ -24,7 +23,7 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
+import java.util.HashMap;
 import java.util.UUID;
 
 /**
@@ -43,7 +42,7 @@ import java.util.UUID;
 @Transactional
 @RequiredArgsConstructor
 public class MemberService {
-
+    private final JWTUtil jwtUtil;
     private final MemberRepository memberRepository;
     private final MailSendService mailSendService;
     private final MailAuthRepogitory mailAuthRepogitory;
@@ -171,18 +170,21 @@ public class MemberService {
      * 회원 로그인
      * @param user
      */
-//    public void login(final User user){
-//        Member member = memberRepository.findByEmail(user.getEmail())
-//                .orElseThrow(() -> new NoSuchMemberException());
-//        if(member.getAuth()!=1){
-//            throw new IllegalArgumentException("인증 안된 회원");
-//        }
-//        if (!BCrypt.checkpw(user.getPassword(), member.getPassword())) {
-//            throw new IllegalArgumentException("잘못된 비밀번호입니다.");
-//        }
-//        //토큰 발급
-//        return jwtUtil.createToken(member.getId());
-//    }
+    public String login(final User user){
+        Member member = memberRepository.findByEmail(user.getEmail())
+                .orElseThrow(NoSuchMemberException::new);
+
+        if(member.getAuth()!=1){
+            throw new IllegalArgumentException("메일 인증으로 이동");
+        }
+        if (!BCrypt.checkpw(user.getPassword(), member.getPassword())) {
+            throw new IllegalArgumentException("비밀번호 잘못됨");
+        }
+        //토큰 발급
+        HashMap<String, Object> payload = new HashMap();
+        payload.put("Id",member.getId());
+        return jwtUtil.createToken(payload);
+    }
     /**
      * 닉네임 등록
      * @param loginEmail
@@ -290,7 +292,7 @@ public class MemberService {
     // saveFolder 수정: 이메일에 해당하는 프로필 사진 수정
     @Transactional
     public void updateSaveFolder(final LoginEmail loginEmail, String saveFolder){
-        var member=memberRepository.findByEmail(loginEmail.getEmail()).orElseThrow(); 
+        var member=memberRepository.findByEmail(loginEmail.getEmail()).orElseThrow();
         member.updateSaveFolder(saveFolder);
     }
 
