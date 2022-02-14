@@ -55,6 +55,7 @@ export default defineComponent({
       artwork_list: [] as any,
       page: 0,
       valid: true,
+      // showloader: false,
     };
   },
   components: {
@@ -92,15 +93,44 @@ export default defineComponent({
         this.getArtwork();
       }
     },
+    // handleScroll() {
+    //   const observer = new IntersectionObserver((entries) => {
+    //     entries.forEach(entry => {
+    //       if(entry.intersectionRatio > 0 && this.currentPage < this.pageCount) {
+    //         this.showloader = true;
+    //         setTimeout(() => {
+    //           this.currentPage += 1;
+    //           this.showloader = false;
+    //         }, 2000); // simulate Ajax-Call;
+    //       }
+    //     });
+    //   });
+
+    //   observer.observe(this.$refs.infinitescrolltrigger);
+    // },
   },
   mounted() {
+    // this.scrollTrigger();
     this.getArtwork();
-    window.addEventListener("scroll", this.handleScroll);
+    // window.addEventListener("scroll", this.handleScroll);
+  },
+  computed: {
+
   },
 });
 </script>
 
 <style scoped lang="scss">
+footer {
+  position: relative;
+  width: 400px;
+
+  #scroll-trigger {
+    height: 100px;
+  }
+}
+
+
 * {
   box-sizing: border-box;
 }

@@ -16,7 +16,7 @@
           rows="1"
           maxlength="100"
           @keydown="resizeTextarea"
-          @keyup.enter="updateComment"
+          @keydown.enter="updateComment"
         />
         <button @click="updateComment">수정</button>
         <button @click="closeUpdate">취소</button>
@@ -88,23 +88,37 @@ export default defineComponent({
       CommentsAPI.updateComment(this.comment.id, {
         content: this.updatedContent,
         email: this.userInfo.email,
-      }).then((res: ResponseData) => {
-        this.$emit("getList");
-        console.log(res);
-      });
+      })
+        .then((res: ResponseData) => {
+          if (res.data === "success") {
+            this.$emit("getList");
+            this.isShowUpdate = false;
+          } else {
+            alert("수정 중 오류가 발생했습니다.");
+          }
+        })
+        .catch(() => {
+          alert("수정 중 오류가 발생했습니다.");
+        });
     },
     deleteComment() {
       if (!confirm("정말 삭제하시겠습니까?")) return;
-      CommentsAPI.deleteComment(this.comment.id).then((res: ResponseData) => {
-        this.$emit("getList");
-        console.log(res);
-      });
+      CommentsAPI.deleteComment(this.comment.id)
+        .then((res: ResponseData) => {
+          if (res.data === "success") {
+            this.$emit("getList");
+          } else {
+            alert("삭제 중 오류가 발생했습니다.");
+          }
+        })
+        .catch(() => {
+          alert("삭제 중 오류가 발생했습니다.");
+        });
     },
     resizeTextarea() {
       const area = document.querySelector(
         ".inputcomment"
       ) as HTMLTextAreaElement;
-      console.log(area.scrollHeight);
       area.style.height = "auto";
       area.style.height = `${area.scrollHeight}px`;
     },

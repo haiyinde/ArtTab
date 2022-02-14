@@ -35,20 +35,20 @@
         </div>
       </div>
       <div class="additionalinfo">
-        <like-button
-          class="icon"
-          :liked="artwork.likeOrNot"
-          :artworkId="artworkId"
-          :userId="userInfo.id"
-          @toggle="toggleLike"
-          @message="showToastMessage"
-        ></like-button>
-        <div class="text">{{ artwork.likeNum }}</div>
+        <div v-if="artwork.writerId !== userInfo.id" class="like-box">
+          <like-button
+            class="icon"
+            :liked="artwork.likeOrNot"
+            :artworkId="artworkId"
+            :userId="userInfo.id"
+            @toggle="toggleLike"
+            @message="showToastMessage"
+          ></like-button>
+          <div>{{ artwork.likeNum }}</div>
+        </div>
         <link-variant class="icon" @click="copyClipboard"></link-variant>
         <calendar-clock class="icon icon-date"></calendar-clock>
-        <div class="text">
-          {{ computedDate }}
-        </div>
+        <div>{{ computedDate }}</div>
       </div>
       <div class="desc">{{ artwork.desciption }}</div>
     </div>
@@ -65,6 +65,7 @@ import FollowButton from "@/components/common/FollowButton.vue";
 import ToastMessage from "@/components/common/ToastMessage.vue";
 import ArtworkAPI from "@/apis/artworkAPI";
 import ResponseData from "@/types/ResponseData";
+import ArtworkInfo from "@/types/ArtworkInfo";
 import { CalendarClock, LinkVariant } from "mdue";
 import { diffTime } from "@/utils/timeDifference";
 import { mapState } from "vuex";
@@ -83,32 +84,12 @@ export default defineComponent({
   },
   data() {
     return {
-      // 백에서 보내주는 정보 구조에 따라 변경 필요
-      // url에 추가해서 얻어오기(url복사를 위해 작품별 별도 url 필요)
       artworkId: Number(this.$route.params.id),
-      artwork: {
-        artworkSaveFolder:
-          // "https://cdn.pixabay.com/photo/2018/07/18/15/43/animal-3546613_960_720.jpg",
-          "https://cdn.pixabay.com/photo/2019/05/04/15/24/art-4178302_960_720.jpg",
-        desciption:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec odio urna, lobortis at finibus vitae, consectetur eu neque. Pellentesque feugiat id eros nec imperdiet. Proin in magna eget nibh volutpat varius eget eu urna. Quisque tempor tincidunt tellus. Vivamus ac dignissim mauris. Sed non porttitor erat. Fusce in rhoncus lectus. Sed feugiat leo at ante auctor tincidunt.",
-        followOrNot: false,
-        likeNum: 4652,
-        likeOrNot: false,
-        regdate: "2022-02-10T09:54:24.762Z",
-        title: "여우",
-        writerEmail: "ssafy@gmail.com",
-        writerId: 1,
-        writerNickname: "내이름은여우",
-        writerProfileSaveFolder:
-          "https://cdn.pixabay.com/photo/2021/03/14/11/14/fish-6093991_960_720.jpg",
-      },
+      artwork: {} as ArtworkInfo,
     };
   },
   mounted() {
-    // 작품 상세 정보 불러온 후
     this.getArtworkDetail();
-    // 팔로우 및 좋아요 여부에 따라 버튼 변경하기
   },
   computed: {
     ...mapState(accountsStore, ["userInfo"]),
@@ -127,7 +108,8 @@ export default defineComponent({
         Number(this.userInfo.id)
       )
         .then((res: ResponseData) => {
-          console.log(res);
+          console.log(res.data);
+          this.artwork = res.data;
         })
         .catch((e) => {
           console.log(e);
@@ -207,12 +189,12 @@ export default defineComponent({
       }
     }
     .profile-title {
+      margin-bottom: $size-small;
       font-size: $font-large;
       font-weight: $weight-bold;
     }
     .profile-writer {
       display: inline-block;
-      margin-top: $size-small;
       margin-right: $size-small;
     }
   }
@@ -236,6 +218,10 @@ export default defineComponent({
       cursor: auto;
       font-size: $font-medium;
     }
+  }
+  .like-box {
+    display: flex;
+    align-items: center;
   }
 }
 
