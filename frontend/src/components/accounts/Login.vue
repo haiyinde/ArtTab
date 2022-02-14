@@ -46,7 +46,12 @@
     <!-- SNS 로그인/회원가입 -->
     <div class="subtitle">SNS로 간편 로그인/회원가입하기</div>
     <div class="snslogin">
-      <img class="circle" src="@/assets/images/kakao.png" alt="카카오 로그인" />
+      <img
+        class="circle"
+        src="@/assets/images/kakao.png"
+        alt="카카오 로그인"
+        @click="kakaoLogin"
+      />
       <img class="circle" src="@/assets/images/google.png" alt="구글 로그인" />
       <!-- <img src="@/assets/images/kakaologin.png" alt="카카오 로그인" />
       <img src="@/assets/images/googlelogin.png" alt="카카오 로그인" /> -->
@@ -64,6 +69,7 @@ import PageTitle from "@/components/accounts/child/PageTitle.vue";
 import InputPassword from "@/components/accounts/child/InputPassword.vue";
 import AccountsAPI from "@/apis/accountsAPI";
 import ResponseData from "@/types/ResponseData";
+import { SNS_BASE_URL } from "@/config";
 import { useCookies } from "vue3-cookies";
 import { mapState, mapActions } from "vuex";
 
@@ -158,6 +164,10 @@ export default defineComponent({
       else {
         this.$router.push({ name: "Main" });
       }
+    },
+    kakaoLogin() {
+      const KAKAO_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.VUE_APP_KAKAO_REST_KEY}&redirect_uri=${SNS_BASE_URL}${process.env.VUE_APP_KAKAO_REDIRECT_URI}&response_type=code`;
+      window.open(KAKAO_URL, "_self");
     },
     moveSignUp() {
       this.$router.push({ name: "SignUp" });
