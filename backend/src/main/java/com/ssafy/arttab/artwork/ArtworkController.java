@@ -4,6 +4,7 @@ import com.ssafy.arttab.artwork.dto.*;
 import com.ssafy.arttab.member.dto.response.MemberInfoResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -139,10 +140,10 @@ public class ArtworkController {
     }
 
     // 작품 전체 조회 api -최근순 정렬
-    @ApiOperation(value ="전체 작품을 최근순으로 정렬한다.")
+    @ApiOperation(value ="전체 작품을 최근순으로 정렬한다.", notes="내용이 없는 페이지를 요청하면 null이 리턴된다.")
     @GetMapping("api/v1/artwork")
-    public ResponseEntity<List<ArtworkListResponseDto>> getArtworkList(){
-        List<ArtworkListResponseDto> list=artworkService.getArtworkList();
+    public ResponseEntity<List<ArtworkListResponseDto>> getArtworkList(@ApiParam("가져올 페이지 (0페이지부터 시작)") @RequestParam("page") int page){
+        List<ArtworkListResponseDto> list=artworkService.getArtworkList(page);
 
         if(list.isEmpty()){
             return new ResponseEntity<>(null, HttpStatus.OK);

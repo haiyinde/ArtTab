@@ -3,9 +3,11 @@ package com.ssafy.arttab.artwork.dto;
 import com.ssafy.arttab.artwork.Artwork;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
+@Setter
 @Getter
 public class ArtworkListResponseDto {
 
