@@ -8,8 +8,8 @@
     >
       <template #default="{ item }">
         <div class="thumbnail-wrapper">
-            <img :src="item.image" :alt="`${item.id}`" />
-            <!-- <div class="overlay" @click="goDetail"> -->
+            <img :src="item.saveFolder" :alt="`${item.title}`" />
+            <img :src="item.imageUrl" :alt="`${item.title}`" />
             <div class="overlay">
               <div class="info">
               <router-link
@@ -35,30 +35,33 @@
       </template>
     </masonry-wall>
   </div>
+  <loader></loader>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
 import LikeButton from "../common/LikeButton.vue";
 import ArtworkAPI from "@/apis/artworkAPI";
+import Loader from "@/components/main/child/Loader.vue";
 
 export default defineComponent({
   data() {
     return {
       artwork_list: [] as any,
-      page: 1,
+      page: 0,
       valid: true,
     };
   },
   components: {
     LikeButton,
+    Loader,
   },
   methods: {
     handleLike() {
       this.valid = !this.valid;
     },
     async getArtwork() {
-      let new_artworks = await ArtworkAPI.getArtworkList();
+      let new_artworks = await ArtworkAPI.getArtworkList(this.page);
       let temp = new_artworks.data
       console.log(temp);
       const new_artwork = []
@@ -69,7 +72,8 @@ export default defineComponent({
           title: temp[i].artworkTitle,
           memberId: temp[i].memberId,
           nickname: temp[i].memberNickname,
-          image: temp[i].saveFolder
+          saveFolder: temp[i].saveFolder,
+          imageUrl: temp[i].imageUrl
         })
       }
       this.artwork_list = [...this.artwork_list, ...new_artwork];
