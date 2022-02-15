@@ -1,4 +1,6 @@
 <template>
+  {{userInfo.id}}
+  {{this.$route.params.id}}
   <!-- Modal -->
   <!-- Profile Edit Modal -->
   <transition name="fade" appear>
@@ -23,14 +25,14 @@
         <button class="change-profile-pic-btn" @click="changeProfilePic">
           프로필 사진 변경
         </button>
-        <label for="nickname" class="label-text"></label>
+        <label for="nickname" class="label-text">닉네임 변경</label>
         <input
           type="nickname"
           id="nickname"
           class="input-text"
           name="nickname"
         />
-        <label for="intro" class="label-text">소개</label>
+        <label for="intro" class="label-text">소개 변경</label>
         <input type="intro" id="intro" class="input-text" name="intro" />
         <button class="done-profile-edit-btn" @click="doneEditInfo">
           정보 수정 완료
@@ -147,7 +149,7 @@
           <h1 class="profile-user-nickname">{{profileInfo.nickname}}</h1>
           <p class="profile-user-email">{{profileInfo.email}}</p>
           <button
-            v-if="userInfo.id == this.$route.params.id"
+            v-if="userInfo.id === this.$route.params.id"
             class="btn profile-edit-btn"
             @click="openEditModal"
           >
@@ -176,12 +178,10 @@
           </p>
         </div>
         <div class="change-pwd-signout">
-          <p
-            v-if="userInfo.id == profileInfo.id"
+          <p v-if="userInfo.id==this.$route.params.id"
             class="change-pwd-signout-text"
             @click="openChangePwdModal"
-          >
-            비밀번호 변경 및 계정 탈퇴
+            >비밀번호 변경 및 계정 탈퇴
           </p>
         </div>
       </div>
@@ -191,13 +191,13 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import FollowButton from "./child/FollowButton.vue";
+import FollowButton from "@/components/common/FollowButton.vue";
 import InputPassword from "../accounts/child/InputPassword.vue";
 import CloseButton from "../common/CloseButton.vue";
 import AccountsAPI from "@/apis/accountsAPI";
 import PV from "password-validator"; // 비밀번호 유효성 검사 라이브러리
 import ResponseData from "@/types/ResponseData";
-import { mapState } from "vuex";
+import { mapState, mapActions } from "vuex";
 import ProfileInfo from "@/types/ProfileInfo"
 
 const accountsStore = "accountsStore";
@@ -269,6 +269,7 @@ export default defineComponent({
     },
   },
   methods: {
+    ...mapActions(accountsStore, ["getLogout"]),
     handleFollow() {
       this.follow = !this.follow;
     },
@@ -279,23 +280,23 @@ export default defineComponent({
       this.isOpen = false;
     },
     doneEditInfo() {
-      // 정보 수정 담아서 BE로 보내는 method
+      
       this.closeEditModal();
     },
     // 수정 필요
-    async changeProfilePic() {
+    changeProfilePic() {
       // 프로필 사진 변경 정보 담아서 BE로 보내는 method
       // 사진 변경 완료, 실패 modal도 있으면 좋을듯
-      await AccountsAPI.updateProfileIntro(
-        this.userInfo.email,
-        this.userInfo.intro
-      ).then((res: ResponseData) => {
-        if (res.data === "success") {
-          console.log("자기소개 변경에 성공했습니다.");
-        } else {
-          console.log("자기소개 변경에 실패했습니다.");
-        }
-      });
+      // await AccountsAPI.updateProfileIntro(
+      //   this.userInfo.email,
+        
+      // ).then((res: ResponseData) => {
+      //   if (res.data === "success") {
+      //     console.log("자기소개 변경에 성공했습니다.");
+      //   } else {
+      //     console.log("자기소개 변경에 실패했습니다.");
+      //   }
+      // });
       this.closeEditModal();
     },
     openChangePwdModal() {
@@ -313,22 +314,23 @@ export default defineComponent({
       this.valid.password = false;
     },
     // 비밀번호 변경
-    async changePassword() {
-      if (!this.valid.password && !this.valid.checkPwd) {
-        await AccountsAPI.updatePassword(
-          this.userInfo.email,
-          this.updateInfo
-        ).then((res: ResponseData) => {
-          if (res.data === "success") {
-            console.log("비밀번호 변경에 성공했습니다.");
-            this.canChangePwd = true;
-          } else {
-            console.log("비밀번호 변경에 실패했습니다.");
-            this.canChangePwd = false;
-          }
-        });
-      }
-    },
+    // async changePassword() {
+    //   if (this.valid.password && this.valid.checkPwd) {
+    //     await AccountsAPI.updatePassword(
+    //       this.userInfo.email,
+    //       // newPassword
+    //       // 기존 password
+    //     ).then((res: ResponseData) => {
+    //       if (res.data === "success") {
+    //         console.log("비밀번호 변경에 성공했습니다.");
+    //         this.canChangePwd = true;
+    //       } else {
+    //         console.log("비밀번호 변경에 실패했습니다.");
+    //         this.canChangePwd = false;
+    //       }
+    //     });
+    //   }
+    // },
     // 비밀번호와 비밀번호 확인 입력값의 일치 여부 체크
     checkPassword() {
       if (this.account.password !== this.checkPwd) {
@@ -346,8 +348,17 @@ export default defineComponent({
       this.isSignoutOpen = false;
     },
     signOut() {
-      // 회원탈퇴 요청
-      // 회원 탈퇴 처리되었습니다 팝업 open
+      AccountsAPI.deleteAccount(this.userInfo.email)
+      .then((res: ResponseData) => {
+        console.log(res.data);
+        this.getLogout();
+        this.$router.push({ name: "Login" });
+      })
+      .catch((e) => {
+        alert("회원탈퇴 실패");
+        console.log(e);
+      })
+      this.$router.replace("/");
     },
     // 비밀번호 컴포넌트에 입력된 텍스트 가져오기
     updateCurrentPwd(value: string) {
@@ -360,17 +371,14 @@ export default defineComponent({
       this.checkPwd = value;
     },
     // Profile 정보 가져오기
-    // 수정 필요
     getProfileInfo() {
       AccountsAPI.getProfileInfo(this.userInfo.id, Number(this.$route.params.id))
-        .then((res: ResponseData) => {
-          // console.log(res.data);
-          this.profileInfo = res.data;
-          console.log(this.profileInfo);
-        })
-        .catch((e) => {
-          console.log(e);
-        });
+      .then((res: ResponseData) => {
+        this.profileInfo = res.data;
+      })
+      .catch((e) => {
+        console.log(e);
+      });
     },
   },
 });

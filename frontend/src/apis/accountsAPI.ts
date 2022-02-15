@@ -59,15 +59,18 @@ class AccountsAPI {
     return api.put(`member/me?email=${email}&intro=${intro}`);
   }
   // 비밀번호 수정: 성공 시 'success' 반환
-  updatePassword(email: string, password: NewPassword) {
-    return api.put(`/member/me/password`, JSON.stringify({ email, password }));
+  updatePassword(loginEmail: string, newPassword: string, password: string ) {
+    return api.put(`/member/me/password?newPassword=${newPassword}&password=${password}`, JSON.stringify({ email: loginEmail }));
   }
   // 자기소개 등록, 수정
 
   // 회원탈퇴(삭제)
   deleteAccount(email: string) {
-    return api.delete(`/member/me`, { data: { email: email } });
+    return api.delete(`/member/me?email=` + email);
   }
+  // deleteAccount(email: string) {
+  //   return api.delete(`/member/me`, { data: { email: email } });
+  // }
   // 회원 프로필 정보 리턴하기
   getProfileInfo(loginId: number, profileMemberId: number) {
     return api.get(
