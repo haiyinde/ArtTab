@@ -180,7 +180,7 @@ public class ArtworkService {
                     .artworkTitle(artwork.getTitle())
                     .memberNickname(writer.getNickname())
                     .memberId(writer.getId())
-                    .saveFolder(artworkImgUrl+artwork.getSaveFolder())
+                    .saveFolder(artworkImgUrl+artwork.getSaveFileName())
                     .likeOrNot(true)
                     .artworkId(artwork.getId())
                     .regdate(artwork.getRegdate())
