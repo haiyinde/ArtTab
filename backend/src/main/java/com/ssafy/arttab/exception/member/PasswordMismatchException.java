@@ -18,11 +18,11 @@ public class PasswordMismatchException extends CustomException {
     private static final String MESSAGE = "fail";
 
     public PasswordMismatchException() {
-        super(MESSAGE, HttpStatus.OK);
+        super(MESSAGE, HttpStatus.UNAUTHORIZED);
     }
 
     public PasswordMismatchException(String message) {
-        super(MESSAGE, HttpStatus.OK);
+        super(MESSAGE, HttpStatus.UNAUTHORIZED);
     }
 
 }

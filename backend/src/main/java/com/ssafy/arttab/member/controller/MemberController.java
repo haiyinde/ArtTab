@@ -1,4 +1,4 @@
-package com.ssafy.arttab.member;
+package com.ssafy.arttab.member.controller;
 
 
 import com.ssafy.arttab.artwork.dto.MD5Generator;
@@ -209,9 +209,9 @@ public class MemberController {
 
     @ApiOperation(value="회원 프로필 정보 리턴하기")
     @GetMapping("/profile")
-    public ResponseEntity<ProfileInfoResponse> selectProfileInfo(@RequestParam("loginEmail") String loginEmail, @RequestParam("profileMemberEmail") String profileMemberEmail){
+    public ResponseEntity<ProfileInfoResponse> selectProfileInfo(@RequestParam("loginId") Long loginId, @RequestParam("profileMemberId") Long profileMemberId){
 
-        ProfileInfoResponse result = memberService.getProfileInfo(loginEmail, profileMemberEmail);
+        ProfileInfoResponse result = memberService.getProfileInfo(loginId, profileMemberId);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
