@@ -157,7 +157,7 @@ public class ArtworkController {
     public ResponseEntity<List<ArtworkListResponseDto>> getArtworkListByMember(@RequestParam("nickname") String nickname){
         List<ArtworkListResponseDto> list=artworkService.getArtworkByMemberId(nickname);
 
-        if(list.isEmpty()){
+        if(list==null || list.isEmpty()){
             return new ResponseEntity<>(null, HttpStatus.OK);
         }
 

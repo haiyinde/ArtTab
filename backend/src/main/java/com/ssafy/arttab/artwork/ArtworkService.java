@@ -8,6 +8,7 @@ import com.ssafy.arttab.like.LikesRepository;
 import com.ssafy.arttab.member.domain.Member;
 import com.ssafy.arttab.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -30,14 +31,33 @@ public class ArtworkService {
     private final LikesRepository likeRepository;
     private final FollowRepository followRepository;
 
-    private final String artworkImgUrl="http://localhost:8080/artworks/";
-    private final String profileImgUrl="http://localhost:8080/profiles/";
+    @Value("${access.url.artworks}")
+    private String artworkImgUrl;
+
+    @Value("${access.url.profiles")
+    private String profileImgUrl;
 
     @Transactional
     public List<ArtworkListResponseDto> getArtworkList(int page){
+        Page<Artwork> pageResult = artworkRepository.findAll(PageRequest.of(page, 20, Sort.by(Sort.Direction.DESC, "id")));
+        List<ArtworkListResponseDto> result = new ArrayList<>();
 
-        Page<Artwork> result = artworkRepository.findAll(PageRequest.of(page, 20, Sort.by(Sort.Direction.DESC, "id")));
-        return result.getContent().stream().map(ArtworkListResponseDto::new).collect(Collectors.toList());
+        for(Artwork artwork: pageResult){
+            ArtworkListResponseDto response = ArtworkListResponseDto.builder()
+                    .memberId(artwork.getWriter().getId())
+                    .memberNickname(artwork.getWriter().getNickname())
+                    .artworkId(artwork.getId())
+                    .artworkTitle(artwork.getTitle())
+                    .artworkRegdate(artwork.getRegdate())
+                    .saveFileName(artwork.getSaveFileName())
+                    .saveFolder(artwork.getSaveFolder())
+                    .imageUrl(artworkImgUrl+artwork.getSaveFileName())
+                    .build();
+
+            result.add(response);
+        }
+
+        return result;
     }
 
     @Transactional
@@ -85,6 +105,7 @@ public class ArtworkService {
 
     // id에 해당하는 작품의 상세 정보를 리턴한다
     public ArtworkResponseDto findByNo(Long id, Long loginMemberId){
+
         Artwork artwork=artworkRepository.findById(id).get(); // id에 해당하는 작품
         Member writer=artwork.getWriter(); // 작가
         boolean isLike=(likeRepository.selectIsLike(id, loginMemberId)>0)?true:false;
@@ -113,10 +134,26 @@ public class ArtworkService {
 
         if(member == null) return null; // 회원 찾기에 실패했을 경우
 
-        return member.getArtworkList().stream()
-                .map(ArtworkListResponseDto::new)
-                .sorted((a,b)->(int)(b.getArtworkId()-a.getArtworkId())) // 최근 순으로 정렬
-                .collect(Collectors.toList());
+        List<Artwork> artworkList=member.getArtworkList(); // 회원이 그린 그림들 가져오기
+        List<ArtworkListResponseDto> result = new ArrayList<>();
+
+        for(Artwork artwork: artworkList){
+            ArtworkListResponseDto response = ArtworkListResponseDto.builder()
+                    .memberId(member.getId())
+                    .memberNickname(member.getNickname())
+                    .artworkId(artwork.getId())
+                    .artworkTitle(artwork.getTitle())
+                    .artworkRegdate(artwork.getRegdate())
+                    .saveFileName(artwork.getSaveFileName())
+                    .saveFolder(artwork.getSaveFolder())
+                    .imageUrl(artworkImgUrl+artwork.getSaveFileName())
+                    .build();
+            result.add(response); // 리스트에 추가
+        }
+
+        Collections.sort(result);
+
+        return result;
 
     }
 
@@ -174,7 +211,10 @@ public class ArtworkService {
             if(!artworks.isEmpty()){ // 작품을 작성했다면
                 recentUpdated=artworks.get(0).getRegdate(); // 제일 최근에 작성한 날짜
                 for(Artwork artwork: artworks){ // 작품들에 대해서
-                    artworkInfo.add(new SimpleArtworkDto(artwork)); // 작품 아이디와 작품 폴더 저장
+                    artworkInfo.add(SimpleArtworkDto.builder()
+                            .artworkId(artwork.getId())
+                            .saveFolder(artworkImgUrl+artwork.getSaveFileName())
+                            .build()); // 작품 아이디와 작품 url 저장
                 }
             }
 

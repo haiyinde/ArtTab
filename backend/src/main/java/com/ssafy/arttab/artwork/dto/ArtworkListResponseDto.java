@@ -3,13 +3,17 @@ package com.ssafy.arttab.artwork.dto;
 import com.ssafy.arttab.artwork.Artwork;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Value;
 
+import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
 
 @Setter
 @Getter
-public class ArtworkListResponseDto {
+@RequiredArgsConstructor
+public class ArtworkListResponseDto implements Comparable<ArtworkListResponseDto>{
 
     private Long memberId;
     private String memberNickname;
@@ -21,14 +25,21 @@ public class ArtworkListResponseDto {
     private String imageUrl; // 이미지 url
 
     @Builder
-    public ArtworkListResponseDto(Artwork entity){
-        this.memberId=entity.getWriter().getId();
-        this.memberNickname=entity.getWriter().getNickname();
-        this.artworkId=entity.getId();
-        this.artworkTitle=entity.getTitle();
-        this.artworkRegdate=entity.getRegdate();
-        this.saveFileName=entity.getSaveFileName();
-        this.saveFolder=entity.getSaveFolder();
-        this.imageUrl="http://localhost:8080/artworks/"+entity.getSaveFileName();
+    public ArtworkListResponseDto(Long memberId, String memberNickname, Long artworkId, String artworkTitle, LocalDateTime artworkRegdate, String saveFileName, String saveFolder, String imageUrl) {
+        this.memberId = memberId;
+        this.memberNickname = memberNickname;
+        this.artworkId = artworkId;
+        this.artworkTitle = artworkTitle;
+        this.artworkRegdate = artworkRegdate;
+        this.saveFileName = saveFileName;
+        this.saveFolder = saveFolder;
+        this.imageUrl = imageUrl;
+    }
+
+    // 정렬용
+    @Override
+    public int compareTo(ArtworkListResponseDto o) {
+        if(this.artworkId>o.artworkId) return -1;
+        else return 1;
     }
 }

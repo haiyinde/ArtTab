@@ -19,6 +19,7 @@ import com.ssafy.arttab.member.dto.response.ProfileInfoResponse;
 import com.ssafy.arttab.member.repository.MailAuthRepogitory;
 import com.ssafy.arttab.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -50,9 +51,14 @@ public class MemberService {
     private final FollowRepository followRepository;
     private final ArtworkRepository artworkRepository;
 
-    private final String artworkImgUrl="http://localhost:8080/artworks/";
-    private final String profileImgUrl="http://localhost:8080/profiles/";
-    private final String profileDefaultImgUrl="http://localhost:8080/profileDefaultImg/";
+//    @Value("${access.url.artworks}")
+//    private String artworkImgUrl;
+
+    @Value("${access.url.profiles")
+    private String profileImgUrl;
+
+    @Value("${access.url.profileDefault}")
+    private String profileDefaultImgUrl;
 
     /**
      * 회원 등록
@@ -323,7 +329,7 @@ public class MemberService {
         String profileImg=memberRepository.findById(profileMemberId).get().getSaveFolder();
         String profileImageUrl=profileDefaultImgUrl+memberRepository.findById(profileMemberId).get().getSaveFilename(); // 기본 이미지 상태일 때
         if(!profileImg.equals(defaultProfileImgUrl)){ // 프로필 이미지가 기본 프로필 이미지 상태가 아닐 때
-            profileImageUrl=profileImg+memberRepository.findById(profileMemberId).get().getSaveFilename();
+            profileImageUrl=profileImgUrl+memberRepository.findById(profileMemberId).get().getSaveFilename();
         }
 
         ProfileInfoResponse response = ProfileInfoResponse.builder()
