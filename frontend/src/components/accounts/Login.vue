@@ -52,7 +52,12 @@
         alt="카카오 로그인"
         @click="kakaoLogin"
       />
-      <img class="circle" src="@/assets/images/google.png" alt="구글 로그인" />
+      <img
+        class="circle"
+        src="@/assets/images/google.png"
+        alt="구글 로그인"
+        @click="googleLogin"
+      />
       <!-- <img src="@/assets/images/kakaologin.png" alt="카카오 로그인" />
       <img src="@/assets/images/googlelogin.png" alt="카카오 로그인" /> -->
     </div>
@@ -165,9 +170,15 @@ export default defineComponent({
         this.$router.push({ name: "Main" });
       }
     },
+    // 카카오 로그인 인증코드 받아오기
     kakaoLogin() {
       const KAKAO_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.VUE_APP_KAKAO_REST_KEY}&redirect_uri=${SNS_BASE_URL}${process.env.VUE_APP_KAKAO_REDIRECT_URI}&response_type=code`;
       window.open(KAKAO_URL, "_self");
+    },
+    // 구글 로그인 인증코드 받아오기
+    googleLogin() {
+      const GOOGLE_URL = `https://accounts.google.com/o/oauth2/v2/auth?scope=https://www.googleapis.com/auth/userinfo.email&response_type=code&client_id=${process.env.VUE_APP_GOOGLE_CLIENT_ID}&redirect_uri=${SNS_BASE_URL}${process.env.VUE_APP_GOOGLE_REDIRECT_URI}`;
+      window.open(GOOGLE_URL, "_self");
     },
     moveSignUp() {
       this.$router.push({ name: "SignUp" });

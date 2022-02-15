@@ -1,10 +1,10 @@
 <template>
-  <div class="observer"/>
+  <div class="observer" />
 </template>
 
 <script>
 export default {
-  props: ['options'],
+  props: ["options"],
   data: () => ({
     observer: null,
   }),
