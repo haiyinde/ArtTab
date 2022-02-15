@@ -40,7 +40,8 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/artworks/**")
-                .addResourceLocations("file:///"+System.getProperty("user.home")+ File.separator+"artwork"+File.separator);
+//                .addResourceLocations("file:///"+System.getProperty("user.home")+ File.separator+"artwork"+File.separator);
+                .addResourceLocations("file:///"+System.getProperty("user.dir")+"artwork"+File.separator);
         registry.addResourceHandler("/profiles/**")
                 .addResourceLocations("file:///"+System.getProperty("user.home")+ File.separator+"profile"+File.separator);
     }
