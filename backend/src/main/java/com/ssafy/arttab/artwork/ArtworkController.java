@@ -14,6 +14,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -43,7 +45,7 @@ public class ArtworkController {
         LocalDateTime time=LocalDateTime.now();
         String originFileName=file.getOriginalFilename();
         String saveFileName=new MD5Generator(originFileName+time).toString()+file.getOriginalFilename();
-        String upperPath=System.getProperty("user.home")+File.separator+"artwork"; // artwork 디렉토리
+        String upperPath=System.getProperty("user.dir") + "artwork"; // artwork 디렉토리
         String savePath=upperPath; // artwork의 사용자 디렉토리
 
         // 디버깅용
@@ -53,7 +55,8 @@ public class ArtworkController {
         // artwork 디렉토리 없으면 폴더 생성
         if(!new File(upperPath).exists()){
             try{
-                new File(upperPath).mkdir();
+                var status = new File(upperPath).mkdir();
+                System.out.println("디렉토리" + status);
             }
             catch(Exception e){
                 e.getStackTrace();
@@ -64,6 +67,7 @@ public class ArtworkController {
         if(!new File(savePath).exists()){
             try{
                 new File(savePath).mkdir();
+                System.out.println("파일저장폴더 생성");
             }
             catch(Exception e){
                 e.getStackTrace();
