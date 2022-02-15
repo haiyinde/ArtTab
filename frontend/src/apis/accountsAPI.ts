@@ -69,9 +69,9 @@ class AccountsAPI {
     return api.delete(`/member/me`, { data: { email: email } });
   }
   // 회원 프로필 정보 리턴하기
-  getProfileInfo(loginEmail: string, profileMemberEmail: string) {
+  getProfileInfo(loginId: number, profileMemberId: number) {
     return api.get(
-      `/member/profile?loginEmail=${loginEmail}&profileMemberEmail=${profileMemberEmail}`
+      `/member/profile?loginId=${loginId}&profileMemberId=${profileMemberId}`
     );
   }
 }

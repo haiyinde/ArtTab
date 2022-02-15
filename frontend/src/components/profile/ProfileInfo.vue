@@ -1,10 +1,4 @@
 <template>
-  {{ userInfo.id }}
-  {{ userInfo.email }}
-  {{ userInfo.intro }}
-  {{ userInfo.nickname }}
-  {{ profileInfo.id }}
-
   <!-- Modal -->
   <!-- Profile Edit Modal -->
   <transition name="fade" appear>
@@ -29,7 +23,7 @@
         <button class="change-profile-pic-btn" @click="changeProfilePic">
           프로필 사진 변경
         </button>
-        <label for="nickname" class="label-text">닉네임</label>
+        <label for="nickname" class="label-text"></label>
         <input
           type="nickname"
           id="nickname"
@@ -141,43 +135,44 @@
 
   <!-- Profile Info -->
   <div>
-    <p>Profile Info Component</p>
     <div class="container">
       <div class="profile">
         <div class="profile-image">
           <img
-            src="https://via.placeholder.com/150/92c952"
-            alt="profile image"
+            :src="profileInfo.ImageUrl"
+            alt="Profile Image"
           />
         </div>
         <div class="profile-user-settings">
-          <h1 class="profile-user-name">닉네임닉네임닉네임</h1>
-          <p class="profile-user-email">email@email.com</p>
+          <h1 class="profile-user-nickname">{{profileInfo.nickname}}</h1>
+          <p class="profile-user-email">{{profileInfo.email}}</p>
           <button
-            v-if="userInfo.id == profileInfo.id"
+            v-if="userInfo.id == this.$route.params.id"
             class="btn profile-edit-btn"
             @click="openEditModal"
           >
             내 정보 수정
           </button>
           <follow-button
+            v-if="userInfo.id != this.$route.params.id"
             class="btn profile-edit-btn"
-            :followed="!follow"
+            :followed="follow"
             @click="handleFollow"
           ></follow-button>
         </div>
         <div class="profile-stats">
           <ul>
-            <li><span class="profile-stat-count">164</span> 게시물</li>
-            <li><span class="profile-stat-count">188</span> 팔로워</li>
-            <li><span class="profile-stat-count">206</span> 팔로잉</li>
+            <li><span class="profile-stat-count">{{profileInfo.artworkNum}}</span> 게시물</li>
+            <li><span class="profile-stat-count">{{profileInfo.followedNum}}</span> 팔로워</li>
+            <li><span class="profile-stat-count">{{profileInfo.followingNum}}</span> 팔로잉</li>
           </ul>
         </div>
         <div class="profile-intro">
-          <p>
-            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Nostrum,
-            maiores tenetur. Incidunt nihil vitae aliquid totam ex maxime sint
-            perferendis.
+          <p v-if="profileInfo.intro">
+            {{profileInfo.intro}}
+          </p>
+          <p v-else>
+            <b>내 정보 수정버튼</b>을 클릭해 아트탭 회원들에게 자기소개를 해보세요!
           </p>
         </div>
         <div class="change-pwd-signout">
@@ -202,7 +197,8 @@ import CloseButton from "../common/CloseButton.vue";
 import AccountsAPI from "@/apis/accountsAPI";
 import PV from "password-validator"; // 비밀번호 유효성 검사 라이브러리
 import ResponseData from "@/types/ResponseData";
-import { mapState, mapMutations } from "vuex";
+import { mapState } from "vuex";
+import ProfileInfo from "@/types/ProfileInfo"
 
 const accountsStore = "accountsStore";
 
@@ -211,27 +207,17 @@ export default defineComponent({
     return {
       // 내 프로필 조회 정보
       account: {
-        // email: "",
-        // nickname: "",
-        // intro: "",
         password: "",
-        // id: "",
       },
       updateInfo: {
         password: "",
         newPassword: "",
       },
       // 타인 프로필 조회 정보
-      profileInfo: {
-        email: "",
-        nickname: "",
-        intro: "",
-        id: this.$route.params.id as unknown as number,
-      },
-      // 유효성 여부
+      profileInfo: {} as ProfileInfo,
       checkPwd: "",
       currentPwd: "",
-      follow: true,
+      follow: false,
       valid: {
         password: false,
         checkPwd: false,
@@ -245,6 +231,9 @@ export default defineComponent({
       isSignoutOpen: false,
       passwordSchema: new PV(),
     };
+  },
+  mounted() {
+    this.getProfileInfo();
   },
   computed: {
     ...mapState(accountsStore, ["userInfo"]),
@@ -373,10 +362,11 @@ export default defineComponent({
     // Profile 정보 가져오기
     // 수정 필요
     getProfileInfo() {
-      AccountsAPI.getProfileInfo(this.userInfo.email, this.profileInfo.email)
+      AccountsAPI.getProfileInfo(this.userInfo.id, Number(this.$route.params.id))
         .then((res: ResponseData) => {
-          this.profileInfo.intro = res.data.intro;
-          this.profileInfo.nickname = res.data.nickname;
+          // console.log(res.data);
+          this.profileInfo = res.data;
+          console.log(this.profileInfo);
         })
         .catch((e) => {
           console.log(e);
@@ -593,7 +583,7 @@ img {
   width: auto;
 }
 
-.profile-user-name {
+.profile-user-nickname {
   display: block;
   float: left;
   font-size: $font-large;
@@ -686,7 +676,7 @@ img {
     margin-top: 1rem;
   }
 
-  .profile-user-name {
+  .profile-user-nickname {
     display: block;
     font-size: $font-large;
   }
