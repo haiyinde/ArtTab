@@ -1,6 +1,4 @@
 <template>
-  {{userInfo.id}}
-  {{this.$route.params.id}}
   <!-- Modal -->
   <!-- Profile Edit Modal -->
   <transition name="fade" appear>
@@ -137,14 +135,11 @@
     <div class="container">
       <div class="profile">
         <div class="profile-image">
-          <img
-            :src="profileInfo.ImageUrl"
-            alt="Profile Image"
-          />
+          <img :src="profileInfo.ImageUrl" alt="Profile Image" />
         </div>
         <div class="profile-user-settings">
-          <h1 class="profile-user-nickname">{{profileInfo.nickname}}</h1>
-          <p class="profile-user-email">{{profileInfo.email}}</p>
+          <h1 class="profile-user-nickname">{{ profileInfo.nickname }}</h1>
+          <p class="profile-user-email">{{ profileInfo.email }}</p>
           <button
             v-if="userInfo.id === this.$route.params.id"
             class="btn profile-edit-btn"
@@ -161,24 +156,42 @@
         </div>
         <div class="profile-stats">
           <ul>
-            <li><span class="profile-stat-count">{{profileInfo.artworkNum}}</span> 게시물</li>
-            <li><span class="profile-stat-count">{{profileInfo.followedNum}}</span> 팔로워</li>
-            <li><span class="profile-stat-count">{{profileInfo.followingNum}}</span> 팔로잉</li>
+            <li>
+              <span class="profile-stat-count">{{
+                profileInfo.artworkNum
+              }}</span>
+              게시물
+            </li>
+            <li>
+              <span class="profile-stat-count">{{
+                profileInfo.followedNum
+              }}</span>
+              팔로워
+            </li>
+            <li>
+              <span class="profile-stat-count">{{
+                profileInfo.followingNum
+              }}</span>
+              팔로잉
+            </li>
           </ul>
         </div>
         <div class="profile-intro">
           <p v-if="profileInfo.intro">
-            {{profileInfo.intro}}
+            {{ profileInfo.intro }}
           </p>
           <p v-else>
-            <b>내 정보 수정버튼</b>을 클릭해 아트탭 회원들에게 자기소개를 해보세요!
+            <b>내 정보 수정버튼</b>을 클릭해 아트탭 회원들에게 자기소개를
+            해보세요!
           </p>
         </div>
         <div class="change-pwd-signout">
-          <p v-if="userInfo.id==this.$route.params.id"
+          <p
+            v-if="userInfo.id == this.$route.params.id"
             class="change-pwd-signout-text"
             @click="openChangePwdModal"
-            >비밀번호 변경 및 계정 탈퇴
+          >
+            비밀번호 변경 및 계정 탈퇴
           </p>
         </div>
       </div>
@@ -252,7 +265,7 @@ export default defineComponent({
       .symbols();
   },
   watch: {
-    "updatedPwd": function () {
+    updatedPwd: function () {
       this.validatePassword();
     },
     checkPwd: function () {
@@ -271,7 +284,6 @@ export default defineComponent({
       this.isOpen = false;
     },
     doneEditInfo() {
-      
       this.closeEditModal();
     },
     // 수정 필요
@@ -280,7 +292,7 @@ export default defineComponent({
       // 사진 변경 완료, 실패 modal도 있으면 좋을듯
       // await AccountsAPI.updateProfileIntro(
       //   this.userInfo.email,
-        
+
       // ).then((res: ResponseData) => {
       //   if (res.data === "success") {
       //     console.log("자기소개 변경에 성공했습니다.");
@@ -306,22 +318,25 @@ export default defineComponent({
     },
     // 비밀번호 변경
     async changePassword() {
-      if (!this.valid.password && !this.valid.checkPwd ) {
+      if (!this.valid.password && !this.valid.checkPwd) {
         await AccountsAPI.updatePassword(
           this.userInfo.email,
           this.updatedPwd,
           this.originalPwd
-        ).then((res: ResponseData) => {
-          console.log(res);
-          if (res.data === "success") {
-            alert("비밀번호를 성공적으로 바꿨습니다 😊")
-            this.closeChangePwdModal();
-          }
-        })
-        .catch((e) => {
-          console.log(e);
-          alert("비밀번호를 바꾸지 못했습니다.😢 \n입력하신 기존 비밀번호가 틀린 것은 아닐까요? \n기존 비밀번호가 기억나지 않는다면 비밀번호 찾기를 이용해주세요!");
-        })
+        )
+          .then((res: ResponseData) => {
+            console.log(res);
+            if (res.data === "success") {
+              alert("비밀번호를 성공적으로 바꿨습니다 😊");
+              this.closeChangePwdModal();
+            }
+          })
+          .catch((e) => {
+            console.log(e);
+            alert(
+              "비밀번호를 바꾸지 못했습니다.😢 \n입력하신 기존 비밀번호가 틀린 것은 아닐까요? \n기존 비밀번호가 기억나지 않는다면 비밀번호 찾기를 이용해주세요!"
+            );
+          });
       }
     },
     // 비밀번호와 비밀번호 확인 입력값의 일치 여부 체크
@@ -342,15 +357,15 @@ export default defineComponent({
     },
     signOut() {
       AccountsAPI.deleteAccount(this.userInfo.email)
-      .then((res: ResponseData) => {
-        console.log(res.data);
-        this.getLogout();
-        this.$router.push({ name: "Login" });
-      })
-      .catch((e) => {
-        alert("회원탈퇴 실패");
-        console.log(e);
-      })
+        .then((res: ResponseData) => {
+          console.log(res.data);
+          this.getLogout();
+          this.$router.push({ name: "Login" });
+        })
+        .catch((e) => {
+          alert("회원탈퇴 실패");
+          console.log(e);
+        });
       this.$router.replace("/");
     },
     // 비밀번호 컴포넌트에 입력된 텍스트 가져오기
@@ -365,13 +380,16 @@ export default defineComponent({
     },
     // Profile 정보 가져오기
     getProfileInfo() {
-      AccountsAPI.getProfileInfo(this.userInfo.id, Number(this.$route.params.id))
-      .then((res: ResponseData) => {
-        this.profileInfo = res.data;
-      })
-      .catch((e) => {
-        console.log(e);
-      });
+      AccountsAPI.getProfileInfo(
+        this.userInfo.id,
+        Number(this.$route.params.id)
+      )
+        .then((res: ResponseData) => {
+          this.profileInfo = res.data;
+        })
+        .catch((e) => {
+          console.log(e);
+        });
     },
   },
 });
@@ -551,7 +569,7 @@ img {
 /* Profile Section */
 
 .profile {
-  padding: 5rem 0;
+  padding: 5rem 0 1rem 0;
 }
 
 .profile::after {
@@ -651,7 +669,7 @@ img {
   .profile {
     display: flex;
     flex-wrap: wrap;
-    padding: 4rem 0;
+    padding: 4rem 0 0.5rem 0;
   }
 
   .profile::after {

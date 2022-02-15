@@ -59,8 +59,15 @@ class AccountsAPI {
     return api.put(`member/me?email=${email}&intro=${intro}`);
   }
   // 비밀번호 수정: 성공 시 'success' 반환
-  updatePassword(loginEmail: string, newPassword: string, password: string ) {
-    return api.put(`/member/me/password`, JSON.stringify({ loginEmail: loginEmail, newPassword: newPassword, password: password }));
+  updatePassword(loginEmail: string, newPassword: string, password: string) {
+    return api.put(
+      `/member/me/password`,
+      JSON.stringify({
+        loginEmail: loginEmail,
+        newPassword: newPassword,
+        password: password,
+      })
+    );
   }
   // 회원탈퇴(삭제)
   deleteAccount(email: string) {
