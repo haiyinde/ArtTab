@@ -2,6 +2,7 @@ package com.ssafy.arttab.member.service;
 
 import com.ssafy.arttab.artwork.ArtworkRepository;
 import com.ssafy.arttab.config.JWTUtil;
+import com.ssafy.arttab.exception.authorization.NoauthorizedMemberException;
 import com.ssafy.arttab.exception.member.DuplicateException;
 import com.ssafy.arttab.exception.member.NoSuchMemberException;
 import com.ssafy.arttab.exception.member.PasswordMismatchException;
@@ -187,10 +188,10 @@ public class MemberService {
                 .orElseThrow(NoSuchMemberException::new);
 
         if(member.getAuth()!=1){
-            throw new IllegalArgumentException("메일 인증으로 이동");
+            throw new NoauthorizedMemberException();
         }
         if (!BCrypt.checkpw(user.getPassword(), member.getPassword())) {
-            throw new IllegalArgumentException("비밀번호 잘못됨");
+            throw new PasswordMismatchException("passwordMismatch");
         }
         //토큰 발급
         HashMap<String, Object> payload = new HashMap();

@@ -1,5 +1,8 @@
 package com.ssafy.arttab.config;
 
+import com.ssafy.arttab.exception.authorization.InvalidTokenException;
+import com.ssafy.arttab.exception.authorization.NoauthorizedMemberException;
+import com.ssafy.arttab.exception.authorization.TokenExpiredException;
 import com.ssafy.arttab.exception.member.DuplicateException;
 import com.ssafy.arttab.exception.member.NoSuchMemberException;
 import com.ssafy.arttab.exception.member.PasswordMismatchException;
@@ -38,5 +41,21 @@ public class ControllerAdvice {
 
         return new ResponseEntity<String>(e.getMessage(),e.getStatus());
     }
+    @ExceptionHandler(InvalidTokenException.class)
+    public ResponseEntity<?> invalidTokenException(InvalidTokenException e){
 
+        return  new ResponseEntity<>(e.getMessage(),e.getStatus());
+    }
+
+    @ExceptionHandler(NoauthorizedMemberException.class)
+    public ResponseEntity<?> noauthorizedMemberException(NoSuchMemberException e){
+
+        return  new ResponseEntity<>(e.getMessage(),e.getStatus());
+    }
+
+    @ExceptionHandler(TokenExpiredException.class)
+    public ResponseEntity<?> tokenExpiredException(TokenExpiredException e){
+
+        return  new ResponseEntity<>(e.getMessage(),e.getStatus());
+    }
 }

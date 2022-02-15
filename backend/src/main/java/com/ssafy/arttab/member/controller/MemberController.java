@@ -1,4 +1,4 @@
-package com.ssafy.arttab.member;
+package com.ssafy.arttab.member.controller;
 
 
 import com.ssafy.arttab.artwork.dto.MD5Generator;
