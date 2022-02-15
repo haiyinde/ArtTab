@@ -30,6 +30,8 @@ public class GalleryService {
                             .artwork(artworkRepository.findById(requestDto.getArtworkId()).get())
                             .xLoc(requestDto.getXLoc())
                             .yLoc(requestDto.getYLoc())
+                            .height(requestDto.getHeight())
+                            .weight(requestDto.getWeight())
                             .build()
             );
 
@@ -64,6 +66,8 @@ public class GalleryService {
                     .saveFolder(item.getArtwork().getSaveFolder())
                     .xLoc(item.getXLoc())
                     .yLoc(item.getYLoc())
+                    .height(item.getHeight())
+                    .weight(item.getWeight())
                     .build()
             );
         }
