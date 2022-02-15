@@ -82,8 +82,6 @@ input[id="FavouriteArtist"]:checked ~ .con3 {
 }
 
 .tab {
-  div {
-    margin: 1rem;
-  }
+  margin: 1rem;
 }
 </style>

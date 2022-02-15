@@ -13,7 +13,10 @@
             <div class="overlay">
               <div class="info">
                 <router-link
-                  :to="{ name: 'ArtworkDetail', params: { id: item.artworkId } }"
+                  :to="{
+                    name: 'ArtworkDetail',
+                    params: { id: item.artworkId },
+                  }"
                 >
                   <span style="color: white" class="artwork-title">{{
                     item.artworkTitle
@@ -28,50 +31,95 @@
                 </router-link>
               </div>
               <div class="button-top-right">
-                <!-- <like-button :liked="!valid" @click="handleLike"></like-button> -->
+                <!-- <like-button
+                  class="icon"
+                  :liked="item.likeOrNot"
+                  :artworkId="item.artworkId"
+                  :userId="userInfo.id"
+                  @toggle="toggleLike()"
+                  @message="showToastMessage"></like-button>
+                <toast-message ref="toast"></toast-message> -->
               </div>
             </div>
           </div>
         </template>
       </masonry-wall>
     </div>
-    <!-- <div v-for="(item, i) in items" :key="i">
-      <img :src="item.imageUrl" :alt="item.artworkTitle">
-    </div> -->
-    <Observer @intersect="intersected"/>
+    <!-- Scroll To Top Button -->
+    <arrow-up-bold-circle-outline
+      class="arrow scroll-to-top"
+      @click="scrollToTop"
+    ></arrow-up-bold-circle-outline>
+
+    <loader></loader>
+    <observer @intersect="intersected"></observer>
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import { defineComponent } from "vue";
 import ArtworkAPI from "@/apis/artworkAPI";
 import Observer from "@/components/main/child/Observer.vue";
+import LikeButton from "@/components/common/LikeButton.vue";
+import ToastMessage from "@/components/common/ToastMessage.vue";
+import { mapState } from "vuex";
+import Loader from "@/components/main/child/Loader.vue";
+import { ArrowUpBoldCircleOutline } from "mdue";
 
-export default {
-  data: () => ({ page: 0, items: [] }),
+const accountsStore = "accountsStore";
+
+export default defineComponent({
+  el: "#app",
+  data() {
+    return {
+      page: 0,
+      items: [] as any,
+    };
+  },
+  components: {
+    Observer,
+    // LikeButton,
+    Loader,
+    ArrowUpBoldCircleOutline,
+  },
   methods: {
     async intersected() {
       const res = await ArtworkAPI.getArtworkList(this.page);
       this.page++;
       const items = res.data;
-      console.log(items);
       this.items = [...this.items, ...items];
     },
+    // 좋아요 상태 변경
+    // toggleLike(id: number) {
+    //   this.items.forEach((item: { artworkId: number; }) => {
+    //     if (item.artworkId === id) {
+
+    //     }
+    //   });
+    // },
+    showToastMessage(msg: string) {
+      (this.$refs["toast"] as typeof ToastMessage).showToast(msg);
+    },
+    scrollToTop() {
+      let currentScroll = document.documentElement.scrollTop,
+        int = setInterval(frame, 6);
+
+      function frame() {
+        if (0 > currentScroll) clearInterval(int);
+        else {
+          currentScroll = currentScroll - 12;
+          document.documentElement.scrollTop = currentScroll;
+        }
+      }
+    },
   },
-  components: {
-    Observer,
+  computed: {
+    ...mapState(accountsStore, ["userInfo"]),
   },
-};
+});
 </script>
+
 <style scoped lang="scss">
-footer {
-  position: relative;
-  width: 400px;
-
-  #scroll-trigger {
-    height: 100px;
-  }
-}
-
 * {
   box-sizing: border-box;
 }
@@ -133,5 +181,29 @@ footer {
   right: 2px;
   z-index: 3;
   visibility: hidden;
+}
+
+// like button
+.icon {
+  font-size: 1.5rem;
+  color: $white;
+  cursor: pointer;
+  margin-left: $size-small;
+  margin-right: $size-micro;
+}
+
+// scroll to top button
+.scroll-to-top {
+  font-size: $font-big;
+  cursor: pointer;
+  position: fixed;
+  z-index: 1049;
+  bottom: 20px;
+  border-radius: 50%;
+  background-color: $white;
+  &:hover {
+    background-color: $black;
+    color: $white;
+  }
 }
 </style>
