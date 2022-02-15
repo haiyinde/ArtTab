@@ -62,17 +62,17 @@
       ></close-button>
       <h2>비밀번호 변경 및 계정 탈퇴</h2>
       <!-- 현재 비밀번호 -->
-      <label for="currentPwd" class="label-text">현재 비밀번호</label>
+      <label for="originalPwd" class="label-text">현재 비밀번호</label>
       <input-password
-        :password="currentPwd"
+        :password="originalPwd"
         :placetext="'기존 비밀번호를 입력해주세요.'"
-        id="currentPwd"
+        id="originalPwd"
         @inputVal="updateCurrentPwd"
       ></input-password>
       <!-- 변경할 비밀번호 입력 -->
       <label for="password" class="label-text">새 비밀번호</label>
       <input-password
-        :password="account.password"
+        :password="updatedPwd"
         :placetext="'영문, 특수문자 포함 8자리 이상'"
         id="password"
         @inputVal="updatePassword"
@@ -91,9 +91,6 @@
       <span class="alert" v-show="valid.checkPwd"
         >비밀번호가 일치하지 않습니다.</span
       >
-      <!-- 비밀번호 변경 완료 여부 모달 추가해야함 -->
-      <p class="alert" v-show="canChangePwd">비밀번호 변경에 성공했습니다.</p>
-      <p class="alert" v-show="!canChangePwd">비밀번호 변경에 실패했습니다.</p>
       <div>
         <button class="done-change-password-btn" @click="changePassword">
           변경 완료
@@ -196,27 +193,21 @@ import InputPassword from "../accounts/child/InputPassword.vue";
 import CloseButton from "../common/CloseButton.vue";
 import AccountsAPI from "@/apis/accountsAPI";
 import PV from "password-validator"; // 비밀번호 유효성 검사 라이브러리
-import ResponseData from "@/types/ResponseData";
 import { mapState, mapActions } from "vuex";
-import ProfileInfo from "@/types/ProfileInfo"
+import ResponseData from "@/types/ResponseData";
+import ProfileInfo from "@/types/ProfileInfo";
 
 const accountsStore = "accountsStore";
 
 export default defineComponent({
   data() {
     return {
-      // 내 프로필 조회 정보
-      account: {
-        password: "",
-      },
-      updateInfo: {
-        password: "",
-        newPassword: "",
-      },
       // 타인 프로필 조회 정보
       profileInfo: {} as ProfileInfo,
+      // password
       checkPwd: "",
-      currentPwd: "",
+      originalPwd: "",
+      updatedPwd: "",
       follow: false,
       valid: {
         password: false,
@@ -261,7 +252,7 @@ export default defineComponent({
       .symbols();
   },
   watch: {
-    "account.password": function () {
+    "updatedPwd": function () {
       this.validatePassword();
     },
     checkPwd: function () {
@@ -307,33 +298,35 @@ export default defineComponent({
     },
     // 변경할 비밀번호 유효성 검사
     validatePassword() {
-      if (!this.passwordSchema.validate(this.account.password)) {
+      if (!this.passwordSchema.validate(this.updatedPwd)) {
         this.valid.password = true;
         return;
       }
       this.valid.password = false;
     },
     // 비밀번호 변경
-    // async changePassword() {
-    //   if (this.valid.password && this.valid.checkPwd) {
-    //     await AccountsAPI.updatePassword(
-    //       this.userInfo.email,
-    //       // newPassword
-    //       // 기존 password
-    //     ).then((res: ResponseData) => {
-    //       if (res.data === "success") {
-    //         console.log("비밀번호 변경에 성공했습니다.");
-    //         this.canChangePwd = true;
-    //       } else {
-    //         console.log("비밀번호 변경에 실패했습니다.");
-    //         this.canChangePwd = false;
-    //       }
-    //     });
-    //   }
-    // },
+    async changePassword() {
+      if (!this.valid.password && !this.valid.checkPwd ) {
+        await AccountsAPI.updatePassword(
+          this.userInfo.email,
+          this.updatedPwd,
+          this.originalPwd
+        ).then((res: ResponseData) => {
+          console.log(res);
+          if (res.data === "success") {
+            alert("비밀번호를 성공적으로 바꿨습니다 😊")
+            this.closeChangePwdModal();
+          }
+        })
+        .catch((e) => {
+          console.log(e);
+          alert("비밀번호를 바꾸지 못했습니다.😢 \n입력하신 기존 비밀번호가 틀린 것은 아닐까요? \n기존 비밀번호가 기억나지 않는다면 비밀번호 찾기를 이용해주세요!");
+        })
+      }
+    },
     // 비밀번호와 비밀번호 확인 입력값의 일치 여부 체크
     checkPassword() {
-      if (this.account.password !== this.checkPwd) {
+      if (this.updatedPwd !== this.checkPwd) {
         this.valid.checkPwd = true;
         return;
       }
@@ -362,10 +355,10 @@ export default defineComponent({
     },
     // 비밀번호 컴포넌트에 입력된 텍스트 가져오기
     updateCurrentPwd(value: string) {
-      this.currentPwd = value;
+      this.originalPwd = value;
     },
     updatePassword(value: string) {
-      this.account.password = value;
+      this.updatedPwd = value;
     },
     updatecheckPwd(value: string) {
       this.checkPwd = value;
