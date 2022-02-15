@@ -55,7 +55,7 @@ public class MemberService {
 //    @Value("${access.url.artworks}")
 //    private String artworkImgUrl;
 
-    @Value("${access.url.profiles")
+    @Value("${access.url.profiles}")
     private String profileImgUrl;
 
     @Value("${access.url.profileDefault}")
