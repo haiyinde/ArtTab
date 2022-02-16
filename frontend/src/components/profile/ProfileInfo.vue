@@ -170,15 +170,17 @@
           >
             내 정보 수정
           </button>
-          <!-- <follow-button
-            :class="{ 'btn-white': artwork.followOrNot }"
-            :profileFollowed="isFollow"
-            :writerId="writerId"
+          <!-- Follow Button -->
+          <follow-button
+            v-if="userInfo.id != this.$route.params.id"
+            :class="{ 'btn-white': profileInfo.isFollow }"
+            :followed="isFollowed"
+            :writerId="Number(this.$route.params.id)"
             :userId="userInfo.id"
             @toggle="toggleFollow"
             @message="showToastMessage"
           >
-          </follow-button> -->
+          </follow-button>
           <toast-message ref="toast"></toast-message>
         </div>
         <div class="profile-stats">
@@ -224,18 +226,21 @@
       </div>
     </div>
   </div>
+  <toast-message ref="toast"></toast-message>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
-// import FollowButton from "@/components/common/FollowButton.vue";
-import InputPassword from "../accounts/child/InputPassword.vue";
-import CloseButton from "../common/CloseButton.vue";
+import FollowButton from "@/components/common/FollowButton.vue";
+import InputPassword from "@/components/accounts/child/InputPassword.vue";
+import CloseButton from "@/components/common/CloseButton.vue";
 import AccountsAPI from "@/apis/accountsAPI";
 import PV from "password-validator"; // 비밀번호 유효성 검사 라이브러리
 import { mapState, mapActions } from "vuex";
 import ResponseData from "@/types/ResponseData";
 import ProfileInfo from "@/types/ProfileInfo";
+import ToastMessage from "@/components/common/ToastMessage.vue";
+
 
 const accountsStore = "accountsStore";
 
@@ -244,6 +249,7 @@ export default defineComponent({
     return {
       // 타인 프로필 조회 정보
       profileInfo: {} as ProfileInfo,
+      isFollowed: false,
       // password
       checkPwd: "",
       originalPwd: "",
@@ -282,9 +288,10 @@ export default defineComponent({
     },
   },
   components: {
-    // FollowButton,
+    FollowButton,
     InputPassword,
     CloseButton,
+    ToastMessage,
   },
   created() {
     // 영문, 특수문자 포함 8자리 이상 50자리 이하
@@ -307,6 +314,16 @@ export default defineComponent({
     },
   },
   methods: {
+    // 팔로우 상태 변경
+    toggleFollow(result: boolean) {
+      this.isFollowed = result;
+      this.profileInfo.followedNum = result
+        ? this.profileInfo.followedNum + 1
+        : this.profileInfo.followedNum - 1;
+    },
+		showToastMessage(msg: string) {
+      (this.$refs["toast"] as typeof ToastMessage).showToast(msg);
+    },
     // Profile edit modal
     onInputImage(event: any) {
       // this.updatedInfo.file = this.$refs.profileImg.files
@@ -445,6 +462,11 @@ export default defineComponent({
       )
         .then((res: ResponseData) => {
           this.profileInfo = res.data;
+          if (res.data.isFollow == "FALSE") {
+            this.isFollowed = false;
+          } else {
+            this.isFollowed = true;
+          }
           console.log(this.profileInfo);
         })
         .catch((e) => {
