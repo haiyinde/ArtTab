@@ -111,6 +111,10 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
+.conatiner {
+  margin-top: 3rem;
+}
+
 footer {
   position: relative;
   width: 400px;

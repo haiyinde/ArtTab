@@ -54,7 +54,13 @@
           v-model="updatedInfo.nickname"
         />
         <label for="intro" class="label-text">소개 변경</label>
-        <input type="intro" id="intro" class="input-text" name="intro" v-model="updatedInfo.intro"/>
+        <input
+          type="intro"
+          id="intro"
+          class="input-text"
+          name="intro"
+          v-model="updatedInfo.intro"
+        />
         <button class="done-profile-edit-btn" @click="addUpdatedInfo">
           정보 수정 완료
         </button>
@@ -241,7 +247,6 @@ import ResponseData from "@/types/ResponseData";
 import ProfileInfo from "@/types/ProfileInfo";
 import ToastMessage from "@/components/common/ToastMessage.vue";
 
-
 const accountsStore = "accountsStore";
 
 export default defineComponent({
@@ -321,7 +326,7 @@ export default defineComponent({
         ? this.profileInfo.followedNum + 1
         : this.profileInfo.followedNum - 1;
     },
-		showToastMessage(msg: string) {
+    showToastMessage(msg: string) {
       (this.$refs["toast"] as typeof ToastMessage).showToast(msg);
     },
     // Profile edit modal
@@ -344,8 +349,7 @@ export default defineComponent({
       updatedInfo.append("intro", this.updatedInfo.intro);
       updatedInfo.append("nickname", this.updatedInfo.nickname);
       console.log(updatedInfo);
-      AccountsAPI.updateProfileInfo(updatedInfo)
-        .then((res) => {
+      AccountsAPI.updateProfileInfo(updatedInfo).then((res) => {
         console.log(res);
       });
     },
@@ -500,7 +504,6 @@ export default defineComponent({
   transition: all 0.2s linear;
   transform: scale(1.3);
 }
-
 
 // signout confirmation modal
 .signout-btn {

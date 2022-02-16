@@ -1,12 +1,17 @@
 <template>
   <div v-if="showLoader">
     <artwork-button></artwork-button>
-    <div class="zigzag"><hr class="zig"><hr class="zag"></div>
+    <div class="zigzag">
+      <hr class="zig" />
+      <hr class="zag" />
+    </div>
     <!-- loader -->
     <div class="texts">
       <h3 class="loader-title">모든 그림을 다 봤습니다!</h3>
       <p class="loader-text">내가 그린 그림을 공유해보는 건 어떨까요?</p>
-    <router-link :to="{ name: 'ArtworkCreate' }"><button>그림 올리기</button></router-link>
+      <router-link :to="{ name: 'ArtworkCreate' }"
+        ><button>그림 올리기</button></router-link
+      >
     </div>
     <div class="scene">
       <div class="objects">
@@ -54,7 +59,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import url('//fonts.googleapis.com/css?family=Raleway:800i');
+@import url("//fonts.googleapis.com/css?family=Raleway:800i");
 body {
   text-align: center;
   line-height: 100vh;
@@ -71,7 +76,7 @@ button {
   color: white;
   font-size: $font-large;
   font-weight: bold;
-  text-shadow: 0 -1px 0 rgba(0,0,0,0.3);
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.3);
   outline: none;
   cursor: pointer;
   transition-property: background, color;
@@ -94,15 +99,16 @@ button {
   margin: 4rem 1rem;
 }
 
-
-hr.zig, hr.zag {
+hr.zig,
+hr.zag {
   border: none;
   height: 30px;
   margin: 0 50px;
 }
 
-hr.zig{
-  background: linear-gradient(-135deg, #FFF 20px, rgba(0, 0, 0, 0) 0) 0 5px, linear-gradient(135deg, #FFF 20px, rgba(0, 0, 0, 0) 0) 0 5px;
+hr.zig {
+  background: linear-gradient(-135deg, #fff 20px, rgba(0, 0, 0, 0) 0) 0 5px,
+    linear-gradient(135deg, #fff 20px, rgba(0, 0, 0, 0) 0) 0 5px;
   background-color: rgba(0, 0, 0, 0);
   background-position: center bottom;
   background-repeat: repeat-x;
@@ -112,7 +118,8 @@ hr.zig{
 }
 
 hr.zag {
-  background: linear-gradient(-135deg, #333 20px, rgba(0, 0, 0, 0) 0) 0 5px, linear-gradient(135deg, #333 20px, #FFF 0) 0 5px;
+  background: linear-gradient(-135deg, #333 20px, rgba(0, 0, 0, 0) 0) 0 5px,
+    linear-gradient(135deg, #333 20px, #fff 0) 0 5px;
   background-color: rgba(0, 0, 0, 0);
   background-position: center bottom;
   background-repeat: repeat-x;

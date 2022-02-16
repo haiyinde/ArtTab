@@ -104,18 +104,18 @@ export default defineComponent({
 *,
 *::before,
 *::after {
-	box-sizing: border-box;
-	margin: 0;
-	padding: 0;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 body {
-	width: 100%;
-	height: 100vh;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	background: #e4e4e4;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #e4e4e4;
 }
 
 img {
@@ -124,94 +124,94 @@ img {
 }
 
 figure.card {
-	position: relative;
+  position: relative;
   width: 300px;
   margin: 0 auto;
-	transition: background 400ms ease;
-	overflow: hidden;
-	&:hover {
-    	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-		figcaption {
-			transform: translateY(0px);
-		}
-	}
+  transition: background 400ms ease;
+  overflow: hidden;
+  &:hover {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    figcaption {
+      transform: translateY(0px);
+    }
+  }
 
-	&--1 {
-		figcaption {
-			width: 280px;
-			height: 80px;
-			padding: 15px 20px;
+  &--1 {
+    figcaption {
+      width: 280px;
+      height: 80px;
+      padding: 15px 20px;
       left: 3.5%;
       bottom: 3.5%;
       border-radius: 2px;
-			transform: translateY(100px);
-		}
-	}
+      transform: translateY(100px);
+    }
+  }
 
-	figcaption {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		position: absolute;
-		background: $white;
-		transition: transform 400ms ease;
-		.info {
-			font-family: "Montserrat";
-			h3 {
-				font-size: 1.2rem;
-				letter-spacing: 1px;
-				margin-bottom: 5px;
-			}
-			span {
-				color: $dark-grey;
-				font-size: 0.85rem
-			}
-		}
-		.links {
-			display: flex;
-			justify-content: end;
-			align-items: center;
-			a {
-				text-decoration: none;
-				position: relative;
-				width: 35px;
-				height: 35px;
-				display: flex;
-				justify-content: center;
-				align-items: center;
-				color: $red;
-				margin-left: 10px;
-				font-size: 1.2rem;
-				opacity: 0.65;
-				border-radius: 50%;
-				overflow: hidden;
-				&:hover {
-					opacity: 1;
-				}
-				&:focus {
-					outline: none;
-					&::after {
-						transform: scale(1);
-						opacity: 1;
-					}
-				}
-				&::after {
-					content: "";
-					position: absolute;
-					left: 0;
-					top: 0;
-					width: 100%;
-					height: 100%;
-					border-radius: 50%;
-					opacity: 0;
-					background: rgba(255, 255, 255, 0.05);
-					transform: scale(0.5);
-					z-index: -1;
-					transition: all 150ms ease;
-				}
-			}
-		}
-	}
+  figcaption {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: absolute;
+    background: $white;
+    transition: transform 400ms ease;
+    .info {
+      font-family: "Montserrat";
+      h3 {
+        font-size: 1.2rem;
+        letter-spacing: 1px;
+        margin-bottom: 5px;
+      }
+      span {
+        color: $dark-grey;
+        font-size: 0.85rem;
+      }
+    }
+    .links {
+      display: flex;
+      justify-content: end;
+      align-items: center;
+      a {
+        text-decoration: none;
+        position: relative;
+        width: 35px;
+        height: 35px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: $red;
+        margin-left: 10px;
+        font-size: 1.2rem;
+        opacity: 0.65;
+        border-radius: 50%;
+        overflow: hidden;
+        &:hover {
+          opacity: 1;
+        }
+        &:focus {
+          outline: none;
+          &::after {
+            transform: scale(1);
+            opacity: 1;
+          }
+        }
+        &::after {
+          content: "";
+          position: absolute;
+          left: 0;
+          top: 0;
+          width: 100%;
+          height: 100%;
+          border-radius: 50%;
+          opacity: 0;
+          background: rgba(255, 255, 255, 0.05);
+          transform: scale(0.5);
+          z-index: -1;
+          transition: all 150ms ease;
+        }
+      }
+    }
+  }
 }
 
 // scroll to top button
