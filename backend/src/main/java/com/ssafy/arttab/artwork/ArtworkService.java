@@ -67,6 +67,8 @@ public class ArtworkService {
                 Artwork.builder()
                         .writer(memberRepository.findById(artworkDto.getWriterId()).get())
                         .galleryItemList(null)
+                        .likeList(null)
+                        .commentList(null)
                         .title(artworkDto.getTitle())
                         .description(artworkDto.getDescription())
                         .originFileName(artworkDto.getOriginFileName())
