@@ -312,35 +312,40 @@ public class MemberService {
     // 프로필 페이지 불러오기
     public ProfileInfoResponse getProfileInfo(Long loginId, Long profileMemberId){
 
-        Long loginMember=memberRepository.findById(loginId).get().getId(); // 로그인된 회원 아이디
-        Long profileMember=memberRepository.findById(profileMemberId).get().getId(); // 프로필을 주인 아이디
+//        Long loginMemberId=memberRepository.findById(loginId).get().getId(); // 로그인된 회원 아이디
+//        Long profileMember=memberRepository.findById(profileMemberId).get().getId(); // 프로필을 주인 아이디
+
+        Member loginMember=memberRepository.findById(loginId).get();
+        Member profileMember=memberRepository.findById(profileMemberId).get();
 
         String isFollow = "FALSE";
-        if(loginMember==profileMember) { // 로그인한 사용자가 본인 프로필 조회하려고 할 때
+        if(loginMember.getId()==profileMember.getId()) { // 로그인한 사용자가 본인 프로필 조회하려고 할 때
             isFollow="ME";
         }
         else {
-            int followOrNot = followRepository.isFollow(loginMember, profileMember);
+            int followOrNot = followRepository.isFollow(loginMember.getId(), profileMember.getId());
             if (followOrNot != 0) { // 팔로우 관계일 때
                 isFollow = "TRUE";
             }
         }
 
         String defaultProfileImgUrl=System.getProperty("user.dir")+File.separator+"src"+File.separator+"main"+File.separator+"resources"+File.separator+"static"+File.separator+"default.jpg";
-        String profileImg=memberRepository.findById(profileMemberId).get().getSaveFolder();
-        String profileImageUrl=profileDefaultImgUrl+memberRepository.findById(profileMemberId).get().getSaveFilename(); // 기본 이미지 상태일 때
-        if(!profileImg.equals(defaultProfileImgUrl)){ // 프로필 이미지가 기본 프로필 이미지 상태가 아닐 때
-            profileImageUrl=profileImgUrl+memberRepository.findById(profileMemberId).get().getSaveFilename();
-        }
+        String profileImg=profileMember.getSaveFolder();
+
+        String profileImageUrl=profileDefaultImgUrl+profileMember.getSaveFilename(); // 프로필 사진 url
+//        if(!profileImg.equals(defaultProfileImgUrl)){ // 프로필 이미지가 기본 프로필 이미지 상태가 아닐 때
+//            profileImageUrl=profileImgUrl+memberRepository.findById(profileMemberId).get().getSaveFilename();
+//        }
 
         ProfileInfoResponse response = ProfileInfoResponse.builder()
                 .nickname(memberRepository.findById(profileMemberId).get().getNickname())
                 .isFollow(isFollow)
-                .followedNum(followRepository.findAllFollowedCnt(profileMember))
-                .followingNum(followRepository.findAllFollowingCnt(profileMember))
-                .artworkNum(artworkRepository.findNumByMemberId(profileMember))
+                .followedNum(followRepository.findAllFollowedCnt(profileMember.getId()))
+                .followingNum(followRepository.findAllFollowingCnt(profileMember.getId()))
+                .artworkNum(artworkRepository.findNumByMemberId(profileMember.getId()))
                 .email(memberRepository.findById(profileMemberId).get().getEmail())
                 .profileImageUrl(profileImageUrl)
+                .intro(profileMember.getIntro())
                 .build();
 
         return response;
