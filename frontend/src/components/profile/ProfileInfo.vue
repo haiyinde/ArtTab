@@ -1,5 +1,4 @@
 <template>
-  {{ profileInfo}}
   <!-- Modal -->
   <!-- Profile Edit Modal -->
   <transition name="fade" appear>
@@ -171,7 +170,7 @@
           >
             내 정보 수정
           </button>
-          <follow-button
+          <!-- <follow-button
             :class="{ 'btn-white': artwork.followOrNot }"
             :profileFollowed="isFollow"
             :writerId="writerId"
@@ -179,7 +178,7 @@
             @toggle="toggleFollow"
             @message="showToastMessage"
           >
-          </follow-button>
+          </follow-button> -->
           <toast-message ref="toast"></toast-message>
         </div>
         <div class="profile-stats">
@@ -229,7 +228,7 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import FollowButton from "@/components/common/FollowButton.vue";
+// import FollowButton from "@/components/common/FollowButton.vue";
 import InputPassword from "../accounts/child/InputPassword.vue";
 import CloseButton from "../common/CloseButton.vue";
 import AccountsAPI from "@/apis/accountsAPI";
@@ -283,7 +282,7 @@ export default defineComponent({
     },
   },
   components: {
-    FollowButton,
+    // FollowButton,
     InputPassword,
     CloseButton,
   },
@@ -626,7 +625,7 @@ img {
 .container {
   max-width: 1200px;
   min-width: 320px;
-  margin: 0 auto;
+  margin: $size-big auto;
   padding: 0 1rem;
   border: 1px solid $grey;
 }
@@ -718,7 +717,9 @@ img {
 }
 
 .profile-stats {
-  margin: 2.3rem;
+  margin: 2.3rem 0 0 0;
+  display: flex;
+  justify-content: center;
 }
 
 .profile-stats li {
@@ -813,6 +814,7 @@ img {
   .profile-stats {
     order: 1;
     margin-top: 1.5rem;
+    display: inline-block;
   }
 
   .profile-stats ul {

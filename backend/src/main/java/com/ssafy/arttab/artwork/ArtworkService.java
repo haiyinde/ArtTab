@@ -34,7 +34,7 @@ public class ArtworkService {
     @Value("${access.url.artworks}")
     private String artworkImgUrl;
 
-    @Value("${access.url.profiles")
+    @Value("${access.url.profiles}")
     private String profileImgUrl;
 
     @Transactional
@@ -180,7 +180,7 @@ public class ArtworkService {
                     .artworkTitle(artwork.getTitle())
                     .memberNickname(writer.getNickname())
                     .memberId(writer.getId())
-                    .saveFolder(artworkImgUrl+artwork.getSaveFolder())
+                    .saveFolder(artworkImgUrl+artwork.getSaveFileName())
                     .likeOrNot(true)
                     .artworkId(artwork.getId())
                     .regdate(artwork.getRegdate())
