@@ -1,7 +1,5 @@
 <template>
   <!-- loader -->
-  <hr class="zig" />
-  <hr class="zag" />
   <div class="texts">
     <h3 class="loader-title">모든 그림을 다 봤습니다!</h3>
     <p class="loader-text">내가 그린 그림을 올려보는 건 어떨까요?</p>
@@ -48,34 +46,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-hr.zig,
-hr.zag {
-  border: none;
-  height: 30px;
-  margin: 0 50px;
-}
-
-hr.zig {
-  background: linear-gradient(-135deg, #fff 20px, rgba(0, 0, 0, 0) 0) 0 5px,
-    linear-gradient(135deg, #fff 20px, rgba(0, 0, 0, 0) 0) 0 5px;
-  background-color: rgba(0, 0, 0, 0);
-  background-position: center bottom;
-  background-repeat: repeat-x;
-  background-size: 20px 40px;
-  z-index: 100;
-  position: relative;
-}
-
-hr.zag {
-  background: linear-gradient(-135deg, #333 20px, rgba(0, 0, 0, 0) 0) 0 5px,
-    linear-gradient(135deg, #333 20px, #fff 0) 0 5px;
-  background-color: rgba(0, 0, 0, 0);
-  background-position: center bottom;
-  background-repeat: repeat-x;
-  background-size: 20px 40px;
-  z-index: 50;
-  margin-top: -28px;
-}
 
 .texts {
   display: flex;
