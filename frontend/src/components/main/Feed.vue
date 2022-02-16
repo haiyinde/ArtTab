@@ -74,6 +74,7 @@ export default defineComponent({
     LikeButton,
     Loader,
     ArrowUpBoldCircleOutline,
+    ToastMessage,
   },
   methods: {
     async intersected() {
