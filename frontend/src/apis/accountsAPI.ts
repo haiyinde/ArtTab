@@ -1,6 +1,7 @@
 import api from "@/http-common";
 import LoginInfo from "@/types/LoginInfo";
 import NewPassword from "@/types/NewPassword";
+import { fileApiInstance } from "@/http-common";
 
 class AccountsAPI {
   // 회원가입: DB입력 성공여부에 따라 'success' 또는 'fail' 문자열 반환
@@ -54,9 +55,9 @@ class AccountsAPI {
   getAccount(email: string) {
     return api.get(`/member/me?email=` + email);
   }
-  // 회원 정보 수정(소개글 수정)
-  updateProfileIntro(email: string, intro: string) {
-    return api.put(`member/me?email=${email}&intro=${intro}`);
+  // 회원 정보 변경하기
+  updateProfileInfo(updatedInfo: FormData) {
+    return fileApiInstance.put(`/member/api/v1/profile`, updatedInfo);
   }
   // 비밀번호 수정: 성공 시 'success' 반환
   updatePassword(loginEmail: string, newPassword: string, password: string) {

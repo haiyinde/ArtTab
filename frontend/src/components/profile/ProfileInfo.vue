@@ -1,4 +1,5 @@
 <template>
+  {{ profileInfo}}
   <!-- Modal -->
   <!-- Profile Edit Modal -->
   <transition name="fade" appear>
@@ -12,27 +13,50 @@
     <div class="modal" v-if="isOpen == true">
       <h2>내 정보 수정</h2>
       <div class="profile-image" style="float: none">
-        <img src="https://via.placeholder.com/150/92c952" />
+        <label for="file">
+          <img
+            v-if="tempimage"
+            class="tempimage"
+            :src="tempimage"
+            style="cursor: pointer"
+          />
+          <img
+            v-else
+            :src="require(`@/assets/images/plus-circle.png`)"
+            class="altimg"
+          />
+        </label>
       </div>
+      <div class="input-div" style="display: none">
+        <input
+          ref="profileImg"
+          id="file"
+          type="file"
+          accept="image/*"
+          @change="onInputImage"
+        />
+      </div>
+      <div class="button" onclick="onclick=document.all.file.click()"></div>
       <close-button
         :closed="isClose"
         class="profile-close-btn"
         @click="closeEditModal"
       ></close-button>
       <div>
-        <button class="change-profile-pic-btn" @click="changeProfilePic">
+        <!-- <button class="change-profile-pic-btn" @click="changeProfilePic">
           프로필 사진 변경
-        </button>
+        </button> -->
         <label for="nickname" class="label-text">닉네임 변경</label>
         <input
           type="nickname"
           id="nickname"
           class="input-text"
           name="nickname"
+          v-model="updatedInfo.nickname"
         />
         <label for="intro" class="label-text">소개 변경</label>
-        <input type="intro" id="intro" class="input-text" name="intro" />
-        <button class="done-profile-edit-btn" @click="doneEditInfo">
+        <input type="intro" id="intro" class="input-text" name="intro" v-model="updatedInfo.intro"/>
+        <button class="done-profile-edit-btn" @click="addUpdatedInfo">
           정보 수정 완료
         </button>
       </div>
@@ -135,24 +159,28 @@
     <div class="container">
       <div class="profile">
         <div class="profile-image">
-          <img :src="profileInfo.ImageUrl" alt="Profile Image" />
+          <img :src="profileInfo.profileImageUrl" alt="Profile Image" />
         </div>
         <div class="profile-user-settings">
           <h1 class="profile-user-nickname">{{ profileInfo.nickname }}</h1>
           <p class="profile-user-email">{{ profileInfo.email }}</p>
           <button
-            v-if="userInfo.id === this.$route.params.id"
+            v-if="userInfo.id == this.$route.params.id"
             class="btn profile-edit-btn"
             @click="openEditModal"
           >
             내 정보 수정
           </button>
           <follow-button
-            v-if="userInfo.id != this.$route.params.id"
-            class="btn profile-edit-btn"
-            :followed="follow"
-            @click="handleFollow"
-          ></follow-button>
+            :class="{ 'btn-white': artwork.followOrNot }"
+            :profileFollowed="isFollow"
+            :writerId="writerId"
+            :userId="userInfo.id"
+            @toggle="toggleFollow"
+            @message="showToastMessage"
+          >
+          </follow-button>
+          <toast-message ref="toast"></toast-message>
         </div>
         <div class="profile-stats">
           <ul>
@@ -221,6 +249,13 @@ export default defineComponent({
       checkPwd: "",
       originalPwd: "",
       updatedPwd: "",
+      // profile edit modal
+      tempimage: "",
+      updatedInfo: {
+        file: "",
+        intro: "",
+        nickname: "",
+      },
       follow: false,
       valid: {
         password: false,
@@ -273,6 +308,31 @@ export default defineComponent({
     },
   },
   methods: {
+    // Profile edit modal
+    onInputImage(event: any) {
+      // this.updatedInfo.file = this.$refs.profileImg.files
+      // let files = this.$refs.profileImg;
+      let files = event.target.files[0];
+      console.log(files);
+      this.updatedInfo.file = files;
+      //이미지 프리뷰
+      this.tempimage = URL.createObjectURL(files);
+      console.log(this.tempimage);
+    },
+    // image file은 form data로 보내야함
+    addUpdatedInfo() {
+      const updatedInfo = new FormData();
+      // updatedInfo.append("data", JSON.stringify(this.updatedInfo));
+      updatedInfo.append("email", this.userInfo.email);
+      updatedInfo.append("file", this.updatedInfo.file);
+      updatedInfo.append("intro", this.updatedInfo.intro);
+      updatedInfo.append("nickname", this.updatedInfo.nickname);
+      console.log(updatedInfo);
+      AccountsAPI.updateProfileInfo(updatedInfo)
+        .then((res) => {
+        console.log(res);
+      });
+    },
     ...mapActions(accountsStore, ["getLogout"]),
     handleFollow() {
       this.follow = !this.follow;
@@ -386,6 +446,7 @@ export default defineComponent({
       )
         .then((res: ResponseData) => {
           this.profileInfo = res.data;
+          console.log(this.profileInfo);
         })
         .catch((e) => {
           console.log(e);
@@ -398,6 +459,27 @@ export default defineComponent({
 <style scoped lang="scss">
 // accounts에서 input css 이용
 @import "@/assets/css/accounts.scss";
+
+// profile edit
+.tempimage {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.altimg {
+  display: flex;
+  width: 55px;
+  height: 55px;
+  cursor: pointer;
+}
+
+.altimg:hover {
+  transition: all 0.2s linear;
+  transform: scale(1.3);
+}
+
 
 // signout confirmation modal
 .signout-btn {
@@ -569,6 +651,7 @@ img {
 /* Profile Section */
 
 .profile {
+  // padding: 5rem 0;
   padding: 5rem 0 1rem 0;
 }
 
@@ -635,7 +718,7 @@ img {
 }
 
 .profile-stats {
-  margin: 1rem auto 0 auto;
+  margin: 2.3rem;
 }
 
 .profile-stats li {
@@ -643,7 +726,6 @@ img {
   font-size: 1.6rem;
   line-height: 1.5;
   margin-right: 2rem;
-  cursor: pointer;
 }
 
 .profile-stats li:last-of-type {
@@ -669,6 +751,7 @@ img {
   .profile {
     display: flex;
     flex-wrap: wrap;
+    // padding: 4rem 0;
     padding: 4rem 0 0.5rem 0;
   }
 
