@@ -116,8 +116,8 @@ public class MemberController {
 
     @ApiOperation(value = "비밀번호 수정", notes = "비밀번호 DB수정 성공여부에 따라 'success 또는 'fail' 문자열을 반환한다.", response = String.class)
     @PutMapping("/me/password")
-    public ResponseEntity<String> updatePassword(@RequestBody LoginEmail loginEmail, PasswordUpdateRequest passwordUpdateRequest) {
-        memberService.updatePassword(loginEmail,passwordUpdateRequest);
+    public ResponseEntity<String> updatePassword(@RequestBody PasswordUpdateRequest passwordUpdateRequest) {
+        memberService.updatePassword(passwordUpdateRequest);
         return new ResponseEntity<String>("success", HttpStatus.OK);
     }
 

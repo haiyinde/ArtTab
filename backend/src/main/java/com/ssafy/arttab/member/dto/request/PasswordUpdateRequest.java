@@ -19,12 +19,14 @@ import javax.persistence.Column;
 @Getter
 @NoArgsConstructor
 public class PasswordUpdateRequest {
-    @Column(length=100, nullable=false)
+
+    private String loginEmail;
     private String password;
     private String newPassword;
 
-    public PasswordUpdateRequest(String password,String newPassword){
-        this.newPassword = newPassword;
+    public PasswordUpdateRequest(String loginEmail, String password, String newPassword) {
+        this.loginEmail = loginEmail;
         this.password = password;
+        this.newPassword = newPassword;
     }
 }

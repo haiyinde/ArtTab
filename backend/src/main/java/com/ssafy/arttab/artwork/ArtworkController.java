@@ -117,9 +117,19 @@ public class ArtworkController {
 
         LocalDateTime time=LocalDateTime.now();
         String originFileName=file.getOriginalFilename();
-        String saveFileName=new MD5Generator(originFileName+time).toString();
-        String upperPath=System.getProperty("user.home")+File.separator+"artwork"; // artwork 디렉토리
-        String savePath=upperPath+File.separator+writerId; // artwork의 사용자 디렉토리
+        String saveFileName=new MD5Generator(originFileName+time).toString()+originFileName;
+
+        String upperPath = "";
+        String savePath = "";
+        if ("dev".equals(location)){
+            upperPath = System.getProperty("user.home") + File.separator + "artwork"; // 프로필 폴더
+            savePath = upperPath; // 프로필 사진 주인 이메일
+        }else if ("ec2".equals(location)){
+            upperPath = System.getProperty("user.dir") + "img";
+            savePath = upperPath + File.separator + "artwork"; // artwork의 사용자 디렉토리
+
+        }
+
         String saveFolder=savePath+File.separator+saveFileName;
         file.transferTo(new File(saveFolder)); // 파일 저장
 

@@ -230,12 +230,12 @@ public class MemberService {
 
     /**
      * 비밀번호 수정
-     * @param loginEmail
+     * @param
      * @param passwordUpdateRequest
      */
     @Transactional
-    public void updatePassword(final LoginEmail loginEmail, final PasswordUpdateRequest passwordUpdateRequest){
-        var member = memberRepository.findByEmail(loginEmail.getEmail())
+    public void updatePassword(final PasswordUpdateRequest passwordUpdateRequest){
+        var member = memberRepository.findByEmail(passwordUpdateRequest.getLoginEmail())
                 .orElseThrow(NoSuchMemberException::new);
         if(BCrypt.checkpw(passwordUpdateRequest.getPassword(),member.getPassword())){
             member.updatepassword(BCrypt.hashpw(passwordUpdateRequest.getNewPassword(),BCrypt.gensalt()));
