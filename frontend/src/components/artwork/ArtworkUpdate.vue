@@ -42,7 +42,7 @@
             <textarea
               class="textarea"
               placeholder="내용을 입력하세요."
-              v-model="desciption"
+              v-model="desc"
               style="maxlength='300'"
             ></textarea>
             <!-- 내용입력 스크롤 자동으로 늘어나는거 구현..? -->
@@ -50,7 +50,7 @@
         </div>
       </div>
       <div class="button-box">
-        <button class="btn-white" @click="updateArtwork">수정하기</button>
+        <button class="btn-white" @click="없음;">수정하기</button>
         <button class="class-butten" @click="modalPop">삭제하기</button>
       </div>
     </div>
@@ -68,12 +68,7 @@
 </template>
 
 <script lang="ts">
-import artworkAPI from "@/apis/artworkAPI";
 import { defineComponent } from "vue";
-import { mapState } from "vuex";
-import ResponseData from "@/types/ResponseData";
-
-const accountsStore = "accountsStore";
 
 export default defineComponent({
   name: "ArtworkUpdate",
@@ -82,15 +77,10 @@ export default defineComponent({
     // 상세정보에서 받아온 수정해야할 그림 정보
     return {
       file: "",
-      // writerid: this.$route.query.artworkId as string,
-      id: Number(this.$route.query.artworkId),
-      title: this.$route.query.title as string,
-      desciption: this.$route.query.desciption as string,
-      tempimage: "",
+      title: this.$route.query.artworkTitle,
+      desc: this.$route.query.artworkDesc,
+      tempimage: this.$route.query.artworkImg,
     };
-  },
-  computed: {
-    ...mapState(accountsStore, ["userInfo"]),
   },
   methods: {
     onInputImage(e: any) {
@@ -99,41 +89,24 @@ export default defineComponent({
       this.file = files;
       //이미지 프리뷰
       this.tempimage = URL.createObjectURL(files);
+      console.log(this.tempimage);
+    },
+    registImage() {
+      console.log(this.title);
     },
     modalPop() {
       const modal: any = document.querySelector(".modal");
       modal.style.display = "block";
+      console.log(this.file);
       return;
     },
-    async artworkDelete() {
-      await artworkAPI.deleteArtwork(this.id)
-        .then((res: ResponseData) => {
-          console.log(res.data);
-        })
-        .catch((e) => {
-          alert("오류가 발생하여 삭제가 취소되었습니다.");
-          console.log(e);
-        });
-      this.$router.replace("/");
+    artworkDelete() {
+      // Delete 요청 보내기 + 프로필 페이지로 이동
     },
     modaloff() {
       const modal: any = document.querySelector(".modal");
       modal.style.display = "none";
       return;
-    },
-    updateArtwork() {
-      if (this.file === "" || this.title === "" || this.desciption === "") {
-        alert("그림, 제목, 내용을 모두 입력하세요");
-      } else {
-        const artwork = new FormData();
-        artwork.append("file", this.file);
-        artwork.append("title", this.title);
-        artwork.append("writerId", this.userInfo.id);
-        artwork.append("description", this.desciption);
-        artworkAPI.updateArtwork(this.id, artwork).then((res) => {
-          this.$router.replace("/");
-        });
-      }
     },
   },
 });

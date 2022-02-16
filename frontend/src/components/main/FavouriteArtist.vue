@@ -1,15 +1,185 @@
 <template>
-  <favourite-artist-info></favourite-artist-info>
+  <!-- <image-list></image-list> -->
+  <div class="inner">
+    <div class="divide-box">
+      <div class="box-likeartist">
+        <div class="profile-status">
+          <div class="image-profile">
+            <img
+              src="../../assets/images/test1.jpg"
+              height="52"
+              width="52"
+              alt="프로필사진"
+            />
+          </div>
+          <div class="nickname">아이디</div>
+          <div class="status">
+            <camera-burst></camera-burst>
+            <span>13</span>
+            <account-heart></account-heart>
+            <span>13</span>
+          </div>
+        </div>
+        <div class="box-image">
+          <div class="image-first">
+            <img
+              src="../../assets/images/test2.jpg"
+              height="124"
+              width="124"
+              alt="작품1"
+            />
+          </div>
+          <div class="image-second">
+            <img
+              src="../../assets/images/test2.jpg"
+              height="124"
+              width="124"
+              alt="작품1"
+            />
+          </div>
+          <div class="image-third">
+            <img
+              src="../../assets/images/test2.jpg"
+              height="124"
+              width="124"
+              alt="작품1"
+            />
+          </div>
+          <div class="image-fourth">
+            <img
+              src="../../assets/images/test2.jpg"
+              height="124"
+              width="124"
+              alt="작품1"
+            />
+          </div>
+        </div>
+      </div>
+      <div class="box-likeartist">
+        <div>
+          <div class="image-profile">
+            <img
+              src="../../assets/images/test1.jpg"
+              height="52"
+              width="52"
+              alt="프로필사진"
+            />
+          </div>
+          <div class="nickname">아이디</div>
+          <div class="status">
+            <camera-burst></camera-burst>
+            <span>13</span>
+            <account-heart></account-heart>
+            <span>13</span>
+          </div>
+        </div>
+        <div class="box-image">
+          <div class="image-first">
+            <img
+              src="../../assets/images/test2.jpg"
+              height="124"
+              width="124"
+              alt="작품1"
+            />
+          </div>
+          <div class="image-second">
+            <img
+              src="../../assets/images/test2.jpg"
+              height="124"
+              width="124"
+              alt="작품1"
+            />
+          </div>
+          <div class="image-third">
+            <img
+              src="../../assets/images/test2.jpg"
+              height="124"
+              width="124"
+              alt="작품1"
+            />
+          </div>
+          <div class="image-fourth">
+            <img
+              src=""
+              height="124"
+              width="124"
+              alt="작품1"
+              onerror="this.style.display='none'"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+    <divs class="divide-box">
+      <div class="box-likeartist">
+        <div>
+          <div class="image-profile">
+            <img
+              src="../../assets/images/test1.jpg"
+              height="52"
+              width="52"
+              alt="프로필사진"
+            />
+          </div>
+          <div class="nickname">아이디</div>
+          <div class="status">
+            <camera-burst></camera-burst>
+            <span>13</span>
+            <account-heart></account-heart>
+            <span>13</span>
+          </div>
+        </div>
+        <div class="box-image">
+          <div class="image-first">
+            <img
+              src="../../assets/images/test2.jpg"
+              height="124"
+              width="124"
+              alt="작품1"
+            />
+          </div>
+          <div class="image-second">
+            <img
+              src="../../assets/images/test2.jpg"
+              height="124"
+              width="124"
+              alt="작품1"
+            />
+          </div>
+          <div class="image-third">
+            <img
+              src="../../assets/images/test2.jpg"
+              height="124"
+              width="124"
+              alt="작품1"
+            />
+          </div>
+          <div class="image-fourth">
+            <img
+              src="../../assets/images/test2.jpg"
+              height="124"
+              width="124"
+              alt="작품1"
+            />
+          </div>
+        </div>
+      </div>
+    </divs>
+  </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import FavouriteArtistInfo from "@/components/main/child/FavouriteArtistInfo.vue";
+import { AccountHeart } from "mdue";
+import { CameraBurst } from "mdue";
+import ImageList from "@/components/ImageList.vue";
 
 export default defineComponent({
   name: "MainArtist",
   components: {
-    FavouriteArtistInfo,
+    AccountHeart,
+    CameraBurst,
+    // ImageList,
   },
 });
 </script>

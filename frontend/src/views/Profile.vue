@@ -1,7 +1,6 @@
 <template>
   <nav-bar />
   <div>
-    <p>Profile page</p>
     <div class="container">
       <profile-info></profile-info>
       <gallery></gallery>

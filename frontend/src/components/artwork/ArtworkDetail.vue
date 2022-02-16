@@ -19,18 +19,7 @@
               class="btn-white"
               @click="artworkUpdate"
             >
-              <router-link
-                :to="{
-                  name: 'ArtworkUpdate',
-                  query: {
-                    artworkId: this.artworkId,
-                    title: this.artwork.title,
-                    desciption: this.artwork.desciption,
-                    artworkSaveFolder: this.artwork.artworkSaveFolder,
-                  },
-                }"
-                >수정하기
-              </router-link>
+              수정하기
             </button>
             <follow-button
               v-else
