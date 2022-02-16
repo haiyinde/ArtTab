@@ -3,7 +3,7 @@ export default interface ProfileInfo {
   email: string;
   followedNum: number;
   followingNum: number;
-  intro: string | null;
+  intro: string|null;
   isFollow: string;
   nickname: string;
   profileImageUrl: string;
