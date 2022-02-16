@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -34,15 +33,21 @@ public class ArtworkService {
     @Value("${access.url.artworks}")
     private String artworkImgUrl;
 
-    @Value("${access.url.profiles")
+    @Value("${access.url.profiles}")
     private String profileImgUrl;
 
     @Transactional
-    public List<ArtworkListResponseDto> getArtworkList(int page){
+    public List<ArtworkListResponseDto> getArtworkList(int page, Long loginId){
         Page<Artwork> pageResult = artworkRepository.findAll(PageRequest.of(page, 20, Sort.by(Sort.Direction.DESC, "id")));
         List<ArtworkListResponseDto> result = new ArrayList<>();
 
         for(Artwork artwork: pageResult){
+
+            boolean isLike=false;
+            if(likeRepository.selectIsLike(artwork.getId(), loginId)>0){
+                isLike=true;
+            }
+
             ArtworkListResponseDto response = ArtworkListResponseDto.builder()
                     .memberId(artwork.getWriter().getId())
                     .memberNickname(artwork.getWriter().getNickname())
@@ -52,6 +57,7 @@ public class ArtworkService {
                     .saveFileName(artwork.getSaveFileName())
                     .saveFolder(artwork.getSaveFolder())
                     .imageUrl(artworkImgUrl+artwork.getSaveFileName())
+                    .likeOrNot(isLike)
                     .build();
 
             result.add(response);
@@ -67,6 +73,8 @@ public class ArtworkService {
                 Artwork.builder()
                         .writer(memberRepository.findById(artworkDto.getWriterId()).get())
                         .galleryItemList(null)
+                        .likeList(null)
+                        .commentList(null)
                         .title(artworkDto.getTitle())
                         .description(artworkDto.getDescription())
                         .originFileName(artworkDto.getOriginFileName())
@@ -180,7 +188,7 @@ public class ArtworkService {
                     .artworkTitle(artwork.getTitle())
                     .memberNickname(writer.getNickname())
                     .memberId(writer.getId())
-                    .saveFolder(artworkImgUrl+artwork.getSaveFolder())
+                    .saveFolder(artworkImgUrl+artwork.getSaveFileName())
                     .likeOrNot(true)
                     .artworkId(artwork.getId())
                     .regdate(artwork.getRegdate())

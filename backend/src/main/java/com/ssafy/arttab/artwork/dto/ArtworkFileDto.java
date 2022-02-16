@@ -23,6 +23,6 @@ public class ArtworkFileDto { // Artwork에 저장할 정보를 담는 Dto
         this.description=description;
         this.originFileName=originFileName;
         this.saveFileName=saveFileName;
-        this.saveFolder="file:///" + saveFolder;
+        this.saveFolder=saveFolder;
     }
 }

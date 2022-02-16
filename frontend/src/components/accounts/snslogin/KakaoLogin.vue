@@ -4,7 +4,7 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import KakaoAPI from "@/apis/kakaoAPI";
+import SnsloginAPI from "@/apis/snsloginAPI";
 import ResponseData from "@/types/ResponseData";
 
 export default defineComponent({
@@ -23,7 +23,7 @@ export default defineComponent({
       // 코드가 존재할 경우 사용자가 동의한 것
       if (code) {
         // 회원가입 여부 확인
-        KakaoAPI.getKakaoLogin(code.toString()).then((res: ResponseData) => {
+        SnsloginAPI.getKakaoLogin(code.toString()).then((res: ResponseData) => {
           console.log(res);
         });
         // 가입한 회원이면 로그인 처리, 미가입 회원이면 닉네임 등록으로 이동

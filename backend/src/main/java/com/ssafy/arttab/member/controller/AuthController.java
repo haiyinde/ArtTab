@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @packageName : com.ssafy.arttab.member.controller
@@ -33,9 +34,10 @@ public class AuthController {
 
     @ApiOperation(value = "카카오 회원 가입")
     @GetMapping("/kakaologin")
-    public ResponseEntity kakaologin(@RequestParam String authorize) {
+    public ResponseEntity<Map> kakaologin(@RequestParam String authorize) {
         String access_token = authService.getAccessToken(authorize);
         HashMap<String, String> userinfo = authService.getUserInfo(access_token);
-        return ResponseEntity.ok().body(userinfo);
+        Map message = authService.checkUser(userinfo);
+        return ResponseEntity.ok().body(message);
     }
 }

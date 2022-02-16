@@ -1,12 +1,11 @@
 package com.ssafy.arttab.artwork;
 
 import com.ssafy.arttab.artwork.dto.*;
-import com.ssafy.arttab.member.dto.response.MemberInfoResponse;
-import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,18 +13,17 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
 public class ArtworkController {
+
+    @Value("${access.url.location}")
+    private String location;
 
     private static final String SUCCESS = "success";
     private static final String FAIL = "fail";
@@ -45,8 +43,19 @@ public class ArtworkController {
         LocalDateTime time=LocalDateTime.now();
         String originFileName=file.getOriginalFilename();
         String saveFileName=new MD5Generator(originFileName+time).toString()+file.getOriginalFilename();
-        String upperPath=System.getProperty("user.dir") + "img" ; // artwork 디렉토리
-        String savePath=upperPath + File.separator + "artwork"; // artwork의 사용자 디렉토리
+
+        String upperPath = "";
+        String savePath = "";
+        if ("dev".equals(location)){
+            upperPath = System.getProperty("user.home") + File.separator + "artwork"; // 프로필 폴더
+            savePath = upperPath; // 프로필 사진 주인 이메일
+        }else if ("ec2".equals(location)){
+            upperPath = System.getProperty("user.dir") + "img";
+            savePath = upperPath + File.separator + "artwork"; // artwork의 사용자 디렉토리
+
+        }
+
+
 
         // 디버깅용
         System.out.println("originFileName: "+originFileName);
@@ -55,8 +64,7 @@ public class ArtworkController {
         // artwork 디렉토리 없으면 폴더 생성
         if(!new File(upperPath).exists()){
             try{
-                var status = new File(upperPath).mkdir();
-                System.out.println("디렉토리" + status);
+                new File(upperPath).mkdir();
             }
             catch(Exception e){
                 e.getStackTrace();
@@ -67,7 +75,6 @@ public class ArtworkController {
         if(!new File(savePath).exists()){
             try{
                 new File(savePath).mkdir();
-                System.out.println("파일저장폴더 생성");
             }
             catch(Exception e){
                 e.getStackTrace();
@@ -110,9 +117,19 @@ public class ArtworkController {
 
         LocalDateTime time=LocalDateTime.now();
         String originFileName=file.getOriginalFilename();
-        String saveFileName=new MD5Generator(originFileName+time).toString();
-        String upperPath=System.getProperty("user.home")+File.separator+"artwork"; // artwork 디렉토리
-        String savePath=upperPath+File.separator+writerId; // artwork의 사용자 디렉토리
+        String saveFileName=new MD5Generator(originFileName+time).toString()+originFileName;
+
+        String upperPath = "";
+        String savePath = "";
+        if ("dev".equals(location)){
+            upperPath = System.getProperty("user.home") + File.separator + "artwork"; // 프로필 폴더
+            savePath = upperPath; // 프로필 사진 주인 이메일
+        }else if ("ec2".equals(location)){
+            upperPath = System.getProperty("user.dir") + "img";
+            savePath = upperPath + File.separator + "artwork"; // artwork의 사용자 디렉토리
+
+        }
+
         String saveFolder=savePath+File.separator+saveFileName;
         file.transferTo(new File(saveFolder)); // 파일 저장
 
@@ -146,8 +163,9 @@ public class ArtworkController {
     // 작품 전체 조회 api -최근순 정렬
     @ApiOperation(value ="전체 작품을 최근순으로 정렬한다.", notes="내용이 없는 페이지를 요청하면 null이 리턴된다.")
     @GetMapping("api/v1/artwork")
-    public ResponseEntity<List<ArtworkListResponseDto>> getArtworkList(@ApiParam("가져올 페이지 (0페이지부터 시작)") @RequestParam("page") int page){
-        List<ArtworkListResponseDto> list=artworkService.getArtworkList(page);
+    public ResponseEntity<List<ArtworkListResponseDto>> getArtworkList(@ApiParam("가져올 페이지 (0페이지부터 시작)") @RequestParam("page") int page,
+                                                                       @ApiParam("로그인된 아이디") @RequestParam("loginId") Long loginId){
+        List<ArtworkListResponseDto> list=artworkService.getArtworkList(page, loginId);
 
         if(list.isEmpty()){
             return new ResponseEntity<>(null, HttpStatus.OK);

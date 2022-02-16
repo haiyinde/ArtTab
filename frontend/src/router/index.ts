@@ -10,7 +10,8 @@ import SignUp from "@/components/accounts/SignUp.vue";
 import ConfirmEmail from "@/components/accounts/ConfirmEmail.vue";
 import InsertNickname from "@/components/accounts/InsertNickname.vue";
 import FindPassword from "@/components/accounts/FindPassword.vue";
-import KakaoLogin from "@/components/accounts/kakao/KakaoLogin.vue";
+import KakaoLogin from "@/components/accounts/snslogin/KakaoLogin.vue";
+import GoogleLogin from "@/components/accounts/snslogin/GoogleLogin.vue";
 // 내 정보 페이지
 import Profile from "@/views/Profile.vue";
 // 검색 결과 페이지
@@ -76,6 +77,14 @@ const routes: Array<RouteRecordRaw> = [
         path: "kakaologin",
         name: "KakaoLogin",
         component: KakaoLogin,
+        meta: {
+          notRequireLogin: true,
+        },
+      },
+      {
+        path: "googlelogin",
+        name: "Googlelogin",
+        component: GoogleLogin,
         meta: {
           notRequireLogin: true,
         },

@@ -1,5 +1,6 @@
 package com.ssafy.arttab.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -21,6 +22,10 @@ import java.io.File;
  **/
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
+
+    @Value("${access.url.location}")
+    private String location;
+
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
@@ -39,12 +44,23 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/artworks/**")
-//                .addResourceLocations("file:///"+System.getProperty("user.home")+ File.separator+"artwork"+File.separator);
-                .addResourceLocations("file:///"+System.getProperty("user.dir") + "img" + File.separator+"artwork"+File.separator);
-        registry.addResourceHandler("/profiles/**")
-                .addResourceLocations("file:///"+System.getProperty("user.home")+ File.separator+"profile"+File.separator);
-        registry.addResourceHandler("/profileDefaultImg/**")
-                .addResourceLocations("file:///"+System.getProperty("user.dir")+File.separator+"src"+File.separator+"main"+File.separator+"resources"+File.separator+"static"+File.separator);
+        if ("dev".equals(location)) {
+            // local & dev
+            registry.addResourceHandler("/artworks/**")
+                    .addResourceLocations("file:///" + System.getProperty("user.home") + File.separator + "artwork" + File.separator);
+            registry.addResourceHandler("/profiles/**")
+                    .addResourceLocations("file:///" + System.getProperty("user.home") + File.separator + "profile" + File.separator);
+            registry.addResourceHandler("/profileDefaultImg/**")
+                    .addResourceLocations("file:///" + System.getProperty("user.dir") + File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator + "static" + File.separator);
+        }
+        //ec2
+        else if("ec2".equals(location)) {
+            registry.addResourceHandler("/artworks/**")
+                    .addResourceLocations("file:///" + System.getProperty("user.dir") + "img" + File.separator + "artwork" + File.separator);
+            registry.addResourceHandler("/profiles/**")
+                    .addResourceLocations("file:///" + System.getProperty("user.dir") + "img" + File.separator + "profile" + File.separator);
+            registry.addResourceHandler("/profileDefaultImg/**")
+                    .addResourceLocations("file:///" + System.getProperty("user.dir") + "img" + File.separator);
+        }
     }
 }
