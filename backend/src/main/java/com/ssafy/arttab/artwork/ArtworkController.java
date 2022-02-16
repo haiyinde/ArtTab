@@ -44,7 +44,6 @@ public class ArtworkController {
         String originFileName=file.getOriginalFilename();
         String saveFileName=new MD5Generator(originFileName+time).toString()+file.getOriginalFilename();
 
-
         String upperPath = "";
         String savePath = "";
         if ("dev".equals(location)){
@@ -55,6 +54,7 @@ public class ArtworkController {
             savePath = upperPath + File.separator + "artwork"; // artwork의 사용자 디렉토리
 
         }
+
 
 
         // 디버깅용

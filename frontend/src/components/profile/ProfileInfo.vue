@@ -101,7 +101,7 @@
       <span class="alert" v-show="valid.password"
         >영문, 특수문자 포함 8자리 이상 입력해주세요.</span
       >
-      <!-- 변경할 비밀번호 확인 --> <!-- 변경할 비밀번호 확인 -->
+      <!-- 변경할 비밀번호 확인 -->
       <label for="checkPwd" class="label-text">새 비밀번호 다시 입력</label>
       <input-password
         :password="checkPwd"
