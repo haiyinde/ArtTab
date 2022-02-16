@@ -156,6 +156,7 @@ public class AuthService {
             Map payload = new HashMap();
             payload.put("id",member.getId());
             message.put("result","success");
+            message.put("email",email);
             message.put("token",jwtUtil.createToken(payload));
 
                }else{

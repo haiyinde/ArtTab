@@ -156,11 +156,14 @@ public class MemberService {
         );
 
         // 이메일보내기
-        StringBuilder cntnt = new StringBuilder();
-        cntnt.append("인증 번호는 ")
-                .append(pwd)
-                .append( "입니다");
-        mailSendService.sendEmail(email, "가입해주셔서  감사힙니다 인증번호를 발급해 드립니다", cntnt.toString());
+        HashMap values = new HashMap<String,String>();
+        values.put("password",pwd);
+        try {
+            mailSendService.sendEmail(email, "가입해주셔서  감사합니다 인증번호를 발급해 드립니다","welcome",values);
+
+        }catch (Exception e){
+            throw new NoauthorizedMemberException();
+        }
     }
     public void selectMailAuthId(final AuthNumCheckRequest authNumCheckRequest){
         //이메일로 Id찾기
@@ -262,10 +265,10 @@ public class MemberService {
 
         //이메일 보내기
         StringBuilder cntnt = new StringBuilder();
-        cntnt.append("임시 비밀번호는 ")
-                .append(pwd)
-                .append( "입니다");
-        mailSendService.sendEmail(email, "안녕하세요.Art Tab입니다." +member.getNickname()+"님의 임시 비밀번호 입니다.", cntnt.toString());
+
+        HashMap values = new HashMap();
+        values.put("password",pwd);
+        mailSendService.sendEmail(email, "안녕하세요.Art Tab입니다." +member.getNickname()+"님의 임시 비밀번호 입니다.", "findpassword",values);
 
     }
 
