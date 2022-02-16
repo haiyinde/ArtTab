@@ -8,24 +8,10 @@ class ArtworkAPI {
   }
 
   // 작품 수정 API
-  update(
-    desc: string,
-    file: File,
-    id: number,
-    title: string,
-    writerId: number
-  ) {
-    return api.put(
-      `/artwork/` +
-        id +
-        `?desc=` +
-        desc +
-        `&title=` +
-        title +
-        `&writerId=` +
-        writerId
-    );
+  updateArtwork(id: number, artwork: FormData) {
+    return fileApiInstance.put(`/artwork/${id}`, artwork);
   }
+  
   // id에 해당하는 작품 조회 (개별 작품 조회)
   getArtworkById(id: number, loginId: number) {
     return api.get(`/artwork/${id}`, { params: { loginId: loginId } });
