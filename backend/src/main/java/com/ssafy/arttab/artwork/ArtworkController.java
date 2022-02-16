@@ -163,8 +163,9 @@ public class ArtworkController {
     // 작품 전체 조회 api -최근순 정렬
     @ApiOperation(value ="전체 작품을 최근순으로 정렬한다.", notes="내용이 없는 페이지를 요청하면 null이 리턴된다.")
     @GetMapping("api/v1/artwork")
-    public ResponseEntity<List<ArtworkListResponseDto>> getArtworkList(@ApiParam("가져올 페이지 (0페이지부터 시작)") @RequestParam("page") int page){
-        List<ArtworkListResponseDto> list=artworkService.getArtworkList(page);
+    public ResponseEntity<List<ArtworkListResponseDto>> getArtworkList(@ApiParam("가져올 페이지 (0페이지부터 시작)") @RequestParam("page") int page,
+                                                                       @ApiParam("로그인된 아이디") @RequestParam("loginId") Long loginId){
+        List<ArtworkListResponseDto> list=artworkService.getArtworkList(page, loginId);
 
         if(list.isEmpty()){
             return new ResponseEntity<>(null, HttpStatus.OK);

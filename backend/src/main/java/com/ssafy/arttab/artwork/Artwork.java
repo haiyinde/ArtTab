@@ -6,8 +6,6 @@ import com.ssafy.arttab.gallery.GalleryItem;
 import com.ssafy.arttab.like.Likes;
 import com.ssafy.arttab.member.domain.Member;
 import lombok.*;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
