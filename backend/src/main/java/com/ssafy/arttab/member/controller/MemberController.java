@@ -16,6 +16,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -33,6 +34,9 @@ import java.time.LocalDateTime;
 @RequestMapping("/api/v1/member")
 @Api("멤버 컨트롤러")
 public class MemberController {
+
+    @Value("${access.url.location}")
+    private String location;
 
     private final MemberService memberService;
 
@@ -161,9 +165,16 @@ public class MemberController {
             message= e.getMessage();
         }
 
+
         // 원래 프로필 사진 삭제하기
         String parentSaveFolder=memberService.getParentFolder(email); // 이메일에 해당하는 사용자의 원래 프로필 사진
-        String defaultSaveFolder=System.getProperty("user.home") +File.separator+"profile"+File.separator+"default.jpg"; // 기존에 프로필 사진 설정하지 않았을 경우
+        String defaultSaveFolder = "";
+        if ("dev".equals(location)){
+            defaultSaveFolder = System.getProperty("user.dir") + File.separator + "profile" + File.separator + "default.jpg"; // 기존에 프로필 사진 설정하지 않았을 경우
+        }else if ("ec2".equals(location)){
+            defaultSaveFolder = System.getProperty("user.dir")  + "img" + File.separator + "default.jpg"; // 기존에 프로필 사진 설정하지 않았을 경우
+        }
+
         if(!parentSaveFolder.equals(defaultSaveFolder)) { // 기본 이미지로 설정되어 있는 경우에는 삭제 안함
             File parentFile=new File(parentSaveFolder);
             parentFile.delete();
@@ -173,8 +184,15 @@ public class MemberController {
         LocalDateTime time = LocalDateTime.now();
         String originFileName = file.getOriginalFilename();
         String saveFileName = new MD5Generator(originFileName + time).toString()+file.getOriginalFilename();
-        String upperSavePath=System.getProperty("user.home")+ File.separator+"profile"; // 프로필 폴더
-        String savePath = upperSavePath; // 프로필 사진 주인 이메일
+        String upperSavePath = "";
+        String savePath = "";
+        if ("dev".equals(location)){
+            upperSavePath=System.getProperty("user.home")+ File.separator+"profile"; // 프로필 폴더
+            savePath = upperSavePath; // 프로필 사진 주인 이메일
+        }else if ("ec2".equals(location)){
+            upperSavePath = System.getProperty("user.dir") + "img";
+            savePath = upperSavePath + File.separator + "profile";
+        }
 
         // profile 폴더가 없으면 폴더 생성
             if(!upperSavePath.isEmpty()){
