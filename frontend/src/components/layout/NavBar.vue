@@ -14,16 +14,6 @@
       </div>
     </div>
     <nav :class="{ showNav: isShowNav }">
-      <!-- 사용자 로그인 전 -->
-      <!-- <ul v-if="!isLogin">
-        <li @click="closeNavBar">
-          <router-link :to="{ name: 'Login' }">로그인</router-link>
-        </li>
-        <li @click="closeNavBar">
-          <router-link :to="{ name: 'SignUp' }">회원가입</router-link>
-        </li>
-      </ul> -->
-      <!-- 사용자 로그인 후 -->
       <ul>
         <li @click="closeNavBar">
           <router-link :to="{ name: 'ArtworkCreate' }">그림 올리기</router-link>
@@ -125,7 +115,6 @@ img {
 
   .searchbar-icon {
     position: absolute;
-
     right: $size-big;
     color: $dark-grey;
   }

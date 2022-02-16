@@ -11,7 +11,7 @@
       <router-link
         v-if="userInfo.id == profileInfo.id"
         class="decorate-gallery-btn"
-        :to="{ name: 'Profile' }"
+        :to="{ name: 'DecorateGallery' }"
         >꾸미기</router-link
       >
     </div>
@@ -26,7 +26,7 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { mapState, mapMutations } from "vuex";
+import { mapState } from "vuex";
 
 const accountsStore = "accountsStore";
 export default defineComponent(
