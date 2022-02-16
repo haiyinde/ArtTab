@@ -74,6 +74,7 @@ export default defineComponent({
     return {
       page: 0,
       items: [] as any,
+      isPageDone: false,
     };
   },
   components: {
@@ -85,18 +86,12 @@ export default defineComponent({
   methods: {
     async intersected() {
       const res = await ArtworkAPI.getArtworkList(this.page);
+      console.log(this.page);
       this.page++;
+      console.log(this.page);
       const items = res.data;
       this.items = [...this.items, ...items];
     },
-    // 좋아요 상태 변경
-    // toggleLike(id: number) {
-    //   this.items.forEach((item: { artworkId: number; }) => {
-    //     if (item.artworkId === id) {
-
-    //     }
-    //   });
-    // },
     showToastMessage(msg: string) {
       (this.$refs["toast"] as typeof ToastMessage).showToast(msg);
     },
