@@ -14,7 +14,6 @@ import KakaoLogin from "@/components/accounts/snslogin/KakaoLogin.vue";
 import GoogleLogin from "@/components/accounts/snslogin/GoogleLogin.vue";
 // 내 정보 페이지
 import Profile from "@/views/Profile.vue";
-import DecorateGallery from "@/components/profile/DecorateGallery.vue";
 // 검색 결과 페이지
 import SearchResult from "@/views/SearchResult.vue";
 // 작품 페이지
@@ -22,6 +21,8 @@ import Artwork from "@/views/Artwork.vue";
 import ArtworkDetail from "@/components/artwork/ArtworkDetail.vue";
 import ArtworkCreate from "@/components/artwork/ArtworkCreate.vue";
 import ArtworkUpdate from "@/components/artwork/ArtworkUpdate.vue";
+// navbar
+import NavBar from "@/components/layout/NavBar.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -99,11 +100,6 @@ const routes: Array<RouteRecordRaw> = [
     props: true,
   },
   {
-    path: "/decogallery",
-    name: "DecorateGallery",
-    component: DecorateGallery,
-  },
-  {
     path: "/searchresult",
     name: "SearchResult",
     component: SearchResult,
@@ -130,6 +126,11 @@ const routes: Array<RouteRecordRaw> = [
         props: true,
       },
     ],
+  },
+  {
+    path: "/navbar",
+    name: "NavBar",
+    component: NavBar,
   },
 ];
 

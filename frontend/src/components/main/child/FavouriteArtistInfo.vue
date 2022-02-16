@@ -1,15 +1,85 @@
 <template>
-  <favourite-artist-info></favourite-artist-info>
+  <div>
+    <div class="box-likeartist">
+      <div class="profile-status">
+        <div class="image-profile">
+          <img
+            src=""
+            height="52"
+            width="52"
+            alt="프로필사진"
+          />
+        </div>
+        <div class="nickname">아이디</div>
+        <div class="status">
+          <camera-burst></camera-burst>
+          <span>13</span>
+          <account-heart></account-heart>
+          <span>13</span>
+        </div>
+      </div>
+      <div class="box-image">
+        <div class="image-first">
+          <img
+            src=""
+            height="124"
+            width="124"
+            alt="작품1"
+          />
+        </div>
+        <div class="image-second">
+          <img
+            src=""
+            height="124"
+            width="124"
+            alt="작품1"
+          />
+        </div>
+        <div class="image-third">
+          <img
+            src=""
+            height="124"
+            width="124"
+            alt="작품1"
+          />
+        </div>
+        <div class="image-fourth">
+          <img
+            src=""
+            height="124"
+            width="124"
+            alt="작품1"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import FavouriteArtistInfo from "@/components/main/child/FavouriteArtistInfo.vue";
+import { AccountHeart } from "mdue";
+import { CameraBurst } from "mdue";
+import { mapState } from "vuex";
+
+const accountsStore = "accountsStore";
 
 export default defineComponent({
   name: "MainArtist",
   components: {
-    FavouriteArtistInfo,
+    AccountHeart,
+    CameraBurst,
+  },
+  data() {
+    return {
+      
+    }
+  },
+  computed: {
+    ...mapState(accountsStore, ["userInfo"]),
+  },
+  methods: {
+
   },
 });
 </script>
