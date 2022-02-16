@@ -23,9 +23,10 @@ public class ArtworkListResponseDto implements Comparable<ArtworkListResponseDto
     private String saveFileName; // 서버에 저장된 파일 이름
     private String saveFolder; // 저장된 폴더 경로
     private String imageUrl; // 이미지 url
+    private boolean likeOrNot; // 좋아요 여부
 
     @Builder
-    public ArtworkListResponseDto(Long memberId, String memberNickname, Long artworkId, String artworkTitle, LocalDateTime artworkRegdate, String saveFileName, String saveFolder, String imageUrl) {
+    public ArtworkListResponseDto(Long memberId, String memberNickname, Long artworkId, String artworkTitle, LocalDateTime artworkRegdate, String saveFileName, String saveFolder, String imageUrl, boolean likeOrNot) {
         this.memberId = memberId;
         this.memberNickname = memberNickname;
         this.artworkId = artworkId;
@@ -34,6 +35,7 @@ public class ArtworkListResponseDto implements Comparable<ArtworkListResponseDto
         this.saveFileName = saveFileName;
         this.saveFolder = saveFolder;
         this.imageUrl = imageUrl;
+        this.likeOrNot = likeOrNot;
     }
 
     // 정렬용
