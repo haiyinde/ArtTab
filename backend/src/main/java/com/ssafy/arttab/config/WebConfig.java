@@ -44,6 +44,7 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
+
         if ("dev".equals(location)) {
             // local & dev
             registry.addResourceHandler("/artworks/**")
