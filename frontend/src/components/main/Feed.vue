@@ -24,14 +24,15 @@
         </template>
       </masonry-wall>
     </div>
+    <!-- Loader -->
+    <loader :showLoader="showLoader"></loader>
     <!-- Scroll To Top Button -->
     <arrow-up-bold-circle-outline
       class="arrow scroll-to-top"
       @click="scrollToTop"
     ></arrow-up-bold-circle-outline>
-
-    <loader></loader>
-    <observer @intersect="intersected"></observer>
+    <!-- Observer -->
+    <observer v-if="!contentsDone" @intersect="intersected"></observer>
   </div>
 </template>
 
@@ -54,7 +55,8 @@ export default defineComponent({
     return {
       page: 0,
       items: [] as any,
-      isPageDone: false,
+      contentsDone: false,
+      showLoader: false,
     };
   },
   components: {
@@ -67,10 +69,13 @@ export default defineComponent({
   methods: {
     async intersected() {
       const res = await ArtworkAPI.getArtworkList(this.page);
-      console.log(this.page);
       this.page++;
-      console.log(this.page);
       const items = res.data;
+      console.log(items.length);
+      if (items.length <= 19) {
+        this.contentsDone = true;
+        this.showLoader = true;
+      }
       this.items = [...this.items, ...items];
     },
     showToastMessage(msg: string) {
