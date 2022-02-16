@@ -158,7 +158,12 @@ public class MemberService {
         // 이메일보내기
         HashMap values = new HashMap<String,String>();
         values.put("password",pwd);
-        mailSendService.sendEmail(email, "가입해주셔서  감사합니다 인증번호를 발급해 드립니다","welcome",values);
+        try {
+            mailSendService.sendEmail(email, "가입해주셔서  감사합니다 인증번호를 발급해 드립니다","welcome",values);
+
+        }catch (Exception e){
+            throw new NoauthorizedMemberException();
+        }
     }
     public void selectMailAuthId(final AuthNumCheckRequest authNumCheckRequest){
         //이메일로 Id찾기
