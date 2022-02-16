@@ -21,6 +21,8 @@ import Artwork from "@/views/Artwork.vue";
 import ArtworkDetail from "@/components/artwork/ArtworkDetail.vue";
 import ArtworkCreate from "@/components/artwork/ArtworkCreate.vue";
 import ArtworkUpdate from "@/components/artwork/ArtworkUpdate.vue";
+// navbar
+import NavBar from "@/components/layout/NavBar.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -124,6 +126,11 @@ const routes: Array<RouteRecordRaw> = [
         props: true,
       },
     ],
+  },
+  {
+    path: "/navbar",
+    name: "NavBar",
+    component: NavBar,
   },
 ];
 

@@ -4,13 +4,24 @@
       <router-link :to="{ name: 'Main' }">
         <img src="@/assets/mainlogo.png" alt="mainlogo" />
       </router-link>
+      <!-- <auto-complete></auto-complete> -->
       <div class="searchbar-box" :class="{ showNav: isShowNav }">
         <input
           type="text"
           class="searchbar"
-          placeholder="작가 또는 작품명을 입력하세요."
+          placeholder="작품명을 입력하세요."
+          list="artwork-options"
+          v-model="title"
+          @keyup.enter="SearchResult(title)"
         />
-        <magnify class="icon searchbar-icon"></magnify>
+        <datalist id="artwork-options" style="display: none">
+          <!-- 전체 작품 title을 option value에 넣으면 자동완성 만들기 가능하지 않을까? -->
+          <option value="" />
+        </datalist>
+        <magnify
+          class="icon searchbar-icon"
+          @click="SearchResult(title)"
+        ></magnify>
       </div>
     </div>
     <nav :class="{ showNav: isShowNav }">
@@ -52,6 +63,7 @@
 import { defineComponent } from "vue";
 import { Magnify, AccountCircleOutline, Logout, TextSearch } from "mdue";
 import { mapState, mapActions } from "vuex";
+import AutoComplete from "@/components/layout/child/AutoComplete.vue"
 
 const accountsStore = "accountsStore";
 
@@ -62,10 +74,13 @@ export default defineComponent({
     AccountCircleOutline,
     Logout,
     TextSearch,
+    // AutoComplete,
   },
   data() {
     return {
       isShowNav: false,
+      title: "",
+      artworkList: "",
     };
   },
   computed: {
@@ -83,6 +98,21 @@ export default defineComponent({
     async onClickLogout() {
       await this.getLogout();
       this.$router.push({ name: "Login" });
+    },
+    // 검색어 전달
+    SearchResult(title: string) {
+      console.log(this.$route.query.artworkList);
+      if (title !== "") {
+        this.$router.push({
+          name: "SearchResult",
+          query: {
+            title: this.title,
+          },
+        });
+        this.title = "";
+      } else {
+        alert("검색어를 입력해주세요!");
+      }
     },
   },
 });
