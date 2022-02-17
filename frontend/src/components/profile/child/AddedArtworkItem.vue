@@ -6,14 +6,18 @@
     :w="artwork.weight"
     :h="artwork.height"
     :active="active"
-    :draggable="true"
-    :resizable="true"
+    :draggable="draggable"
+    :resizable="resizable"
     :parent="true"
     @drag-end="updateLocation"
     @resize-end="updateSize"
   >
     <img :src="artwork.saveFolder" :alt="artwork.saveFileName" />
-    <close-circle class="closeicon" @click="deleteArtwork"></close-circle>
+    <close-circle
+      v-if="draggable"
+      class="closeicon"
+      @click="deleteArtwork"
+    ></close-circle>
   </vue3-draggable-resizable>
 </template>
 
@@ -34,6 +38,8 @@ export default defineComponent({
   props: {
     artwork: {},
     index: Number,
+    draggable: Boolean,
+    resizable: Boolean,
   },
   data() {
     return {

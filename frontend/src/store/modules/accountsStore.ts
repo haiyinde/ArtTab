@@ -64,9 +64,9 @@ export const accountsStore: Module<AccountsState, RootState> = {
           // commit("SET_JOIN_EMAIL", "");
           // commit("SET_JOIN_EMAIL", user.email);
         })
-        .catch(() => {
+        .catch((e) => {
           commit("SET_IS_LOGIN", false);
-          alert("비밀번호가 틀렸습니다.");
+          console.log(e);
         });
     },
     async getSnsLogin({ commit }, token: string) {
