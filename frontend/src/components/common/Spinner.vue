@@ -50,7 +50,8 @@ export default defineComponent({
     content: "Loading";
     position: absolute;
     top: 50%;
-    transform: translateY(-50%);
+    left: 50%;
+    transform: translate(-50%, -50%);
     color: #2f416f;
     font: 0.9em sans-serif;
     width: 8em;

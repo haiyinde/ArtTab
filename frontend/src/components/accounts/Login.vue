@@ -46,7 +46,7 @@
     <!-- SNS 로그인/회원가입 -->
     <div class="subtitle">SNS로 간편 로그인/회원가입하기</div>
     <div class="snslogin">
-      <img
+      <!-- <img
         class="circle"
         src="@/assets/images/kakao.png"
         alt="카카오 로그인"
@@ -57,9 +57,14 @@
         src="@/assets/images/google.png"
         alt="구글 로그인"
         @click="googleLogin"
+      /> -->
+      <img
+        class="kakaobtn"
+        src="@/assets/images/kakaologin.png"
+        alt="카카오 로그인"
+        @click="kakaoLogin"
       />
-      <!-- <img src="@/assets/images/kakaologin.png" alt="카카오 로그인" />
-      <img src="@/assets/images/googlelogin.png" alt="카카오 로그인" /> -->
+      <!-- <img src="@/assets/images/googlelogin.png" alt="구글 로그인" /> -->
     </div>
 
     <!-- 이메일 가입 버튼 -->
@@ -211,6 +216,10 @@ export default defineComponent({
 .snslogin {
   text-align: center;
   margin-top: $size-medium;
+}
+
+.kakaobtn {
+  border-radius: $size-micro;
 }
 
 img {

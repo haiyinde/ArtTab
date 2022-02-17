@@ -8,51 +8,41 @@
         :gap="16"
       >
         <template #default="{ item }">
-          <div class="thumbnail-wrapper">
+          <figure class="card card--1">
             <img :src="item.imageUrl" :alt="`${item.artworkTitle}`" />
-            <div class="overlay">
-              <div class="info">
-                <router-link
-                  :to="{
-                    name: 'ArtworkDetail',
-                    params: { id: item.artworkId },
-                  }"
-                >
-                  <span style="color: white" class="artwork-title">{{
-                    item.artworkTitle
-                  }}</span>
-                </router-link>
-                <router-link
-                  :to="{ name: 'Profile', params: { id: item.memberId } }"
-                >
-                  <span style="color: white" class="artwork-artist"
-                    >By {{ item.memberNickname }}</span
-                  >
-                </router-link>
-              </div>
-              <div class="button-top-right">
-                <!-- <like-button
-                  class="icon"
-                  :liked="item.likeOrNot"
-                  :artworkId="item.artworkId"
-                  :userId="userInfo.id"
-                  @toggle="toggleLike()"
-                  @message="showToastMessage"></like-button>
-                <toast-message ref="toast"></toast-message> -->
-              </div>
-            </div>
-          </div>
+            <figcaption>
+              <span class="info">
+                <h3 class="artwork-title">{{ item.artworkTitle }}</h3>
+                <span class="artwork-artist">{{ item.memberNickname }}</span>
+              </span>
+              <span class="links">
+                <!-- like button -->
+                <a href="#">
+                  <like-button
+                    class="icon"
+                    :liked="likeInfo.likeOrNot"
+                    :artworkId="item.artworkId"
+                    :userId="userInfo.id"
+                    @toggle="toggleLike"
+                    @message="showToastMessage"
+                  ></like-button>
+                  <toast-message ref="toast"></toast-message>
+                </a>
+              </span>
+            </figcaption>
+          </figure>
         </template>
       </masonry-wall>
     </div>
+    <!-- Loader -->
+    <loader :showLoader="showLoader"></loader>
     <!-- Scroll To Top Button -->
     <arrow-up-bold-circle-outline
       class="arrow scroll-to-top"
       @click="scrollToTop"
     ></arrow-up-bold-circle-outline>
-
-    <loader></loader>
-    <observer @intersect="intersected"></observer>
+    <!-- Observer -->
+    <observer v-if="!contentsDone" @intersect="intersected"></observer>
   </div>
 </template>
 
@@ -74,29 +64,38 @@ export default defineComponent({
     return {
       page: 0,
       items: [] as any,
+      contentsDone: false,
+      showLoader: false,
+      likeInfo: [] as any,
     };
   },
   components: {
     Observer,
-    // LikeButton,
+    LikeButton,
     Loader,
     ArrowUpBoldCircleOutline,
+    ToastMessage,
   },
   methods: {
     async intersected() {
-      const res = await ArtworkAPI.getArtworkList(this.page);
+      const res = await ArtworkAPI.getArtworkList(this.userInfo.id, this.page);
       this.page++;
       const items = res.data;
+      let size = items.length;
+      if (size <= 19) {
+        this.contentsDone = true;
+        this.showLoader = true;
+      }
       this.items = [...this.items, ...items];
+      for (let i = 0; i < size; i++) {
+        this.likeInfo.push({
+          likeOrNot: items[i].likeOrNot,
+        })
+      }
     },
-    // 좋아요 상태 변경
-    // toggleLike(id: number) {
-    //   this.items.forEach((item: { artworkId: number; }) => {
-    //     if (item.artworkId === id) {
-
-    //     }
-    //   });
-    // },
+    toggleLike(result: boolean) {
+      this.likeInfo.likeOrNot = result;
+    },
     showToastMessage(msg: string) {
       (this.$refs["toast"] as typeof ToastMessage).showToast(msg);
     },
@@ -120,76 +119,116 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
-* {
-  box-sizing: border-box;
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
 }
 
-.thumbnail-wrapper {
-  position: relative;
+body {
+	width: 100%;
+	height: 100vh;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background: #e4e4e4;
+}
+
+img {
+  width: 300px;
+  height: auto;
+}
+
+figure.card {
+	position: relative;
   width: 300px;
   margin: 0 auto;
-  transition: 0.5s ease-in-out;
+	transition: background 400ms ease;
+	overflow: hidden;
+	&:hover {
+    	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+		figcaption {
+			transform: translateY(0px);
+		}
+	}
 
-  & img {
-    max-width: 100%;
-    height: auto;
-    border: 1px solid $grey;
-    box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
-  }
+	&--1 {
+		figcaption {
+			width: 280px;
+			height: 80px;
+			padding: 15px 20px;
+      left: 3.5%;
+      bottom: 3.5%;
+      border-radius: 2px;
+			transform: translateY(100px);
+		}
+	}
 
-  &:hover {
-    transform: translateY(-3px);
-    & .button-top-right {
-      visibility: visible;
-    }
-    & .info {
-      color: white;
-      visibility: visible;
-      transform: translateY(0px);
-    }
-  }
-}
-
-.info {
-  position: absolute;
-  bottom: $font-small;
-  left: 10px;
-  visibility: hidden;
-  z-index: 3;
-  transition: 0.4s, ease-in-out;
-}
-
-.container {
-  margin-top: 2rem;
-}
-
-.overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 2;
-  &:hover {
-    background: rgba(0, 0, 0, 0.6);
-  }
-}
-
-.button-top-right {
-  position: absolute;
-  top: 2px;
-  right: 2px;
-  z-index: 3;
-  visibility: hidden;
-}
-
-// like button
-.icon {
-  font-size: 1.5rem;
-  color: $white;
-  cursor: pointer;
-  margin-left: $size-small;
-  margin-right: $size-micro;
+	figcaption {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		position: absolute;
+		background: $white;
+		transition: transform 400ms ease;
+		.info {
+			font-family: "Montserrat";
+			h3 {
+				font-size: 1.2rem;
+				letter-spacing: 1px;
+				margin-bottom: 5px;
+			}
+			span {
+				color: $dark-grey;
+				font-size: 0.85rem
+			}
+		}
+		.links {
+			display: flex;
+			justify-content: end;
+			align-items: center;
+			a {
+				text-decoration: none;
+				position: relative;
+				width: 35px;
+				height: 35px;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				color: $red;
+				margin-left: 10px;
+				font-size: $font-large;
+				opacity: 0.65;
+				overflow: hidden;
+				&:hover {
+					opacity: 1;
+				}
+				&:focus {
+					outline: none;
+					&::after {
+						transform: scale(1);
+						opacity: 1;
+					}
+				}
+				&::after {
+					content: "";
+					position: absolute;
+					left: 0;
+					top: 0;
+					width: 100%;
+					height: 100%;
+					border-radius: 50%;
+					opacity: 0;
+					background: rgba(255, 255, 255, 0.05);
+					transform: scale(0.5);
+					z-index: -1;
+					transition: all 150ms ease;
+				}
+			}
+		}
+	}
 }
 
 // scroll to top button
