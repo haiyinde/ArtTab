@@ -157,7 +157,7 @@
       <div class="container">
         <div class="profile">
           <div class="profile-image">
-            <img :src="profileInfo.profileImageUrl" alt="Profile Image" />
+            <img :src="profileInfo.profileImageUrl" alt="Profile Image" style="width: 150px; height:150px;"/>
           </div>
           <div class="profile-user-settings">
             <h1 class="profile-user-nickname">{{ profileInfo.nickname }}</h1>
