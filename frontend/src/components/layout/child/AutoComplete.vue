@@ -36,6 +36,9 @@ export default defineComponent({
       }
     },
   },
+  updated() {
+    this.intersected();
+  },
 });
 </script>
 

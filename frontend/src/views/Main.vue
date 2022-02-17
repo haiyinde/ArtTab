@@ -16,7 +16,6 @@
       <favourite-artwork></favourite-artwork>
     </div>
     <div class="conbox con3">
-      <!-- 철연님 코드 -->
       <favourite-artist></favourite-artist>
     </div>
   </div>
