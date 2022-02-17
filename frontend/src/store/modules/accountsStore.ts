@@ -8,7 +8,7 @@ import ResponseData from "@/types/ResponseData";
 export interface AccountsState {
   isLogin: boolean;
   isLoginError: boolean;
-  joinEmail: string;
+  joinInfo: LoginInfo | null;
   userInfo: UserInfo | null;
   isConfirmEmail: boolean;
 }
@@ -18,7 +18,7 @@ export const accountsStore: Module<AccountsState, RootState> = {
   state: {
     isLogin: false,
     isLoginError: false,
-    joinEmail: "",
+    joinInfo: null,
     userInfo: null,
     isConfirmEmail: false,
   },
@@ -31,8 +31,8 @@ export const accountsStore: Module<AccountsState, RootState> = {
     },
   },
   mutations: {
-    SET_JOIN_EMAIL: (state, email: string) => {
-      state.joinEmail = email;
+    SET_JOIN_INFO: (state, joinInfo: LoginInfo) => {
+      state.joinInfo = joinInfo;
     },
     SET_IS_LOGIN: (state, isLogin: boolean) => {
       state.isLogin = isLogin;
@@ -43,14 +43,15 @@ export const accountsStore: Module<AccountsState, RootState> = {
     },
   },
   actions: {
-    // 회원가입 이메일 저장
-    storeEmail({ commit }, email: string) {
-      commit("SET_JOIN_EMAIL", email);
+    // 회원가입 가입정보 저장
+    storeEmail({ commit }, joinInfo: LoginInfo) {
+      commit("SET_JOIN_INFO", joinInfo);
     },
     // 로그인
     async getLogin({ commit }, user: LoginInfo) {
       await AccountsAPI.login(user)
         .then((res: ResponseData) => {
+          console.log(res);
           if (res.data) {
             commit("SET_IS_LOGIN", true);
             sessionStorage.setItem("access-token", res.data);
@@ -59,14 +60,18 @@ export const accountsStore: Module<AccountsState, RootState> = {
             alert("비밀번호가 틀렸습니다.");
           }
           // 이메일 인증 여부 확인
-          // 이메일 인증 안된 사용자이면 joinEmail에 이메일 저장
+          // 이메일 인증 안된 사용자이면 joinInfo에 이메일 저장
           // commit("SET_JOIN_EMAIL", "");
           // commit("SET_JOIN_EMAIL", user.email);
         })
-        .catch(() => {
+        .catch((e) => {
           commit("SET_IS_LOGIN", false);
-          alert("비밀번호가 틀렸습니다.");
+          console.log(e);
         });
+    },
+    async getSnsLogin({ commit }, token: string) {
+      commit("SET_IS_LOGIN", true);
+      sessionStorage.setItem("access-token", token);
     },
     // 사용자 정보 불러오기
     async getUserInfo({ commit }, email: string) {

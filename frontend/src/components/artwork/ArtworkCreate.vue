@@ -45,7 +45,6 @@
               v-model="desc"
               maxlength="300"
             ></textarea>
-            <!-- 내용입력 스크롤 자동으로 늘어나는거 구현..? -->
           </div>
         </div>
       </div>
@@ -86,14 +85,19 @@ export default defineComponent({
     },
     // image file은 form data로 보내야함
     addArtwork() {
-      const artwork = new FormData();
-      artwork.append("file", this.file);
-      artwork.append("title", this.title);
-      artwork.append("writerId", this.userInfo.id);
-      artwork.append("description", this.desc);
-      artworkAPI.addArtwork(artwork).then((res) => {
-        console.log(res);
-      });
+      if (this.file === "" || this.title === "" || this.desc === "") {
+        alert("그림, 제목, 내용을 모두 입력하세요")
+      } else {
+        const artwork = new FormData();
+        artwork.append("file", this.file);
+        artwork.append("title", this.title);
+        artwork.append("writerId", this.userInfo.id);
+        artwork.append("description", this.desc);
+        artworkAPI.addArtwork(artwork).then((res) => {
+          console.log(res);
+        });
+        this.$router.replace("/");
+      }
     },
   },
 });

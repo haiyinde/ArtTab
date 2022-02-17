@@ -1,186 +1,259 @@
 <template>
-  {{ userInfo.id }}
-  {{ userInfo.email }}
-  {{ userInfo.intro }}
-  {{ userInfo.nickname }}
-  <!-- <div class="container">
-    <masonry-wall
-      :items="artwork_list"
-      :ssr-columns="1"
-      :column-width="300"
-      :gap="16"
-    >
-      <template #default="{ item }">
-        <div class="thumbnail-wrapper">
-            <img :src="item.image" :alt="`${item.id}`" />
-            <div class="overlay">
-              <div class="info">
-              <router-link
-                :to="{ name: 'ArtworkDetail', params: { id: item.artworkId } }"
-                >
-                <span style="color: white" class="artwork-title"
-                  >{{ item.title }}</span
-                >
-              </router-link>
-              <router-link
-                :to="{ name: 'Profile', params: { id: item.memberId } }"
-                >
-                <span style="color: white" class="artwork-artist">By {{
-                  item.nickname
-                }}</span>
-              </router-link>
-              </div>
-              <div class="button-top-right">
-                <like-button :liked="!valid" @click="handleLike"></like-button>
-              </div>
-            </div>
-        </div>
-      </template>
-    </masonry-wall>
-  </div> -->
+  <div>
+    {{profileInfo.nickname}}
+    <div>
+      <div class="container">
+        <masonry-wall
+          :items="items"
+          :ssr-columns="1"
+          :column-width="300"
+          :gap="16"
+        >
+          <template #default="{ item }">
+            <figure class="card card--1">
+              <img :src="item.imageUrl" :alt="`${item.artworkTitle}`" />
+              <figcaption>
+                <span class="info">
+                  <h3 class="artwork-title">{{ item.artworkTitle }}</h3>
+                  <span class="artwork-artist">{{ item.memberNickname }}</span>
+                </span>
+                <span class="links">
+                  <!-- like button -->
+                  <a href="#">
+                    <like-button
+                      class="icon"
+                      :liked="likeInfo.likeOrNot"
+                      :artworkId="item.artworkId"
+                      :userId="userInfo.id"
+                      @toggle="toggleLike"
+                      @message="showToastMessage"
+                    ></like-button>
+                    <toast-message ref="toast"></toast-message>
+                  </a>
+                </span>
+              </figcaption>
+            </figure>
+          </template>
+        </masonry-wall>
+      </div>
+      <!-- Scroll To Top Button -->
+      <arrow-up-bold-circle-outline
+        class="arrow scroll-to-top"
+        @click="scrollToTop"
+      ></arrow-up-bold-circle-outline>
+    </div>
+  </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
-// import LikeButton from "../common/LikeButton.vue";
 import ArtworkAPI from "@/apis/artworkAPI";
-import { mapState, mapMutations } from "vuex";
+import LikeButton from "@/components/common/LikeButton.vue";
+import ToastMessage from "@/components/common/ToastMessage.vue";
+import { mapState } from "vuex";
+import { ArrowUpBoldCircleOutline } from "mdue";
+import AccountsAPI from "@/apis/accountsAPI";
+import ResponseData from "@/types/ResponseData";
+import ProfileInfo from "@/types/ProfileInfo";
 
 const accountsStore = "accountsStore";
 
 export default defineComponent({
   data() {
     return {
-      // 내 프로필 조회 정보
-      account: {
-        nickname: "",
-        intro: "",
-        password: "",
-        id: this.$route.params.id as string,
-      },
-      // 타인 프로필 조회 정보
-      profileInfo: {
-        email: "",
-        nickname: "",
-        intro: "",
-      },
-      artwork_list: [] as any,
-      page: 1,
-      valid: true,
+      items: [] as any,
+      likeInfo: [] as any,
+      profileInfo: {} as ProfileInfo,
     };
   },
   components: {
-    // LikeButton,
+    LikeButton,
+    ArrowUpBoldCircleOutline,
+    ToastMessage,
+  },
+  mounted() {
+    this.getProfileInfo();
+    this.getFavouriteArtworks();
   },
   computed: {
     ...mapState(accountsStore, ["userInfo"]),
   },
   methods: {
-    // ...mapMutations(accountsStore, ["SET_JOIN_EMAIL"]),
-    // ...mapMutations(accountsStore, ["SET_IS_LOGIN"]),
-    // ...mapMutations(accountsStore, ["SET_USER_INFO"]),
-    handleLike() {
-      this.valid = !this.valid;
-    },
-    async getMyArtwork() {
-      let my_artworks = await ArtworkAPI.getArtworkListByMember(
-        this.profileInfo.nickname
-      );
-      let temp = my_artworks.data;
-      console.log(temp);
-      const my_artwork = [];
-      let size = Object.keys(temp).length;
+    async getFavouriteArtworks() {
+      const res = await ArtworkAPI.getArtworkListByMember(Number(this.$route.params.id));
+      this.items = res.data;
+      let size = this.items.length;
       for (let i = 0; i < size; i++) {
-        my_artwork.push({
-          artworkId: temp[i].artworkId,
-          title: temp[i].artworkTitle,
-          memberId: temp[i].memberId,
-          nickname: temp[i].memberNickname,
-          image: temp[i].saveFolder,
+        this.likeInfo.push({
+          likeOrNot: this.items[i].likeOrNot,
+        })
+      }
+    },
+    toggleLike(result: boolean) {
+      this.likeInfo.likeOrNot = result;
+    },
+    showToastMessage(msg: string) {
+      (this.$refs["toast"] as typeof ToastMessage).showToast(msg);
+    },
+    scrollToTop() {
+      let currentScroll = document.documentElement.scrollTop,
+        int = setInterval(frame, 6);
+
+      function frame() {
+        if (0 > currentScroll) clearInterval(int);
+        else {
+          currentScroll = currentScroll - 12;
+          document.documentElement.scrollTop = currentScroll;
+        }
+      }
+    },
+    // Profile 정보 가져오기
+    getProfileInfo() {
+      AccountsAPI.getProfileInfo(
+        this.userInfo.id,
+        Number(this.$route.params.id)
+      )
+        .then((res: ResponseData) => {
+          this.profileInfo = res.data;
+          return this.profileInfo
+        })
+        .catch((e) => {
+          console.log(e);
         });
-      }
-      this.artwork_list = [...this.artwork_list, ...my_artwork];
     },
-    handleScroll() {
-      if (
-        window.scrollY + window.innerHeight >=
-        document.body.scrollHeight - 50
-      ) {
-        this.getMyArtwork();
-      }
-    },
-    // goDetail(item: { id: number; }) {
-    //   this.$router.push({ name: 'ArtworkDetail', params: {id: item.id}});
-    // }
-  },
-  mounted() {
-    this.getMyArtwork();
-    window.addEventListener("scroll", this.handleScroll);
   },
 });
 </script>
 
 <style scoped lang="scss">
-* {
-  box-sizing: border-box;
+.container {
+  margin-top: 3rem;
 }
 
-.thumbnail-wrapper {
-  position: relative;
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	width: 100%;
+	height: 100vh;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background: #e4e4e4;
+}
+
+img {
+  width: 300px;
+  height: auto;
+}
+
+figure.card {
+	position: relative;
   width: 300px;
   margin: 0 auto;
-  transition: 0.5s ease-in-out;
+	transition: background 400ms ease;
+	overflow: hidden;
+	&:hover {
+    	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+		figcaption {
+			transform: translateY(0px);
+		}
+	}
 
-  & img {
-    max-width: 100%;
-    height: auto;
-    border: 1px solid $grey;
-    box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
-  }
+	&--1 {
+		figcaption {
+			width: 280px;
+			height: 80px;
+			padding: 15px 20px;
+      left: 3.5%;
+      bottom: 3.5%;
+      border-radius: 2px;
+			transform: translateY(100px);
+		}
+	}
 
+	figcaption {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		position: absolute;
+		background: $white;
+		transition: transform 400ms ease;
+		.info {
+			font-family: "Montserrat";
+			h3 {
+				font-size: 1.2rem;
+				letter-spacing: 1px;
+				margin-bottom: 5px;
+			}
+			span {
+				color: $dark-grey;
+				font-size: 0.85rem
+			}
+		}
+		.links {
+			display: flex;
+			justify-content: end;
+			align-items: center;
+			a {
+				text-decoration: none;
+				position: relative;
+				width: 35px;
+				height: 35px;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				color: $red;
+				margin-left: 10px;
+				font-size: $font-large;
+				opacity: 0.65;
+				overflow: hidden;
+				&:hover {
+					opacity: 1;
+				}
+				&:focus {
+					outline: none;
+					&::after {
+						transform: scale(1);
+						opacity: 1;
+					}
+				}
+				&::after {
+					content: "";
+					position: absolute;
+					left: 0;
+					top: 0;
+					width: 100%;
+					height: 100%;
+					border-radius: 50%;
+					opacity: 0;
+					background: rgba(255, 255, 255, 0.05);
+					transform: scale(0.5);
+					z-index: -1;
+					transition: all 150ms ease;
+				}
+			}
+		}
+	}
+}
+
+// scroll to top button
+.scroll-to-top {
+  font-size: $font-big;
+  cursor: pointer;
+  position: fixed;
+  z-index: 1049;
+  bottom: 20px;
+  border-radius: 50%;
+  background-color: $white;
   &:hover {
-    transform: translateY(-3px);
-    & .button-top-right {
-      visibility: visible;
-    }
-    & .info {
-      color: white;
-      visibility: visible;
-      transform: translateY(0px);
-    }
+    background-color: $black;
+    color: $white;
   }
-}
-
-.info {
-  position: absolute;
-  bottom: $font-small;
-  left: 10px;
-  visibility: hidden;
-  z-index: 3;
-  transition: 0.4s, ease-in-out;
-}
-
-.container {
-  margin-top: 2rem;
-}
-
-.overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 2;
-  &:hover {
-    background: rgba(0, 0, 0, 0.6);
-  }
-}
-
-.button-top-right {
-  position: absolute;
-  top: 2px;
-  right: 2px;
-  z-index: 3;
-  visibility: hidden;
 }
 </style>

@@ -1,12 +1,7 @@
 <template>
   <article class="container">
-    <div class="title">마이 갤러리</div>
-    <router-link
-      v-if="userInfo.id == profileInfo.id"
-      class="decorate-gallery-btn"
-      :to="{ name: 'DecorateGallery' }"
-      >꾸미기</router-link
-    >
+    <div class="title">갤러리 꾸미기</div>
+    <button class="btn-complete" @click="storeArtworkList">수정완료</button>
     <div class="gallery-box">
       <div id="mygallery">
         <added-artwork-item
@@ -14,32 +9,32 @@
           :key="artwork.artworkId"
           :artwork="artwork"
           :index="index"
-          :resizable="false"
-          :draggable="false"
+          :resizable="true"
+          :draggable="true"
         >
         </added-artwork-item>
       </div>
     </div>
+    <additional-artworks></additional-artworks>
   </article>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import AdditionalArtworks from "@/components/profile/child/AdditionalArtworks.vue";
 import AddedArtworkItem from "@/components/profile/child/AddedArtworkItem.vue";
+import GalleryAPI from "@/apis/galleryAPI";
+import ResponseData from "@/types/ResponseData";
 import { mapState, mapActions } from "vuex";
 
 const accountsStore = "accountsStore";
 const galleryStore = "galleryStore";
 
 export default defineComponent({
-  name: "Gallery",
-  components: { AddedArtworkItem },
+  name: "DecorateGallery",
+  components: { AdditionalArtworks, AddedArtworkItem },
   data() {
-    return {
-      profileInfo: {
-        id: this.$route.params.id as unknown as number,
-      },
-    };
+    return {};
   },
   mounted() {
     this.getArtworkList(this.userInfo.nickname);
@@ -50,19 +45,28 @@ export default defineComponent({
   },
   methods: {
     ...mapActions(galleryStore, ["getArtworkList"]),
-    // getGalleryImage() {
-    //   // Image API
-    //   return this.galleryImage
+    storeArtworkList() {
+      GalleryAPI.setArtworkList(
+        this.userInfo.nickname,
+        this.addedArtworkList
+      ).then((res: ResponseData) => {
+        console.log(res);
+        this.$router.push({
+          name: "Profile",
+          params: { id: this.userInfo.id },
+        });
+      });
+    },
   },
 });
 </script>
 
 <style lang="scss" scoped>
 .container {
-  max-width: 1200px;
-  min-width: 320px;
-  margin: 0 auto;
   position: relative;
+  width: 740px;
+  max-width: 900px;
+  margin: 2rem auto;
 }
 
 .title {
@@ -73,46 +77,41 @@ export default defineComponent({
 }
 
 .gallery-box {
-  width: 100%;
-  border: 1px solid $grey;
   overflow-x: auto;
-  margin-top: $size-medium;
 }
 
 #mygallery {
   position: relative;
   width: 740px;
   height: 400px;
-  margin: auto;
-
+  margin-top: $size-medium;
+  border: 1px solid $grey;
   background: url("../../../src/assets/images/gallerybackground.jpg") no-repeat
     center center;
   background-size: contain;
+  box-shadow: 0 0 6px rgba(164, 204, 199, 0.9);
 }
 
-.decorate-gallery-btn {
-  font-size: $font-regular;
-  font-weight: $weight-semi-bold;
-  line-height: 1.8;
-  border: 1.5px solid $black;
-  border-radius: 0.3rem;
-  // 위치
-  position: absolute;
-  top: 0;
-  right: 0;
-  // margin-right: 1rem;
-  // width: 4rem;
-  width: 120px;
-  text-align: center;
-  align-items: center;
-  justify-content: center;
-  // hover시 색상 전환 천천히
-  transition: border-color 0.5s, background-color 0.5s, color 0.5s;
-  // hover시 색상 전환
-  &:hover {
-    background-color: $black;
-    color: $white;
-    border-color: transparent;
+button {
+  padding: $size-micro $size-medium;
+  font-size: 0.8rem;
+  background-color: $white;
+  color: $black;
+  border: 1px solid $black;
+  border-radius: $size-micro;
+  cursor: pointer;
+  &.btn-complete {
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+}
+
+/* 모바일 크기에서 적용되는 스타일 */
+@media screen and (max-width: 640px) {
+  .container {
+    width: 100%;
+    margin: 0;
   }
 }
 </style>

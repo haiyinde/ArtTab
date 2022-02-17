@@ -36,7 +36,7 @@ import { defineComponent } from "vue";
 import PageTitle from "@/components/accounts/child/PageTitle.vue";
 import AccountsAPI from "@/apis/accountsAPI";
 import ResponseData from "@/types/ResponseData";
-import { mapState } from "vuex";
+import { mapState, mapActions } from "vuex";
 
 const accountsStore = "accountsStore";
 
@@ -56,7 +56,7 @@ export default defineComponent({
     };
   },
   computed: {
-    ...mapState(accountsStore, ["joinEmail"]),
+    ...mapState(accountsStore, ["joinInfo", "isLogin"]),
   },
   watch: {
     nickname: function () {
@@ -69,6 +69,7 @@ export default defineComponent({
     },
   },
   methods: {
+    ...mapActions(accountsStore, ["getUserInfo", "getLogin", "storeEmail"]),
     // 닉네임 유효성 검사
     checkNickname() {
       // 닉네임 중복 검사
@@ -87,12 +88,19 @@ export default defineComponent({
         });
     },
     // 닉네임 등록
-    addNickname() {
-      AccountsAPI.addNickname(this.joinEmail, this.nickname)
+    async addNickname() {
+      await AccountsAPI.addNickname(this.joinInfo.email, this.nickname)
         .then((res: ResponseData) => {
           if (res.data === "success") {
-            // 로그인 처리 후 메인페이지로 이동 추가하기
-            this.$router.push({ name: "Login" });
+            // 이메일 회원가입일 경우 로그인 처리
+            if (!this.isLogin) {
+              this.getLogin(this.joinInfo);
+              console.log("이메일");
+            }
+            // sns 회원가입일 경우 회원정보 추가로 받아오기
+            else {
+              this.getUserInfo(this.joinInfo.email);
+            }
           } else {
             alert("닉네임 등록 중 오류가 발생했습니다.");
           }
@@ -101,6 +109,11 @@ export default defineComponent({
           console.log(e);
           alert("닉네임 등록 중 오류가 발생했습니다.");
         });
+      // 로그인 처리 완료되면 가입정보 초기화 후 메인으로 이동
+      if (this.isLogin) {
+        this.storeEmail(null);
+        this.$router.push({ name: "Main" });
+      }
     },
   },
 });
