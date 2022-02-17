@@ -18,6 +18,6 @@ public class NoauthorizedMemberException extends CustomException {
     private static final String MESSAGE = "NoauthorizedMember";
 
     public NoauthorizedMemberException() {
-        super(MESSAGE, HttpStatus.UNAUTHORIZED);
+        super(MESSAGE, HttpStatus.OK);
     }
 }
