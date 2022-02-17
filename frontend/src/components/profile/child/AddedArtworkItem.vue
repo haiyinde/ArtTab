@@ -1,8 +1,6 @@
 <template>
   <vue3-draggable-resizable
     class="artwork-box"
-    :initW="100"
-    :initH="120"
     :x="artwork.xloc"
     :y="artwork.yloc"
     :w="artwork.weight"
@@ -39,26 +37,28 @@ export default defineComponent({
   },
   data() {
     return {
-      x: 100,
-      y: 100,
-      h: 100,
-      w: 100,
       active: false,
     };
   },
   methods: {
-    ...mapActions(galleryStore, ["deleteArtworkInList"]),
+    ...mapActions(galleryStore, [
+      "deleteArtworkInList",
+      "updateArtworkLoc",
+      "updateArtworkSize",
+    ]),
     // 위치 정보 저장하기
     updateLocation(val: any) {
-      this.x = val.x;
-      this.y = val.y;
+      this.updateArtworkLoc({ x: val.x, y: val.y, index: this.index });
     },
     // 크기 정보 저장하기
     updateSize(val: any) {
-      this.x = val.x;
-      this.y = val.y;
-      this.w = val.w;
-      this.h = val.h;
+      this.updateArtworkSize({
+        x: val.x,
+        y: val.y,
+        w: val.w,
+        h: val.h,
+        index: this.index,
+      });
     },
     deleteArtwork() {
       this.deleteArtworkInList(this.index);
