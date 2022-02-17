@@ -6,6 +6,7 @@ import com.ssafy.arttab.gallery.dto.GalleryItemSaveRequestDto;
 import com.ssafy.arttab.member.domain.Member;
 import com.ssafy.arttab.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
@@ -19,6 +20,9 @@ public class GalleryService {
     private final MemberRepository memberRepository;
     private final ArtworkRepository artworkRepository;
     private final GalleryItemRepository galleryRepository;
+
+    @Value("${access.url.artworks}")
+    private String artworkImgUrl;
 
     @Transactional
     public boolean insertGalleryItemList(String nickname, List<GalleryItemSaveRequestDto> list){
@@ -63,7 +67,7 @@ public class GalleryService {
             result.add(GalleryItemListResponseDto.builder()
                     .artworkId(item.getArtwork().getId())
                     .saveFileName(item.getArtwork().getSaveFileName())
-                    .saveFolder(item.getArtwork().getSaveFolder())
+                    .saveFolder(artworkImgUrl+item.getArtwork().getSaveFileName())
                     .xLoc(item.getXLoc())
                     .yLoc(item.getYLoc())
                     .height(item.getHeight())

@@ -18,6 +18,6 @@ public class TokenExpiredException extends CustomException {
     private static final String MESSAGE = "로그인이 필요한 서비스";
 
     public TokenExpiredException() {
-        super(MESSAGE, HttpStatus.UNAUTHORIZED);
+        super(MESSAGE,HttpStatus.OK);
     }
 }

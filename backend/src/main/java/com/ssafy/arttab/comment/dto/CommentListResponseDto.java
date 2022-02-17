@@ -18,14 +18,14 @@ public class CommentListResponseDto {
     private String nickName;
     private String imgUrl;
 
-    public CommentListResponseDto(Comment entity, Member member) {
+    public CommentListResponseDto(Comment entity, Member member, String imgUrl) {
         this.id = entity.getId();
         this.artwork_id = entity.getArtwork().getId();
         this.member_id = entity.getMember().getId();
         this.regdate = entity.getRegdate();
         this.content = entity.getContent();
         this.email = member.getEmail();
-        this.imgUrl = member.getSaveFolder();
+        this.imgUrl = imgUrl;
         this.nickName = member.getNickname();
     }
 }
