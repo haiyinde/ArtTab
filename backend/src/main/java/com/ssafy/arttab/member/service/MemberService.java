@@ -190,11 +190,11 @@ public class MemberService {
         Member member = memberRepository.findByEmail(user.getEmail())
                 .orElseThrow(NoSuchMemberException::new);
 
-        if(member.getAuth()!=1){
-            throw new NoauthorizedMemberException();
-        }
         if (!BCrypt.checkpw(user.getPassword(), member.getPassword())) {
             throw new PasswordMismatchException("passwordMismatch");
+        }
+        if(member.getAuth()!=1){
+            throw new NoauthorizedMemberException();
         }
         //토큰 발급
         HashMap<String, Object> payload = new HashMap();
