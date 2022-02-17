@@ -19,10 +19,10 @@ class ArtworkAPI {
     return api.get(`/artwork?loginId=${loginId}&page=${page}`);
   }
   // 회원이 업로드한 전체 작품 조회 API
-  getArtworkListByMember(id: number) {
+  getArtworkListByMember(memberId: number) {
     // return api.get(`/artwork/member`, { params: { nickname: nickname } });
     // return api.get(`/artwork/member`, { data: { nickname: nickname } });
-    return api.get(`/artwork/member?nickname=${id}`);
+    return api.get(`/artwork/member?nickname=`, { params: { memberId: memberId }});
     // return api.get(`/artwork/member?nickname=` + nickname);
     // return api.get(`/artwork/member?nickname=` + nickname);
     // return api.get(`/artwork/member/${nickname}`);

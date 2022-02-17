@@ -1,6 +1,5 @@
 <template>
   <div>
-    {{profileInfo.nickname}}
     <div>
       <div class="container">
         <masonry-wall
@@ -81,6 +80,7 @@ export default defineComponent({
   methods: {
     async getFavouriteArtworks() {
       const res = await ArtworkAPI.getArtworkListByMember(Number(this.$route.params.id));
+      console.log(res);
       this.items = res.data;
       let size = this.items.length;
       for (let i = 0; i < size; i++) {
