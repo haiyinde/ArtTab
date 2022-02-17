@@ -15,7 +15,9 @@
       v-model="account.email"
       autocapitalize="none"
     />
-    <span class="alert" v-show="valid.email">가입되지 않은 이메일입니다.</span>
+    <span class="alert" v-show="valid.login"
+      >아이디 또는 비밀번호가 올바르지 않습니다.</span
+    >
 
     <!-- 비밀번호 입력 -->
     <label for="password" class="label-text">비밀번호</label>
@@ -99,7 +101,7 @@ export default defineComponent({
       },
       storeId: "",
       valid: {
-        email: false,
+        login: false,
       },
       isCompleted: false,
       cookies: useCookies().cookies,
@@ -113,7 +115,7 @@ export default defineComponent({
     }
   },
   computed: {
-    ...mapState(accountsStore, ["isConfirmEmail", "isLogin"]),
+    ...mapState(accountsStore, ["isConfirmEmail", "isLogin", "isLoginError"]),
   },
   watch: {
     "account.email": function () {
@@ -130,7 +132,7 @@ export default defineComponent({
       this.account.password = value;
     },
     actButton() {
-      this.valid.email = false;
+      this.valid.login = false;
       this.isCompleted =
         this.account.password && this.account.email ? true : false;
     },
@@ -139,14 +141,14 @@ export default defineComponent({
       AccountsAPI.checkEmail(this.account.email)
         .then((res: ResponseData) => {
           if (res.data === "success") {
-            this.valid.email = true;
+            this.valid.login = true;
           } else {
             this.login();
           }
         })
         .catch(() => {
-          this.valid.email = false;
-          alert("이메일 가입 여부 확인 중 오류가 발생했습니다.");
+          this.valid.login = false;
+          alert("로그인 중 오류가 발생했습니다.");
         });
     },
     async login() {
@@ -160,20 +162,24 @@ export default defineComponent({
       }
       // 로그인 처리하기
       await this.getLogin(this.account);
-      if (!this.isLogin) return;
-      // 사용자 정보 불러와서 세션에 저장
-      await this.getUserInfo(this.account.email);
 
+      // fail(비밀번호 불일치 등)인 경우 메시지 띄우고 리턴
+      if (this.isLoginError) {
+        this.valid.login = true;
+        return;
+      }
       // 이메일 인증을 완료하지 않은 사용자일 경우 이메일 인증 페이지로 이동
-      if (this.isConfirmEmail) {
+      if (!this.isConfirmEmail) {
         this.$router.push({
           name: "ConfirmEmail",
         });
+        return;
       }
+      // 사용자 정보 불러와서 세션에 저장
+      await this.getUserInfo(this.account.email);
+
       // 이메일 인증을 완료한 사용자일 경우 이전페이지로 또는 메인페이지로 이동
-      else {
-        this.$router.push({ name: "Main" });
-      }
+      this.$router.push({ name: "Main" });
     },
     // 카카오 로그인 인증코드 받아오기
     kakaoLogin() {

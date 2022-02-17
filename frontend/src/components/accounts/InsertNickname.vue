@@ -91,16 +91,14 @@ export default defineComponent({
     async addNickname() {
       await AccountsAPI.addNickname(this.joinInfo.email, this.nickname)
         .then((res: ResponseData) => {
+          console.log(res);
           if (res.data === "success") {
             // 이메일 회원가입일 경우 로그인 처리
             if (!this.isLogin) {
               this.getLogin(this.joinInfo);
-              console.log("이메일");
             }
-            // sns 회원가입일 경우 회원정보 추가로 받아오기
-            else {
-              this.getUserInfo(this.joinInfo.email);
-            }
+            // 회원정보 받아와 저장하기
+            this.getUserInfo(this.joinInfo.email);
           } else {
             alert("닉네임 등록 중 오류가 발생했습니다.");
           }
