@@ -38,7 +38,7 @@ public class ArtworkService {
 
     @Transactional
     public List<ArtworkListResponseDto> getArtworkList(int page, Long loginId){
-        Page<Artwork> pageResult = artworkRepository.findAll(PageRequest.of(page, 20, Sort.by(Sort.Direction.DESC, "id")));
+        Page<Artwork> pageResult = artworkRepository.findAll(PageRequest.of(page, 50, Sort.by(Sort.Direction.DESC, "id")));
         List<ArtworkListResponseDto> result = new ArrayList<>();
 
         for(Artwork artwork: pageResult){

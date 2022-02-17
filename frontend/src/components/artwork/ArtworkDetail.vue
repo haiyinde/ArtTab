@@ -46,7 +46,7 @@
         </div>
       </div>
       <div class="additionalinfo">
-        <div v-if="artwork.writerId !== userInfo.id" class="like-box">
+        <div class="like-box">
           <like-button
             class="icon"
             :liked="artwork.likeOrNot"
