@@ -171,9 +171,9 @@ public class ArtworkService {
         artworkRepository.delete(artwork);
     }
 
-    public List<LikeArtworkResponseDto> getLikeArtworkList(String nickname){
+    public List<LikeArtworkResponseDto> getLikeArtworkList(Long memberId){
 
-        Member member = memberRepository.findMemberByNickname(nickname);
+        Member member = memberRepository.findById(memberId).get();
         List<Likes> likes = likeRepository.selectByMemberId(member.getId());
 
         if(likes.isEmpty()) return null; // 좋아하는 작품이 없을 때에는 null 리턴
