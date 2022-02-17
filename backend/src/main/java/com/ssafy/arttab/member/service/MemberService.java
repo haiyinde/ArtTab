@@ -290,8 +290,8 @@ public class MemberService {
      * @param loginEmail
      */
     @Transactional
-    public void deleteMember(final LoginEmail loginEmail){
-        var member = memberRepository.findByEmail(loginEmail.getEmail())
+    public void deleteMember(final Long id){
+        var member = memberRepository.findById(id)
                 .orElseThrow(NoSuchMemberException::new);
 
         memberRepository.delete(member);
