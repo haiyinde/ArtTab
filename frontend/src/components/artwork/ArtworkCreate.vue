@@ -77,16 +77,14 @@ export default defineComponent({
   methods: {
     onInputImage(e: any) {
       let files = e.target.files[0];
-      console.log(files);
       this.file = files;
       //이미지 프리뷰
       this.tempimage = URL.createObjectURL(files);
-      console.log(this.tempimage);
     },
     // image file은 form data로 보내야함
     addArtwork() {
       if (this.file === "" || this.title === "" || this.desc === "") {
-        alert("그림, 제목, 내용을 모두 입력하세요")
+        alert("그림, 제목, 내용을 모두 입력하세요");
       } else {
         const artwork = new FormData();
         artwork.append("file", this.file);
@@ -94,9 +92,12 @@ export default defineComponent({
         artwork.append("writerId", this.userInfo.id);
         artwork.append("description", this.desc);
         artworkAPI.addArtwork(artwork).then((res) => {
-          console.log(res);
+          if (res.data === "success") {
+            this.$router.replace("/");
+          } else {
+            alert("작품 등록 중 오류가 발생했습니다.");
+          }
         });
-        this.$router.replace("/");
       }
     },
   },
