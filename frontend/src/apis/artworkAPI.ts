@@ -33,9 +33,13 @@ class ArtworkAPI {
   deleteArtwork(id: number) {
     return api.delete(`/artwork/` + id);
   }
-  // 닉네임에 해당하는 회원이 좋아요 한 작품 목록 불러오기(없을 경우 null)
+  // 회원이 좋아요 한 작품 목록 불러오기(없을 경우 null)
   getLikeArtworkList(id: number) {
     return api.get(`/artwork/${id}/like`);
+  }
+  // 회원이 팔로우 한 작품 목록 불러오기
+  getFollowArtworkList(nickName: string) {
+    return api.get(`/artwork/${nickName}/follow`);
   }
 }
 

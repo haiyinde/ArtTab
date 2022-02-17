@@ -10,6 +10,10 @@ class FollowAPI {
   deleteFollow(followInfo: FollowInfo) {
     return api.delete(`/follow`, { data: followInfo });
   }
+  // 모든 팔로잉 목록 조회
+  getAllFollowing(id: number) {
+    return api.get(`following/${id}`);
+  }
 }
 
 export default new FollowAPI();
