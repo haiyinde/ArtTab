@@ -1,6 +1,6 @@
 export default interface ArtworkInfo {
   artworkSaveFolder: string;
-  desciption: string;
+  description: string;
   followOrNot: boolean;
   likeNum: number;
   likeOrNot: boolean;

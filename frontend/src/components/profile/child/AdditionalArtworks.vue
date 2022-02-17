@@ -67,7 +67,7 @@ export default defineComponent({
     ...mapActions(galleryStore, ["addArtwork"]),
     // 좋아요한 작품 목록 불러오기
     getArtworkList() {
-      ArtworkAPI.getLikeArtworkList(this.userInfo.nickname).then(
+      ArtworkAPI.getLikeArtworkList(this.userInfo.id).then(
         (res: ResponseData) => {
           this.artworkList = res.data;
           this.searchedArtworkList = res.data;

@@ -17,20 +17,9 @@
             <button
               v-if="artwork.writerId === userInfo.id"
               class="btn-white"
-              @click="artworkUpdate"
+              @click="moveArtworkUpdate"
             >
-              <router-link
-                :to="{
-                  name: 'ArtworkUpdate',
-                  query: {
-                    artworkId: this.artworkId,
-                    title: this.artwork.title,
-                    desciption: this.artwork.desciption,
-                    artworkSaveFolder: this.artwork.artworkSaveFolder,
-                  },
-                }"
-                >수정하기
-              </router-link>
+              수정하기
             </button>
             <follow-button
               v-else
@@ -46,7 +35,7 @@
         </div>
       </div>
       <div class="additionalinfo">
-        <div v-if="artwork.writerId !== userInfo.id" class="like-box">
+        <div class="like-box">
           <like-button
             class="icon"
             :liked="artwork.likeOrNot"
@@ -61,7 +50,7 @@
         <calendar-clock class="icon icon-date"></calendar-clock>
         <div>{{ computedDate }}</div>
       </div>
-      <div class="desc">{{ artwork.desciption }}</div>
+      <div class="desc">{{ artwork.description }}</div>
     </div>
     <artwork-comments :artworkid="artworkId"></artwork-comments>
     <toast-message ref="toast"></toast-message>
@@ -159,6 +148,17 @@ export default defineComponent({
     },
     showToastMessage(msg: string) {
       (this.$refs["toast"] as typeof ToastMessage).showToast(msg);
+    },
+    moveArtworkUpdate() {
+      this.$router.push({
+        name: "ArtworkUpdate",
+        query: {
+          artworkId: this.artworkId,
+          title: this.artwork.title,
+          description: this.artwork.description,
+          artworkSaveFolder: this.artwork.artworkSaveFolder,
+        },
+      });
     },
   },
 });
