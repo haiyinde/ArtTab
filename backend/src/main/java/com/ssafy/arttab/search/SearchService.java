@@ -9,6 +9,7 @@ import com.ssafy.arttab.member.repository.MemberRepository;
 import com.ssafy.arttab.search.dto.SearchArtworkListResponseDto;
 import com.ssafy.arttab.search.dto.SearchMemberListResponseDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,12 +25,19 @@ public class SearchService {
     private final MemberRepository memberRepository;
     private final FollowRepository followRepository;
 
+    @Value("${access.url.artworks}")
+    private String artworkImgUrl;
 
     @Transactional
     public List<SearchArtworkListResponseDto> selectArtworkList(String title){
-        return artworkRepository.findAllByTitle(title).stream()
-                .map(SearchArtworkListResponseDto::new)
-                .collect(Collectors.toList());
+        List<Artwork> artworkList = artworkRepository.findAllByTitle(title);
+        List<SearchArtworkListResponseDto> responseDtos = new ArrayList<>();
+
+        for (Artwork artwork : artworkList) {
+            String imgUrl = artworkImgUrl + artwork.getSaveFileName();
+            responseDtos.add(new SearchArtworkListResponseDto(artwork, imgUrl));
+        }
+        return responseDtos;
     }
 
     @Transactional
