@@ -27,7 +27,6 @@ export default defineComponent({
       // 카카오 인가코드
       const code = this.$route.query.code;
       const error = this.$route.query.error;
-      console.log(code?.toString());
 
       // 코드가 존재할 경우 사용자가 동의한 것
       if (code) {
