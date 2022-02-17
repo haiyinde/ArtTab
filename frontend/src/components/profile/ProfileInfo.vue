@@ -338,9 +338,15 @@ export default defineComponent({
     // image file은 form data로 보내야함
     addUpdatedInfo() {
       const updatedInfo = new FormData();
-      // updatedInfo.append("data", JSON.stringify(this.updatedInfo));
       updatedInfo.append("email", this.userInfo.email);
       updatedInfo.append("file", this.updatedInfo.file);
+      if (this.updatedInfo.intro == null) {
+        this.updatedInfo.intro = String(this.profileInfo.intro);
+      }
+      updatedInfo.append("intro", this.updatedInfo.intro);
+      if (this.updatedInfo.nickname == null) {
+        this.updatedInfo.nickname = this.profileInfo.nickname;
+      }
       updatedInfo.append("intro", this.updatedInfo.intro);
       updatedInfo.append("nickname", this.updatedInfo.nickname);
       console.log(updatedInfo);
