@@ -22,8 +22,8 @@ import Artwork from "@/views/Artwork.vue";
 import ArtworkDetail from "@/components/artwork/ArtworkDetail.vue";
 import ArtworkCreate from "@/components/artwork/ArtworkCreate.vue";
 import ArtworkUpdate from "@/components/artwork/ArtworkUpdate.vue";
-// navbar
-import NavBar from "@/components/layout/NavBar.vue";
+// 404 페이지
+import NotFound from "@/views/NotFound.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -134,9 +134,13 @@ const routes: Array<RouteRecordRaw> = [
     ],
   },
   {
-    path: "/navbar",
-    name: "NavBar",
-    component: NavBar,
+    path: "/404",
+    name: "NotFound",
+    component: NotFound,
+  },
+  {
+    path: "/:pathMatch(.*)*",
+    redirect: "/404",
   },
 ];
 
