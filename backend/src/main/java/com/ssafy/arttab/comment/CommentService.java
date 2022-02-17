@@ -9,6 +9,7 @@ import com.ssafy.arttab.exception.member.NoSuchMemberException;
 import com.ssafy.arttab.member.domain.Member;
 import com.ssafy.arttab.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +22,15 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final ArtworkRepository artworkRepository;
     private final MemberRepository memberRepository;
+
+    @Value("${access.url.artworks}")
+    private String artworkImgUrl;
+
+    @Value("${access.url.profiles}")
+    private String profileImgUrl;
+
+    @Value("${access.url.profileDefault}")
+    private String profileDefaultImgUrl;
 
     @Transactional
     public void insert(Long id, CommentSaveRequestDto requestDto) {
@@ -43,8 +53,13 @@ public class CommentService {
         for (Comment comment : commetList) {
             Member member = memberRepository.findById(comment.getMember().getId())
                     .orElseThrow(NoSuchMemberException::new);
-
-            responseDtos.add(new CommentListResponseDto(comment, member));
+            String imgUrl = "";
+            if ("default.jpg".equals(member.getSaveFilename())){
+                imgUrl = profileDefaultImgUrl + member.getSaveFilename();
+            }else {
+                imgUrl = profileImgUrl + member.getSaveFilename();
+            }
+            responseDtos.add(new CommentListResponseDto(comment, member, imgUrl));
         }
         return responseDtos;
     }
