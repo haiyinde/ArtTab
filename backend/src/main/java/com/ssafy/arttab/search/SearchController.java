@@ -23,8 +23,9 @@ public class SearchController {
 
 
     @GetMapping("/api/v1/searchTitle")
-    public ResponseEntity<List<SearchArtworkListResponseDto>> selectAllByArtwork(@RequestParam String title){
-        var artworkList = searchService.selectArtworkList(title);
+    public ResponseEntity<List<SearchArtworkListResponseDto>> selectAllByArtwork(@RequestParam String title,
+                                                                                 @RequestParam Long id){
+        var artworkList = searchService.selectArtworkList(title, id);
         if (artworkList.isEmpty()){
             return new ResponseEntity<>(null, HttpStatus.OK);
         }

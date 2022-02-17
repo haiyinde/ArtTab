@@ -4,6 +4,7 @@ package com.ssafy.arttab.search;
 import com.ssafy.arttab.artwork.Artwork;
 import com.ssafy.arttab.artwork.ArtworkRepository;
 import com.ssafy.arttab.follow.FollowRepository;
+import com.ssafy.arttab.like.LikesRepository;
 import com.ssafy.arttab.member.domain.Member;
 import com.ssafy.arttab.member.repository.MemberRepository;
 import com.ssafy.arttab.search.dto.SearchArtworkListResponseDto;
@@ -24,18 +25,24 @@ public class SearchService {
     private final ArtworkRepository artworkRepository;
     private final MemberRepository memberRepository;
     private final FollowRepository followRepository;
+    private final LikesRepository likeRepository;
 
     @Value("${access.url.artworks}")
     private String artworkImgUrl;
 
     @Transactional
-    public List<SearchArtworkListResponseDto> selectArtworkList(String title){
+    public List<SearchArtworkListResponseDto> selectArtworkList(String title, Long id){
         List<Artwork> artworkList = artworkRepository.findAllByTitle(title);
         List<SearchArtworkListResponseDto> responseDtos = new ArrayList<>();
 
         for (Artwork artwork : artworkList) {
             String imgUrl = artworkImgUrl + artwork.getSaveFileName();
-            responseDtos.add(new SearchArtworkListResponseDto(artwork, imgUrl));
+            boolean isLike=false;
+            if(likeRepository.selectIsLike(artwork.getId(), id)>0){
+                isLike=true;
+            }
+            responseDtos.add(new SearchArtworkListResponseDto(artwork, imgUrl, isLike));
+
         }
         return responseDtos;
     }
