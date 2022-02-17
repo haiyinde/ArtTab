@@ -52,6 +52,7 @@
             name="nickname"
             v-model="updatedInfo.nickname"
           />
+            <span class="alert" v-show="valid.nickname">사용중인 닉네임입니다.</span>
           <label for="intro" class="label-text">소개 변경</label>
           <input type="intro" id="intro" class="input-text" name="intro" v-model="updatedInfo.intro"/>
           <button class="done-profile-edit-btn" @click="addUpdatedInfo">
@@ -153,11 +154,12 @@
     </transition>
 
     <!-- Profile Info -->
+    <div class="title">나의 프로필 정보</div>
     <div>
       <div class="container">
         <div class="profile">
           <div class="profile-image">
-            <img :src="profileInfo.profileImageUrl" alt="Profile Image" style="width: 150px; height:150px;"/>
+            <img :src="profileInfo.profileImageUrl" alt="Profile Image" style="width: 15rem; height: 15rem;"/>
           </div>
           <div class="profile-user-settings">
             <h1 class="profile-user-nickname">{{ profileInfo.nickname }}</h1>
@@ -209,8 +211,7 @@
               {{ profileInfo.intro }}
             </p>
             <p v-else>
-              <b>내 정보 수정버튼</b>을 클릭해 아트탭 회원들에게 자기소개를
-              해보세요!
+              <b>내 정보 수정버튼</b>을 클릭해 아트탭 회원들에게 자기소개를 해보세요!
             </p>
           </div>
           <div class="change-pwd-signout">
@@ -236,7 +237,7 @@ import InputPassword from "@/components/accounts/child/InputPassword.vue";
 import CloseButton from "@/components/common/CloseButton.vue";
 import AccountsAPI from "@/apis/accountsAPI";
 import PV from "password-validator"; // 비밀번호 유효성 검사 라이브러리
-import { mapState, mapActions } from "vuex";
+import { mapState, mapActions, mapMutations } from "vuex";
 import ResponseData from "@/types/ResponseData";
 import ProfileInfo from "@/types/ProfileInfo";
 import ToastMessage from "@/components/common/ToastMessage.vue";
@@ -265,10 +266,12 @@ export default defineComponent({
       valid: {
         password: false,
         checkPwd: false,
+        nickname: false,
       },
+      isCompleted: false,
       canChangePwd: false,
       isShowPwd: false,
-      // Modal
+      // is Modal Open?
       isOpen: false,
       isClose: false,
       isCPSOpen: false, // is Change Password Signout Open
@@ -276,9 +279,9 @@ export default defineComponent({
       passwordSchema: new PV(),
     };
   },
-  mounted() {
-    this.getProfileInfo();
-  },
+  // mounted() {
+  //   this.getProfileInfo();
+  // },
   computed: {
     ...mapState(accountsStore, ["userInfo"]),
   },
@@ -294,6 +297,7 @@ export default defineComponent({
     ToastMessage,
   },
   created() {
+    this.getProfileInfo();
     // 영문, 특수문자 포함 8자리 이상 50자리 이하
     this.passwordSchema
       .is()
@@ -312,7 +316,16 @@ export default defineComponent({
     checkPwd: function () {
       this.checkPassword();
     },
-  },
+    "updatedInfo.nickname": function () {
+      if (!this.updatedInfo.nickname) {
+        this.isCompleted = false;
+        this.valid.nickname = false;
+      } else {
+        console.log("호출이 되고 있다잉");
+        this.checkNickname();
+      } 
+    }, 
+  }, 
   methods: {
     // 팔로우 상태 변경
     toggleFollow(result: boolean) {
@@ -335,18 +348,30 @@ export default defineComponent({
       this.tempimage = URL.createObjectURL(files);
       console.log(this.tempimage);
     },
+    // 변경한 userInfo State 변경
+    ...mapMutations(['updateUserInfo']),
     // image file은 form data로 보내야함
     addUpdatedInfo() {
       const updatedInfo = new FormData();
-      // updatedInfo.append("data", JSON.stringify(this.updatedInfo));
       updatedInfo.append("email", this.userInfo.email);
       updatedInfo.append("file", this.updatedInfo.file);
+      if (this.updatedInfo.intro == null) {
+        this.updatedInfo.intro = this.userInfo.intro;
+      }
       updatedInfo.append("intro", this.updatedInfo.intro);
+      if (this.updatedInfo.nickname == null) {
+        this.updatedInfo.nickname = this.userInfo.nickname;
+      }
       updatedInfo.append("nickname", this.updatedInfo.nickname);
-      console.log(updatedInfo);
       AccountsAPI.updateProfileInfo(updatedInfo)
         .then((res) => {
         console.log(res);
+        const sortedUpdateInfo = JSON.stringify({ "intro": this.updatedInfo.intro, "nickname": this.updatedInfo.nickname });
+        this.updateUserInfo(sortedUpdateInfo);
+        alert("정보를 변경했습니다! 😊");
+      }).catch((e) => {
+        console.log(e);
+        alert("정보를 변경하지 못했습니다 😢");
       });
       this.closeEditModal();
     },
@@ -447,15 +472,31 @@ export default defineComponent({
       )
         .then((res: ResponseData) => {
           this.profileInfo = res.data;
-          console.log(this.profileInfo);
           if (res.data.isFollow == "FALSE") {
             this.isFollowed = false;
           } else {
             this.isFollowed = true;
           }
-          console.log(this.profileInfo);
         })
         .catch((e) => {
+          console.log(e);
+        });
+    },
+    // 닉네임 유효성 검사
+    checkNickname() {
+      // 닉네임 중복 검사
+      AccountsAPI.checkNickname(this.updatedInfo.nickname)
+        .then((res: ResponseData) => {
+          if (res.data === "success") {
+            this.valid.nickname = false;
+            this.isCompleted = true;
+          } else {
+            this.valid.nickname = true;
+            this.isCompleted = false;
+          }
+        })
+        .catch((e) => {
+          console.log()
           console.log(e);
         });
     },
@@ -466,6 +507,13 @@ export default defineComponent({
 <style scoped lang="scss">
 // accounts에서 input css 이용
 @import "@/assets/css/accounts.scss";
+
+.title {
+  margin-top: $size-large;
+  margin-left: $size-small;
+  font-size: $size-large;
+  font-weight: $weight-semi-bold;
+}
 
 .profile-user-img {
   width: 300px;
