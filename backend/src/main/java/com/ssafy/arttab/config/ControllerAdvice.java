@@ -42,19 +42,19 @@ public class ControllerAdvice {
         return new ResponseEntity<String>(e.getMessage(),e.getStatus());
     }
     @ExceptionHandler(InvalidTokenException.class)
-    public ResponseEntity<?> invalidTokenException(InvalidTokenException e){
+    public ResponseEntity<String> invalidTokenException(InvalidTokenException e){
 
         return  new ResponseEntity<>(e.getMessage(),e.getStatus());
     }
 
     @ExceptionHandler(NoauthorizedMemberException.class)
-    public ResponseEntity<?> noauthorizedMemberException(NoSuchMemberException e){
+    public ResponseEntity<String> noauthorizedMemberException(NoauthorizedMemberException e){
 
         return  new ResponseEntity<>(e.getMessage(),e.getStatus());
     }
 
     @ExceptionHandler(TokenExpiredException.class)
-    public ResponseEntity<?> tokenExpiredException(TokenExpiredException e){
+    public ResponseEntity<String> tokenExpiredException(TokenExpiredException e){
 
         return  new ResponseEntity<>(e.getMessage(),e.getStatus());
     }

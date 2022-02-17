@@ -176,8 +176,8 @@ public class ArtworkController {
 
     // 회원이 업로드한 전체 작품 조회 api
     @GetMapping("api/v1/artwork/member")
-    public ResponseEntity<List<ArtworkListResponseDto>> getArtworkListByMember(@RequestParam("nickname") String nickname){
-        List<ArtworkListResponseDto> list=artworkService.getArtworkByMemberId(nickname);
+    public ResponseEntity<List<ArtworkListResponseDto>> getArtworkListByMember(@RequestParam("memberId") Long memberId){
+        List<ArtworkListResponseDto> list=artworkService.getArtworkByMemberId(memberId);
 
         if(list==null || list.isEmpty()){
             return new ResponseEntity<>(null, HttpStatus.OK);

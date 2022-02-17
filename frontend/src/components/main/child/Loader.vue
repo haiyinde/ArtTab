@@ -1,63 +1,108 @@
 <template>
-  <!-- loader -->
-  <hr class="zig" />
-  <hr class="zag" />
-  <div class="texts">
-    <h3 class="loader-title">모든 그림을 다 봤습니다!</h3>
-    <p class="loader-text">내가 그린 그림을 올려보는 건 어떨까요?</p>
-  </div>
-  <div class="scene">
-    <div class="objects">
-      <div class="square"></div>
-      <div class="circle"></div>
-      <div class="triangle"></div>
+  <div v-if="showLoader">
+    <artwork-button></artwork-button>
+    <div class="zigzag"><hr class="zig"><hr class="zag"></div>
+    <!-- loader -->
+    <div class="texts">
+      <h3 class="loader-title">모든 그림을 다 봤습니다!</h3>
+      <p class="loader-text">내가 그린 그림을 공유해보는 건 어떨까요?</p>
+    <router-link :to="{ name: 'ArtworkCreate' }"><button>그림 올리기</button></router-link>
     </div>
-    <div class="wizard">
-      <div class="body"></div>
-      <div class="right-arm">
-        <div class="right-hand"></div>
+    <div class="scene">
+      <div class="objects">
+        <div class="square"></div>
+        <div class="circle"></div>
+        <div class="triangle"></div>
       </div>
-      <div class="left-arm">
-        <div class="left-hand"></div>
-      </div>
-      <div class="head">
-        <div class="beard"></div>
-        <div class="face">
-          <div class="adds"></div>
+      <div class="wizard">
+        <div class="body"></div>
+        <div class="right-arm">
+          <div class="right-hand"></div>
         </div>
-        <div class="hat">
-          <div class="hat-of-the-hat"></div>
-          <div class="four-point-star --first"></div>
-          <div class="four-point-star --second"></div>
-          <div class="four-point-star --third"></div>
+        <div class="left-arm">
+          <div class="left-hand"></div>
+        </div>
+        <div class="head">
+          <div class="beard"></div>
+          <div class="face">
+            <div class="adds"></div>
+          </div>
+          <div class="hat">
+            <div class="hat-of-the-hat"></div>
+            <div class="four-point-star --first"></div>
+            <div class="four-point-star --second"></div>
+            <div class="four-point-star --third"></div>
+          </div>
         </div>
       </div>
     </div>
+    <div class="progress"></div>
   </div>
-  <div class="progress"></div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
 
 export default defineComponent({
-  setup() {
-    return {};
+  props: {
+    showLoader: {
+      type: Boolean,
+      required: true,
+    },
   },
 });
 </script>
 
 <style lang="scss" scoped>
-hr.zig,
-hr.zag {
+@import url('//fonts.googleapis.com/css?family=Raleway:800i');
+body {
+  text-align: center;
+  line-height: 100vh;
+  background: #00b5b5;
+}
+button {
+  position: relative;
+  width: 300px;
+  padding: 16px;
+  border: none;
+  border-bottom: 5px solid #ad7900;
+  border-radius: 8px;
+  background: #fab70f;
+  color: white;
+  font-size: $font-large;
+  font-weight: bold;
+  text-shadow: 0 -1px 0 rgba(0,0,0,0.3);
+  outline: none;
+  cursor: pointer;
+  transition-property: background, color;
+  transition-duration: 0.08s;
+  &:hover {
+    background: #d49b0d;
+    border-bottom-color: #946800;
+    color: #eee;
+  }
+  &:active {
+    bottom: -3px;
+    border-bottom: 2px solid #543c00;
+    background: #a17300;
+    color: #ada48b;
+  }
+}
+
+// horizontal line
+.zigzag {
+  margin: 4rem 1rem;
+}
+
+
+hr.zig, hr.zag {
   border: none;
   height: 30px;
   margin: 0 50px;
 }
 
-hr.zig {
-  background: linear-gradient(-135deg, #fff 20px, rgba(0, 0, 0, 0) 0) 0 5px,
-    linear-gradient(135deg, #fff 20px, rgba(0, 0, 0, 0) 0) 0 5px;
+hr.zig{
+  background: linear-gradient(-135deg, #FFF 20px, rgba(0, 0, 0, 0) 0) 0 5px, linear-gradient(135deg, #FFF 20px, rgba(0, 0, 0, 0) 0) 0 5px;
   background-color: rgba(0, 0, 0, 0);
   background-position: center bottom;
   background-repeat: repeat-x;
@@ -67,8 +112,7 @@ hr.zig {
 }
 
 hr.zag {
-  background: linear-gradient(-135deg, #333 20px, rgba(0, 0, 0, 0) 0) 0 5px,
-    linear-gradient(135deg, #333 20px, #fff 0) 0 5px;
+  background: linear-gradient(-135deg, #333 20px, rgba(0, 0, 0, 0) 0) 0 5px, linear-gradient(135deg, #333 20px, #FFF 0) 0 5px;
   background-color: rgba(0, 0, 0, 0);
   background-position: center bottom;
   background-repeat: repeat-x;
@@ -77,6 +121,7 @@ hr.zag {
   margin-top: -28px;
 }
 
+// text
 .texts {
   display: flex;
   flex-direction: column;
@@ -86,6 +131,7 @@ hr.zag {
   }
   & .loader-text {
     font-weight: $weight-light;
+    margin-bottom: 1rem;
   }
 }
 

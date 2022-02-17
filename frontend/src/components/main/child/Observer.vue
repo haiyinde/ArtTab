@@ -1,10 +1,16 @@
 <template>
-  <div class="observer" />
+  <div v-if="!contentsDone">
+    <div class="observer" />
+  </div>
 </template>
 
 <script>
 export default {
   props: ["options"],
+    contentsDone: {
+      type: Boolean,
+      required: true,
+    },
   data: () => ({
     observer: null,
   }),

@@ -190,11 +190,11 @@ public class MemberService {
         Member member = memberRepository.findByEmail(user.getEmail())
                 .orElseThrow(NoSuchMemberException::new);
 
-        if(member.getAuth()!=1){
-            throw new NoauthorizedMemberException();
-        }
         if (!BCrypt.checkpw(user.getPassword(), member.getPassword())) {
             throw new PasswordMismatchException("passwordMismatch");
+        }
+        if(member.getAuth()!=1){
+            throw new NoauthorizedMemberException();
         }
         //토큰 발급
         HashMap<String, Object> payload = new HashMap();
@@ -287,11 +287,11 @@ public class MemberService {
 
     /**
      * 회원 삭제
-     * @param loginEmail
+     * @param id
      */
     @Transactional
-    public void deleteMember(final LoginEmail loginEmail){
-        var member = memberRepository.findByEmail(loginEmail.getEmail())
+    public void deleteMember(final Long id){
+        var member = memberRepository.findById(id)
                 .orElseThrow(NoSuchMemberException::new);
 
         memberRepository.delete(member);
@@ -336,9 +336,9 @@ public class MemberService {
         String profileImg=profileMember.getSaveFolder();
 
         String profileImageUrl=profileDefaultImgUrl+profileMember.getSaveFilename(); // 프로필 사진 url
-//        if(!profileImg.equals(defaultProfileImgUrl)){ // 프로필 이미지가 기본 프로필 이미지 상태가 아닐 때
-//            profileImageUrl=profileImgUrl+memberRepository.findById(profileMemberId).get().getSaveFilename();
-//        }
+        if(!profileImg.equals(defaultProfileImgUrl)){ // 프로필 이미지가 기본 프로필 이미지 상태가 아닐 때
+            profileImageUrl=profileImgUrl+memberRepository.findById(profileMemberId).get().getSaveFilename();
+        }
 
         ProfileInfoResponse response = ProfileInfoResponse.builder()
                 .nickname(memberRepository.findById(profileMemberId).get().getNickname())
