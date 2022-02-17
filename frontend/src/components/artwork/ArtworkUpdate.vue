@@ -70,8 +70,8 @@
 <script lang="ts">
 import artworkAPI from "@/apis/artworkAPI";
 import { defineComponent } from "vue";
-import { mapState } from "vuex";
 import ResponseData from "@/types/ResponseData";
+import { mapState } from "vuex";
 
 const accountsStore = "accountsStore";
 
