@@ -22,7 +22,7 @@ public class PasswordMismatchException extends CustomException {
     }
 
     public PasswordMismatchException(String message) {
-        super(MESSAGE, HttpStatus.UNAUTHORIZED);
+        super(MESSAGE, HttpStatus.OK);
     }
 
 }

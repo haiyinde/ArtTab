@@ -203,7 +203,7 @@ export default defineComponent({
         .then((res: ResponseData) => {
           if (res.data === "success") {
             // store에 이메일 저장 및 메일 전송 후 다음 단계 페이지로 이동
-            this.storeEmail(this.account.email);
+            this.storeEmail(this.account);
 
             this.endSpinner();
             this.$router.push({

@@ -21,6 +21,7 @@
       v-model="authNum"
       placeholder="인증코드 입력"
       autocapitalize="none"
+      @keyup.enter="checkAuthNum"
     />
     <span class="alert" v-show="valid.authNum"
       >인증코드가 일치하지 않습니다.</span
@@ -69,7 +70,7 @@ export default defineComponent({
     };
   },
   computed: {
-    ...mapState(accountsStore, ["joinEmail"]),
+    ...mapState(accountsStore, ["joinInfo"]),
   },
   watch: {
     authNum: function () {
@@ -80,7 +81,7 @@ export default defineComponent({
   methods: {
     // 이메일 전송
     sendEmail() {
-      AccountsAPI.sendEmail(this.joinEmail)
+      AccountsAPI.sendEmail(this.joinInfo.email)
         .then((res: ResponseData) => {
           if (res.data === "success") {
             alert("이메일이 정상적으로 전송되었습니다.");
@@ -99,10 +100,11 @@ export default defineComponent({
     },
     // 이메일 인증 처리
     checkAuthNum() {
-      AccountsAPI.checkAuthNum(this.joinEmail, this.authNum)
+      AccountsAPI.checkAuthNum(this.joinInfo.email, this.authNum)
         .then((res: ResponseData) => {
+          console.log(res);
           if (res.data === "success") {
-            // 다음 단계(닉네입 입력)로 이동
+            // 다음 단계(닉네임 입력)로 이동
             this.$router.push({
               name: "InsertNickname",
             });

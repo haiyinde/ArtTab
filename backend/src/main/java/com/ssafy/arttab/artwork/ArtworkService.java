@@ -38,7 +38,7 @@ public class ArtworkService {
 
     @Transactional
     public List<ArtworkListResponseDto> getArtworkList(int page, Long loginId){
-        Page<Artwork> pageResult = artworkRepository.findAll(PageRequest.of(page, 20, Sort.by(Sort.Direction.DESC, "id")));
+        Page<Artwork> pageResult = artworkRepository.findAll(PageRequest.of(page, 50, Sort.by(Sort.Direction.DESC, "id")));
         List<ArtworkListResponseDto> result = new ArrayList<>();
 
         for(Artwork artwork: pageResult){
@@ -137,8 +137,8 @@ public class ArtworkService {
     }
 
     // id를 아이디로 갖는 회원이 그린 작품들 리턴한다
-    public List<ArtworkListResponseDto> getArtworkByMemberId(String nickname){
-        Member member=memberRepository.findMemberByNickname(nickname); // 닉네임에 해당하는 회원 가져오기
+    public List<ArtworkListResponseDto> getArtworkByMemberId(Long id){
+        Member member=memberRepository.findById(id).get(); // 닉네임에 해당하는 회원 가져오기
 
         if(member == null) return null; // 회원 찾기에 실패했을 경우
 
