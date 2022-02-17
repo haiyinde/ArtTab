@@ -42,7 +42,7 @@
             <textarea
               class="textarea"
               placeholder="내용을 입력하세요."
-              v-model="desciption"
+              v-model="description"
               style="maxlength='300'"
             ></textarea>
             <!-- 내용입력 스크롤 자동으로 늘어나는거 구현..? -->
@@ -85,7 +85,7 @@ export default defineComponent({
       // writerid: this.$route.query.artworkId as string,
       id: Number(this.$route.query.artworkId),
       title: this.$route.query.title as string,
-      desciption: this.$route.query.desciption as string,
+      description: this.$route.query.description as string,
       tempimage: "",
     };
   },
@@ -106,7 +106,8 @@ export default defineComponent({
       return;
     },
     async artworkDelete() {
-      await artworkAPI.deleteArtwork(this.id)
+      await artworkAPI
+        .deleteArtwork(this.id)
         .then((res: ResponseData) => {
           console.log(res.data);
         })
@@ -122,14 +123,14 @@ export default defineComponent({
       return;
     },
     updateArtwork() {
-      if (this.file === "" || this.title === "" || this.desciption === "") {
+      if (this.file === "" || this.title === "" || this.description === "") {
         alert("그림, 제목, 내용을 모두 입력하세요");
       } else {
         const artwork = new FormData();
         artwork.append("file", this.file);
         artwork.append("title", this.title);
         artwork.append("writerId", this.userInfo.id);
-        artwork.append("description", this.desciption);
+        artwork.append("description", this.description);
         artworkAPI.updateArtwork(this.id, artwork).then((res) => {
           this.$router.replace("/");
         });

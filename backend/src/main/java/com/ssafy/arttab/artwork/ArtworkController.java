@@ -198,11 +198,11 @@ public class ArtworkController {
         artworkService.delete(id);
     }
 
-    @ApiOperation(value="닉네임에 해당하는 회원이 좋아요 한 작품의 리스트를 리턴한다. 좋아요 한 작품이 없을 경우 null을 리턴한다.")
-    @GetMapping("api/v1/artwork/{nickname}/like")
-    public ResponseEntity<List<LikeArtworkResponseDto>> getLikeArtworkList(@PathVariable("nickname")String nickname){
+    @ApiOperation(value="memberId에 해당하는 회원이 좋아요 한 작품의 리스트를 리턴한다. 좋아요 한 작품이 없을 경우 null을 리턴한다.")
+    @GetMapping("api/v1/artwork/{memberId}/like")
+    public ResponseEntity<List<LikeArtworkResponseDto>> getLikeArtworkList(@PathVariable("memberId") Long memberId){
 
-        List<LikeArtworkResponseDto> likeList=artworkService.getLikeArtworkList(nickname);
+        List<LikeArtworkResponseDto> likeList=artworkService.getLikeArtworkList(memberId);
         return new ResponseEntity<>(likeList, HttpStatus.OK);
     }
 

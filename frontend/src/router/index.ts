@@ -14,7 +14,7 @@ import KakaoLogin from "@/components/accounts/snslogin/KakaoLogin.vue";
 import GoogleLogin from "@/components/accounts/snslogin/GoogleLogin.vue";
 // 내 정보 페이지
 import Profile from "@/views/Profile.vue";
-import DecorateGallery from "@/components/profile/DecorateGallery.vue";
+import DecorateGallery from "@/views/DecorateGallery.vue";
 // 검색 결과 페이지
 import SearchResult from "@/views/SearchResult.vue";
 // 작품 페이지

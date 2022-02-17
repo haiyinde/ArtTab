@@ -1,4 +1,5 @@
 <template>
+  <nav-bar />
   <article class="container">
     <div class="title">갤러리 꾸미기</div>
     <button class="btn-complete" @click="storeArtworkList">수정완료</button>
@@ -21,6 +22,7 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import NavBar from "@/components/layout/NavBar.vue";
 import AdditionalArtworks from "@/components/profile/child/AdditionalArtworks.vue";
 import AddedArtworkItem from "@/components/profile/child/AddedArtworkItem.vue";
 import GalleryAPI from "@/apis/galleryAPI";
@@ -32,7 +34,7 @@ const galleryStore = "galleryStore";
 
 export default defineComponent({
   name: "DecorateGallery",
-  components: { AdditionalArtworks, AddedArtworkItem },
+  components: { NavBar, AdditionalArtworks, AddedArtworkItem },
   data() {
     return {};
   },
@@ -86,7 +88,7 @@ export default defineComponent({
   height: 400px;
   margin-top: $size-medium;
   border: 1px solid $grey;
-  background: url("../../../src/assets/images/gallerybackground.jpg") no-repeat
+  background: url("../../src/assets/images/gallerybackground.jpg") no-repeat
     center center;
   background-size: contain;
   box-shadow: 0 0 6px rgba(164, 204, 199, 0.9);
