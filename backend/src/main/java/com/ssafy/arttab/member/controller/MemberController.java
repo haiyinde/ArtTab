@@ -129,29 +129,23 @@ public class MemberController {
     }
 
     @ApiOperation(value = "회원삭제", notes = "회원번호로 DB 삭제 성공여부에 따라 'success' 또는 'fail' 문자열을 반환한다.", response = String.class)
-    @DeleteMapping("/me")
-    public ResponseEntity<Void> deleteMember(LoginEmail loginEmail) {
-        memberService.deleteMember(loginEmail);
+    @DeleteMapping("/me/{id}")
+    public ResponseEntity<Void> deleteMember(@RequestParam Long id) {
+        memberService.deleteMember(id);
         return ResponseEntity.noContent().build();
     }
 
-    @ApiOperation(value = "회원 정보 수정(소개글 수정)", notes = "회원번호로 DB 수정 성공 여부에 따라 'success' 또는 'fail' 문자열을 반환한다.")
-    @PutMapping("/me")
-    public ResponseEntity<MemberInfoResponse> updateMember(LoginEmail loginEmail, IntroUpdateRequest introUpdateRequest) {
-        memberService.updateMember(loginEmail,introUpdateRequest);
-        return ResponseEntity.ok().build();
-    }
 
     @ApiOperation(value = "비밀번호 찾기")
     @PutMapping("/password")
-    public ResponseEntity<String> findPassword(String email){
-        memberService.findPassword(email);
+    public ResponseEntity<String> findPassword(@RequestBody LoginEmail loginEmail){
+        memberService.findPassword(loginEmail.getEmail());
         return ResponseEntity.ok().body("success");
     }
 
     // 프로필 변경하기
     @ApiOperation(value = "회원 정보 변경하기")
-    @PutMapping("api/v1/profile")
+    @PutMapping("/profile")
     public ResponseEntity<String> insertProfile(@RequestPart("file") MultipartFile file,
                                                 @RequestParam("email") String email,
                                                 @RequestParam(value = "nickname", required = false) String nickname,

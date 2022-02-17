@@ -44,9 +44,9 @@ class MemberServiceTest {
 
     @AfterEach
     void done(){
-        LoginEmail loginEmail = new LoginEmail();
-        loginEmail.setEmail("tph01198@naver.com");
-        memberService.deleteMember(loginEmail);
+
+        var member=memberRepository.findByEmail("tph01198@naver.com").orElseThrow(NoSuchMemberException::new);
+        memberService.deleteMember(member.getId());
         System.out.println("삭제");
         memberRepository.findAll().forEach(System.out::println);
     }
@@ -107,10 +107,8 @@ class MemberServiceTest {
     @Transactional
     @DisplayName("회원정보 삭제")
     void memberEmailCheck() {
-        memberRepository.save(member.toEntity());
-        LoginEmail loginEmail = new LoginEmail();
-        loginEmail.setEmail("tph01198@naver.com");
-        memberService.deleteMember(loginEmail);
+        var member=memberRepository.findByEmail("tph01198@naver.com").orElseThrow(NoSuchMemberException::new);
+        memberService.deleteMember(member.getId());
         memberRepository.findAll().forEach(System.out::println);
     }
     @Test
