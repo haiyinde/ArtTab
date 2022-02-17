@@ -2,13 +2,19 @@
   <p class="title">전시할 작품</p>
   <p class="desc">내가 좋아하는 작품을 전시해보세요!</p>
   <div class="searchbar-box">
-    <input type="text" class="searchbar" placeholder="작가 또는 작품명 입력" />
-    <magnify class="icon searchbar-icon"></magnify>
+    <input
+      type="text"
+      class="searchbar"
+      placeholder="작가 또는 작품명 입력"
+      v-model="keyword"
+      @keyup.enter="searchArtworks"
+    />
+    <magnify class="icon searchbar-icon" @click="searchArtworks"></magnify>
   </div>
   <div class="artworks-box">
     <masonry-wall
-      v-if="artworkList.length > 0"
-      :items="artworkList"
+      v-if="searchedArtworkList.length > 0"
+      :items="searchedArtworkList"
       :ssr-columns="1"
       :column-width="200"
       :gap="16"
@@ -32,6 +38,7 @@
 import { defineComponent } from "vue";
 import ArtworkAPI from "@/apis/artworkAPI";
 import ResponseData from "@/types/ResponseData";
+import FavoriteArtworkInfo from "@/types/FavoriteArtworkInfo";
 import { Magnify } from "mdue";
 import { mapState, mapActions } from "vuex";
 
@@ -45,7 +52,9 @@ export default defineComponent({
   },
   data() {
     return {
-      artworkList: [] as any,
+      artworkList: [] as FavoriteArtworkInfo[],
+      searchedArtworkList: [] as FavoriteArtworkInfo[],
+      keyword: "",
     };
   },
   mounted() {
@@ -61,6 +70,7 @@ export default defineComponent({
       ArtworkAPI.getLikeArtworkList(this.userInfo.nickname).then(
         (res: ResponseData) => {
           this.artworkList = res.data;
+          this.searchedArtworkList = res.data;
         }
       );
     },
@@ -74,6 +84,17 @@ export default defineComponent({
         yloc: 10,
         saveFolder: imgUrl,
       });
+    },
+    searchArtworks() {
+      if (!this.keyword) {
+        this.searchedArtworkList = this.artworkList;
+        return;
+      }
+      this.searchedArtworkList = this.artworkList.filter(
+        (artwork) =>
+          artwork.artworkTitle.indexOf(this.keyword) >= 0 ||
+          artwork.memberNickname.indexOf(this.keyword) >= 0
+      );
     },
   },
 });

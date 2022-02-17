@@ -1,56 +1,60 @@
 <template>
-  <div class="container">
-    <div class="gallery-header">
-      <h3>마이 갤러리</h3>
-      <router-link
-        v-if="userInfo.id == profileInfo.id"
-        class="decorate-gallery-btn"
-        :to="{ name: 'DecorateGallery' }"
-        >꾸미기</router-link
-      >
+  <article class="container">
+    <div class="title">마이 갤러리</div>
+    <router-link
+      v-if="userInfo.id == profileInfo.id"
+      class="decorate-gallery-btn"
+      :to="{ name: 'DecorateGallery' }"
+      >꾸미기</router-link
+    >
+    <div class="gallery-box">
+      <div id="mygallery">
+        <added-artwork-item
+          v-for="(artwork, index) in addedArtworkList"
+          :key="artwork.artworkId"
+          :artwork="artwork"
+          :index="index"
+          :resizable="false"
+          :draggable="false"
+        >
+        </added-artwork-item>
+      </div>
     </div>
-    <div class="gallery-layout">
-      <img
-        src="https://media.gettyimages.com/vectors/vector-black-picture-frame-set-on-wall-background-vector-id1059930772?k=20&m=1059930772&s=612x612&w=0&h=H8lVTwPZCb4b79WnVTKz96XbIO4KbAVkb4_r5gXEq2s="
-        alt=""
-      />
-    </div>
-  </div>
+  </article>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { mapState } from "vuex";
+import AddedArtworkItem from "@/components/profile/child/AddedArtworkItem.vue";
+import { mapState, mapActions } from "vuex";
 
 const accountsStore = "accountsStore";
-export default defineComponent(
-  {
-    data() {
-      return {
-        // 타인 프로필 조회 정보
-        profileInfo: {
-          email: "",
-          nickname: "",
-          intro: "",
-          id: this.$route.params.id as unknown as number,
-        },
-        // galleryImage: [] as any,
-      };
-    },
-    computed: {
-      ...mapState(accountsStore, ["userInfo"]),
-    },
-    methods: {
-      // getGalleryImage() {
-      //   // Image API
-      //   return this.galleryImage
-    },
-  }
-  // mounted() {
-  //   this.getGalleryImage();
-  // },
-  // }
-);
+const galleryStore = "galleryStore";
+
+export default defineComponent({
+  name: "Gallery",
+  components: { AddedArtworkItem },
+  data() {
+    return {
+      profileInfo: {
+        id: this.$route.params.id as unknown as number,
+      },
+    };
+  },
+  mounted() {
+    this.getArtworkList(this.userInfo.nickname);
+  },
+  computed: {
+    ...mapState(accountsStore, ["userInfo"]),
+    ...mapState(galleryStore, ["addedArtworkList"]),
+  },
+  methods: {
+    ...mapActions(galleryStore, ["getArtworkList"]),
+    // getGalleryImage() {
+    //   // Image API
+    //   return this.galleryImage
+  },
+});
 </script>
 
 <style lang="scss" scoped>
@@ -58,46 +62,57 @@ export default defineComponent(
   max-width: 1200px;
   min-width: 320px;
   margin: 0 auto;
-  padding: 0 1rem;
+  position: relative;
 }
 
-.gallery-layout {
+.title {
+  margin-top: $size-large;
+  margin-left: $size-small;
+  font-size: $size-large;
+  font-weight: $weight-semi-bold;
+}
+
+.gallery-box {
+  width: 100%;
+  border: 1px solid $grey;
+  overflow-x: auto;
+  margin-top: $size-medium;
+}
+
+#mygallery {
+  position: relative;
+  width: 740px;
+  height: 400px;
+  margin: auto;
+
+  background: url("../../../src/assets/images/gallerybackground.jpg") no-repeat
+    center center;
+  background-size: contain;
+}
+
+.decorate-gallery-btn {
+  font-size: $font-regular;
+  font-weight: $weight-semi-bold;
+  line-height: 1.8;
   border: 1.5px solid $black;
   border-radius: 0.3rem;
-  // 아마 이건 데이터 받아올 때 height width 고정되어서 CSS에서 만질 일 없을 듯
-  margin: 0 auto;
-  & img {
-    width: 40rem;
-  }
-}
-
-.gallery-header {
-  & h3 {
-    display: inline-block;
-  }
-  & .decorate-gallery-btn {
-    font-size: $font-regular;
-    font-weight: $weight-semi-bold;
-    line-height: 1.8;
-    border: 1.5px solid $black;
-    border-radius: 0.3rem;
-    // 위치
-    display: flex;
-    float: right;
-    // margin-right: 1rem;
-    // width: 4rem;
-    width: 120px;
-    text-align: center;
-    align-items: center;
-    justify-content: center;
-    // hover시 색상 전환 천천히
-    transition: border-color 0.5s, background-color 0.5s, color 0.5s;
-    // hover시 색상 전환
-    &:hover {
-      background-color: $black;
-      color: $white;
-      border-color: transparent;
-    }
+  // 위치
+  position: absolute;
+  top: 0;
+  right: 0;
+  // margin-right: 1rem;
+  // width: 4rem;
+  width: 120px;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  // hover시 색상 전환 천천히
+  transition: border-color 0.5s, background-color 0.5s, color 0.5s;
+  // hover시 색상 전환
+  &:hover {
+    background-color: $black;
+    color: $white;
+    border-color: transparent;
   }
 }
 </style>
