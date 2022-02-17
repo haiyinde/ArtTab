@@ -336,9 +336,9 @@ public class MemberService {
         String profileImg=profileMember.getSaveFolder();
 
         String profileImageUrl=profileDefaultImgUrl+profileMember.getSaveFilename(); // 프로필 사진 url
-//        if(!profileImg.equals(defaultProfileImgUrl)){ // 프로필 이미지가 기본 프로필 이미지 상태가 아닐 때
-//            profileImageUrl=profileImgUrl+memberRepository.findById(profileMemberId).get().getSaveFilename();
-//        }
+        if(!profileImg.equals(defaultProfileImgUrl)){ // 프로필 이미지가 기본 프로필 이미지 상태가 아닐 때
+            profileImageUrl=profileImgUrl+memberRepository.findById(profileMemberId).get().getSaveFilename();
+        }
 
         ProfileInfoResponse response = ProfileInfoResponse.builder()
                 .nickname(memberRepository.findById(profileMemberId).get().getNickname())
