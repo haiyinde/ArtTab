@@ -55,6 +55,9 @@ public class MemberService {
 //    @Value("${access.url.artworks}")
 //    private String artworkImgUrl;
 
+    @Value("${access.url.location}")
+    private String location;
+
     @Value("${access.url.profiles}")
     private String profileImgUrl;
 
@@ -76,7 +79,13 @@ public class MemberService {
         var password = BCrypt.hashpw(memberSaveRequest.getPassword(),BCrypt.gensalt());
 
         // 프로필 사진 기본 이미지로 설정
-        String defaultSaveFolder=System.getProperty("user.dir")+File.separator+"src"+File.separator+"main"+File.separator+"resources"+File.separator+"static"+File.separator+"default.jpg";
+        String defaultSaveFolder = "";
+        if ("dev".equals(location)){
+             defaultSaveFolder=System.getProperty("user.dir")+File.separator+"src"+File.separator+"main"+File.separator+"resources"+File.separator+"static"+File.separator+"default.jpg";
+        } else if ("ec2".equals(location)) {
+            defaultSaveFolder=System.getProperty("user.dir")+"img"+ File.separator + "default.jpg";
+        }
+
 
         Member member = Member.builder()
                 .email(memberSaveRequest.getEmail())
