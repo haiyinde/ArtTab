@@ -1,232 +1,232 @@
 <template>
-  <!-- Modal -->
-  <!-- Profile Edit Modal -->
-  <transition name="fade" appear>
-    <div class="overlay" v-if="isOpen == true" @click="closeEditModal"></div>
-  </transition>
-  <transition
-    mode="out-in"
-    enter-active-class="animate__animated animate__fadeInUp"
-    leave-active-class="animate__animated animate__fadeOutDown"
-  >
-    <div class="modal" v-if="isOpen == true">
-      <h2>내 정보 수정</h2>
-      <div class="profile-image" style="float: none">
-        <label for="file">
-          <img
-            v-if="tempimage"
-            class="tempimage"
-            :src="tempimage"
-            style="cursor: pointer"
-          />
-          <img
-            v-else
-            :src="require(`@/assets/images/plus-circle.png`)"
-            class="altimg"
-          />
-        </label>
-      </div>
-      <div class="input-div" style="display: none">
-        <input
-          ref="profileImg"
-          id="file"
-          type="file"
-          accept="image/*"
-          @change="onInputImage"
-        />
-      </div>
-      <div class="button" onclick="onclick=document.all.file.click()"></div>
-      <close-button
-        :closed="isClose"
-        class="profile-close-btn"
-        @click="closeEditModal"
-      ></close-button>
-      <div>
-        <!-- <button class="change-profile-pic-btn" @click="changeProfilePic">
-          프로필 사진 변경
-        </button> -->
-        <label for="nickname" class="label-text">닉네임 변경</label>
-        <input
-          type="nickname"
-          id="nickname"
-          class="input-text"
-          name="nickname"
-          v-model="updatedInfo.nickname"
-        />
-        <label for="intro" class="label-text">소개 변경</label>
-        <input type="intro" id="intro" class="input-text" name="intro" v-model="updatedInfo.intro"/>
-        <button class="done-profile-edit-btn" @click="addUpdatedInfo">
-          정보 수정 완료
-        </button>
-      </div>
-    </div>
-  </transition>
-
-  <!-- Change Password and Sign Out Modal -->
-  <transition name="fade" appear>
-    <div
-      class="overlay"
-      v-if="isCPSOpen == true"
-      @click="closeChangePwdModal"
-    ></div>
-  </transition>
-  <transition
-    mode="out-in"
-    enter-active-class="animate__animated animate__fadeInUp"
-    leave-active-class="animate__animated animate__fadeOutDown"
-  >
-    <div class="modal" v-if="isCPSOpen == true">
-      <close-button
-        :closed="isClose"
-        class="profile-close-btn"
-        @click="closeChangePwdModal"
-      ></close-button>
-      <h2>비밀번호 변경 및 계정 탈퇴</h2>
-      <!-- 현재 비밀번호 -->
-      <label for="originalPwd" class="label-text">현재 비밀번호</label>
-      <input-password
-        :password="originalPwd"
-        :placetext="'기존 비밀번호를 입력해주세요.'"
-        id="originalPwd"
-        @inputVal="updateCurrentPwd"
-      ></input-password>
-      <!-- 변경할 비밀번호 입력 -->
-      <label for="password" class="label-text">새 비밀번호</label>
-      <input-password
-        :password="updatedPwd"
-        :placetext="'영문, 특수문자 포함 8자리 이상'"
-        id="password"
-        @inputVal="updatePassword"
-      ></input-password>
-      <span class="alert" v-show="valid.password"
-        >영문, 특수문자 포함 8자리 이상 입력해주세요.</span
-      >
-      <!-- 변경할 비밀번호 확인 -->
-      <label for="checkPwd" class="label-text">새 비밀번호 다시 입력</label>
-      <input-password
-        :password="checkPwd"
-        :placetext="'비밀번호를 다시 입력해주세요.'"
-        id="checkPwd"
-        @inputVal="updatecheckPwd"
-      ></input-password>
-      <span class="alert" v-show="valid.checkPwd"
-        >비밀번호가 일치하지 않습니다.</span
-      >
-      <div>
-        <button class="done-change-password-btn" @click="changePassword">
-          변경 완료
-        </button>
-      </div>
-      <div class="signout">
-        <p class="change-pwd-signout-text" @click="openSignOutModal">
-          회원 탈퇴
-        </p>
-      </div>
-    </div>
-  </transition>
-  <!-- Sign Out Confirmation Modal -->
-  <transition name="fade" appear>
-    <div
-      class="overlay"
-      v-if="isSignoutOpen == true"
-      @click="closeSignOutModal"
-    ></div>
-  </transition>
-  <transition
-    mode="out-in"
-    enter-active-class="animate__animated animate__fadeInUp"
-    leave-active-class="animate__animated animate__fadeOutDown"
-  >
-    <div class="modal" v-if="isSignoutOpen == true">
-      <h2 class="confirm-signout">정말 탈퇴하시겠습니까?</h2>
-      <close-button
-        :closed="isClose"
-        class="profile-close-btn"
-        @click="closeSignOutModal"
-      ></close-button>
-      <div class="signout-btn">
-        <button class="confirm-signout-btn" @click="signOut">탈퇴하기</button>
-        <button class="return-signout-btn" @click="closeSignOutModal">
-          돌아가기
-        </button>
-      </div>
-    </div>
-  </transition>
-
-  <!-- Profile Info -->
   <div>
-    <div class="container">
-      <div class="profile">
-        <div class="profile-image">
-          <img :src="profileInfo.profileImageUrl" alt="Profile Image" />
+
+    <!-- Modal -->
+    <!-- Profile Edit Modal -->
+    <transition name="fade" appear>
+      <div class="overlay" v-if="isOpen == true" @click="closeEditModal"></div>
+    </transition>
+    <transition
+      mode="out-in"
+      enter-active-class="animate__animated animate__fadeInUp"
+      leave-active-class="animate__animated animate__fadeOutDown"
+    >
+      <div class="modal" v-if="isOpen == true">
+        <h2>내 정보 수정</h2>
+        <div class="profile-image" style="float: none">
+          <label for="file">
+            <img
+              v-if="tempimage"
+              class="tempimage"
+              :src="tempimage"
+              style="cursor: pointer"
+            />
+            <img
+              v-else
+              :src="require(`@/assets/images/plus-circle.png`)"
+              class="altimg"
+            />
+          </label>
         </div>
-        <div class="profile-user-settings">
-          <h1 class="profile-user-nickname">{{ profileInfo.nickname }}</h1>
-          <p class="profile-user-email">{{ profileInfo.email }}</p>
-          <button
-            v-if="userInfo.id == this.$route.params.id"
-            class="btn profile-edit-btn"
-            @click="openEditModal"
-          >
-            내 정보 수정
+        <div class="input-div" style="display: none">
+          <input
+            ref="profileImg"
+            id="file"
+            type="file"
+            accept="image/*"
+            @change="onInputImage"
+          />
+        </div>
+        <div class="button" onclick="onclick=document.all.file.click()"></div>
+        <close-button
+          :closed="isClose"
+          class="profile-close-btn"
+          @click="closeEditModal"
+        ></close-button>
+        <div>
+          <label for="nickname" class="label-text">닉네임 변경</label>
+          <input
+            type="nickname"
+            id="nickname"
+            class="input-text"
+            name="nickname"
+            v-model="updatedInfo.nickname"
+          />
+          <label for="intro" class="label-text">소개 변경</label>
+          <input type="intro" id="intro" class="input-text" name="intro" v-model="updatedInfo.intro"/>
+          <button class="done-profile-edit-btn" @click="addUpdatedInfo">
+            정보 수정 완료
           </button>
-          <!-- Follow Button -->
-          <follow-button
-            v-if="userInfo.id != this.$route.params.id"
-            :class="{ 'btn-white': profileInfo.isFollow }"
-            :followed="isFollowed"
-            :writerId="Number(this.$route.params.id)"
-            :userId="userInfo.id"
-            @toggle="toggleFollow"
-            @message="showToastMessage"
-          >
-          </follow-button>
-          <toast-message ref="toast"></toast-message>
         </div>
-        <div class="profile-stats">
-          <ul>
-            <li>
-              <span class="profile-stat-count">{{
-                profileInfo.artworkNum
-              }}</span>
-              게시물
-            </li>
-            <li>
-              <span class="profile-stat-count">{{
-                profileInfo.followedNum
-              }}</span>
-              팔로워
-            </li>
-            <li>
-              <span class="profile-stat-count">{{
-                profileInfo.followingNum
-              }}</span>
-              팔로잉
-            </li>
-          </ul>
+      </div>
+    </transition>
+
+    <!-- Change Password and Sign Out Modal -->
+    <transition name="fade" appear>
+      <div
+        class="overlay"
+        v-if="isCPSOpen == true"
+        @click="closeChangePwdModal"
+      ></div>
+    </transition>
+    <transition
+      mode="out-in"
+      enter-active-class="animate__animated animate__fadeInUp"
+      leave-active-class="animate__animated animate__fadeOutDown"
+    >
+      <div class="modal" v-if="isCPSOpen == true">
+        <close-button
+          :closed="isClose"
+          class="profile-close-btn"
+          @click="closeChangePwdModal"
+        ></close-button>
+        <h2>비밀번호 변경 및 계정 탈퇴</h2>
+        <!-- 현재 비밀번호 -->
+        <label for="originalPwd" class="label-text">현재 비밀번호</label>
+        <input-password
+          :password="originalPwd"
+          :placetext="'기존 비밀번호를 입력해주세요.'"
+          id="originalPwd"
+          @inputVal="updateCurrentPwd"
+        ></input-password>
+        <!-- 변경할 비밀번호 입력 -->
+        <label for="password" class="label-text">새 비밀번호</label>
+        <input-password
+          :password="updatedPwd"
+          :placetext="'영문, 특수문자 포함 8자리 이상'"
+          id="password"
+          @inputVal="updatePassword"
+        ></input-password>
+        <span class="alert" v-show="valid.password"
+          >영문, 특수문자 포함 8자리 이상 입력해주세요.</span
+        >
+        <!-- 변경할 비밀번호 확인 -->
+        <label for="checkPwd" class="label-text">새 비밀번호 다시 입력</label>
+        <input-password
+          :password="checkPwd"
+          :placetext="'비밀번호를 다시 입력해주세요.'"
+          id="checkPwd"
+          @inputVal="updatecheckPwd"
+        ></input-password>
+        <span class="alert" v-show="valid.checkPwd"
+          >비밀번호가 일치하지 않습니다.</span
+        >
+        <div>
+          <button class="done-change-password-btn" @click="changePassword">
+            변경 완료
+          </button>
         </div>
-        <div class="profile-intro">
-          <p v-if="profileInfo.intro">
-            {{ profileInfo.intro }}
-          </p>
-          <p v-else>
-            <b>내 정보 수정버튼</b>을 클릭해 아트탭 회원들에게 자기소개를
-            해보세요!
-          </p>
-        </div>
-        <div class="change-pwd-signout">
-          <p
-            v-if="userInfo.id == this.$route.params.id"
-            class="change-pwd-signout-text"
-            @click="openChangePwdModal"
-          >
-            비밀번호 변경 및 계정 탈퇴
+        <div class="signout">
+          <p class="change-pwd-signout-text" @click="openSignOutModal">
+            회원 탈퇴
           </p>
         </div>
       </div>
+    </transition>
+    <!-- Sign Out Confirmation Modal -->
+    <transition name="fade" appear>
+      <div
+        class="overlay"
+        v-if="isSignoutOpen == true"
+        @click="closeSignOutModal"
+      ></div>
+    </transition>
+    <transition
+      mode="out-in"
+      enter-active-class="animate__animated animate__fadeInUp"
+      leave-active-class="animate__animated animate__fadeOutDown"
+    >
+      <div class="modal" v-if="isSignoutOpen == true">
+        <h2 class="confirm-signout">정말 탈퇴하시겠습니까?</h2>
+        <close-button
+          :closed="isClose"
+          class="profile-close-btn"
+          @click="closeSignOutModal"
+        ></close-button>
+        <div class="signout-btn">
+          <button class="confirm-signout-btn" @click="signOut">탈퇴하기</button>
+          <button class="return-signout-btn" @click="closeSignOutModal">
+            돌아가기
+          </button>
+        </div>
+      </div>
+    </transition>
+
+    <!-- Profile Info -->
+    <div>
+      <div class="container">
+        <div class="profile">
+          <div class="profile-image">
+            <img :src="profileInfo.profileImageUrl" alt="Profile Image" />
+          </div>
+          <div class="profile-user-settings">
+            <h1 class="profile-user-nickname">{{ profileInfo.nickname }}</h1>
+            <p class="profile-user-email">{{ profileInfo.email }}</p>
+            <button
+              v-if="userInfo.id == this.$route.params.id"
+              class="btn profile-edit-btn"
+              @click="openEditModal"
+            >
+              내 정보 수정
+            </button>
+            <!-- Follow Button -->
+            <follow-button
+              v-if="userInfo.id != this.$route.params.id"
+              :class="{ 'btn-white': profileInfo.isFollow }"
+              :followed="isFollowed"
+              :writerId="Number(this.$route.params.id)"
+              :userId="userInfo.id"
+              @toggle="toggleFollow"
+              @message="showToastMessage"
+            >
+            </follow-button>
+            <toast-message ref="toast"></toast-message>
+          </div>
+          <div class="profile-stats">
+            <ul>
+              <li>
+                <span class="profile-stat-count">{{
+                  profileInfo.artworkNum
+                }}</span>
+                게시물
+              </li>
+              <li>
+                <span class="profile-stat-count">{{
+                  profileInfo.followedNum
+                }}</span>
+                팔로워
+              </li>
+              <li>
+                <span class="profile-stat-count">{{
+                  profileInfo.followingNum
+                }}</span>
+                팔로잉
+              </li>
+            </ul>
+          </div>
+          <div class="profile-intro">
+            <p v-if="profileInfo.intro">
+              {{ profileInfo.intro }}
+            </p>
+            <p v-else>
+              <b>내 정보 수정버튼</b>을 클릭해 아트탭 회원들에게 자기소개를
+              해보세요!
+            </p>
+          </div>
+          <div class="change-pwd-signout">
+            <p
+              v-if="userInfo.id == this.$route.params.id"
+              class="change-pwd-signout-text"
+              @click="openChangePwdModal"
+            >
+              비밀번호 변경 및 계정 탈퇴
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
+    <toast-message ref="toast"></toast-message>
   </div>
-  <toast-message ref="toast"></toast-message>
 </template>
 
 <script lang="ts">
@@ -348,6 +348,7 @@ export default defineComponent({
         .then((res) => {
         console.log(res);
       });
+      this.closeEditModal();
     },
     ...mapActions(accountsStore, ["getLogout"]),
     handleFollow() {
@@ -360,22 +361,6 @@ export default defineComponent({
       this.isOpen = false;
     },
     doneEditInfo() {
-      this.closeEditModal();
-    },
-    // 수정 필요
-    changeProfilePic() {
-      // 프로필 사진 변경 정보 담아서 BE로 보내는 method
-      // 사진 변경 완료, 실패 modal도 있으면 좋을듯
-      // await AccountsAPI.updateProfileIntro(
-      //   this.userInfo.email,
-
-      // ).then((res: ResponseData) => {
-      //   if (res.data === "success") {
-      //     console.log("자기소개 변경에 성공했습니다.");
-      //   } else {
-      //     console.log("자기소개 변경에 실패했습니다.");
-      //   }
-      // });
       this.closeEditModal();
     },
     openChangePwdModal() {
@@ -462,6 +447,7 @@ export default defineComponent({
       )
         .then((res: ResponseData) => {
           this.profileInfo = res.data;
+          console.log(this.profileInfo);
           if (res.data.isFollow == "FALSE") {
             this.isFollowed = false;
           } else {

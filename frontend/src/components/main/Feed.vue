@@ -119,6 +119,10 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
+.container {
+  margin-top: 3rem;
+}
+
 *,
 *::before,
 *::after {

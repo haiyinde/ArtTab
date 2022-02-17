@@ -9,7 +9,7 @@
       >
         <template #default="{ item }">
           <figure class="card card--1">
-            <img :src="item.imageUrl" :alt="`${item.artworkTitle}`" />
+            <img :src="item.saveFolder" :alt="`${item.artworkTitle}`" />
             <figcaption>
               <span class="info">
                 <h3 class="artwork-title">{{ item.artworkTitle }}</h3>
@@ -105,6 +105,10 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
+.container {
+  margin-top: 3rem;
+}
+
 *,
 *::before,
 *::after {

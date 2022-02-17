@@ -6,7 +6,6 @@ class ArtworkAPI {
   addArtwork(artwork: FormData) {
     return fileApiInstance.post(`/artwork`, artwork);
   }
-
   // 작품 수정 API
   updateArtwork(id: number, artwork: FormData) {
     return fileApiInstance.put(`/artwork/${id}`, artwork);
@@ -20,8 +19,13 @@ class ArtworkAPI {
     return api.get(`/artwork?loginId=${loginId}&page=${page}`);
   }
   // 회원이 업로드한 전체 작품 조회 API
-  getArtworkListByMember(nickname: string) {
-    return api.get(`/artwork/member?nickname=` + nickname);
+  getArtworkListByMember(memberId: number) {
+    // return api.get(`/artwork/member`, { params: { nickname: nickname } });
+    // return api.get(`/artwork/member`, { data: { nickname: nickname } });
+    return api.get(`/artwork/member?nickname=`, { params: { memberId: memberId }});
+    // return api.get(`/artwork/member?nickname=` + nickname);
+    // return api.get(`/artwork/member?nickname=` + nickname);
+    // return api.get(`/artwork/member/${nickname}`);
   }
   // 작품 삭제 API
   deleteArtwork(id: number) {

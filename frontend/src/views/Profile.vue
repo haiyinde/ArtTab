@@ -1,6 +1,6 @@
 <template>
-  <nav-bar />
   <div>
+    <nav-bar />
     <div class="container">
       <profile-info></profile-info>
       <gallery></gallery>

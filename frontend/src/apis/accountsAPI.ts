@@ -57,7 +57,7 @@ class AccountsAPI {
   }
   // 회원 정보 변경하기
   updateProfileInfo(updatedInfo: FormData) {
-    return fileApiInstance.put(`/member/api/v1/profile`, updatedInfo);
+    return fileApiInstance.put(`/member/profile`, updatedInfo);
   }
   // 비밀번호 수정: 성공 시 'success' 반환
   updatePassword(loginEmail: string, newPassword: string, password: string) {
@@ -71,8 +71,8 @@ class AccountsAPI {
     );
   }
   // 회원탈퇴(삭제)
-  deleteAccount(email: string) {
-    return api.delete(`/member/me?email=` + email);
+  deleteAccount(id: number) {
+    return api.delete(`/member/me?email=` + id);
   }
   // 회원 프로필 정보 리턴하기
   getProfileInfo(loginId: number, profileMemberId: number) {

@@ -9,6 +9,8 @@
           :key="artwork.artworkId"
           :artwork="artwork"
           :index="index"
+          :resizable="true"
+          :draggable="true"
         >
         </added-artwork-item>
       </div>
@@ -29,8 +31,8 @@ const accountsStore = "accountsStore";
 const galleryStore = "galleryStore";
 
 export default defineComponent({
-  components: { AdditionalArtworks, AddedArtworkItem },
   name: "DecorateGallery",
+  components: { AdditionalArtworks, AddedArtworkItem },
   data() {
     return {};
   },
