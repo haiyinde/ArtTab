@@ -9,11 +9,29 @@
       >
         <template #default="{ item }">
           <figure class="card card--1">
-            <img :src="item.saveFolder" :alt="`${item.artworkTitle}`" />
+            <router-link
+              :to="{
+                name: 'ArtworkDetail',
+                params: { id: item.artworkId },
+              }"
+            >
+              <img :src="item.saveFolder" :alt="`${item.artworkTitle}`" />
+            </router-link>
             <figcaption>
               <span class="info">
-                <h3 class="artwork-title">{{ item.artworkTitle }}</h3>
+                <router-link
+                  :to="{
+                    name: 'ArtworkDetail',
+                    params: { id: item.artworkId },
+                  }"
+                >
+                  <h3 class="artwork-title">{{ item.artworkTitle }}</h3>
+                </router-link>
+                <router-link
+                  :to="{ name: 'Profile', params: { id: item.memberId } }"
+                >
                 <span class="artwork-artist">{{ item.memberNickname }}</span>
+                </router-link>
               </span>
               <span class="links">
                 <!-- like button -->
@@ -23,7 +41,7 @@
                     :liked="likeInfo.likeOrNot"
                     :artworkId="item.artworkId"
                     :userId="userInfo.id"
-                    @toggle="toggleLike"
+                    @toggle="toggleLike(index)"
                     @message="showToastMessage"
                   ></like-button>
                   <toast-message ref="toast"></toast-message>
@@ -76,8 +94,8 @@ export default defineComponent({
         });
       }
     },
-    toggleLike(result: boolean) {
-      this.likeInfo.likeOrNot = result;
+    toggleLike(index: number) {
+      this.items[index].likeOrNot = !this.items[index].likeOrNot;
     },
     showToastMessage(msg: string) {
       (this.$refs["toast"] as typeof ToastMessage).showToast(msg);
