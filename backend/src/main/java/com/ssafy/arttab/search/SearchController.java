@@ -1,12 +1,12 @@
 package com.ssafy.arttab.search;
 
 import com.ssafy.arttab.artwork.ArtworkRepository;
-import com.ssafy.arttab.artwork.ArtworkService;
-import com.ssafy.arttab.artwork.dto.ArtworkListResponseDto;
 import com.ssafy.arttab.member.repository.MemberRepository;
 import com.ssafy.arttab.search.dto.SearchArtworkListResponseDto;
 import com.ssafy.arttab.search.dto.SearchMemberListResponseDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,8 +23,12 @@ public class SearchController {
 
 
     @GetMapping("/api/v1/searchTitle")
-    public List<SearchArtworkListResponseDto> selectAllByArtwork(@RequestParam String title){
-        return searchService.selectArtworkList(title);
+    public ResponseEntity<List<SearchArtworkListResponseDto>> selectAllByArtwork(@RequestParam String title){
+        var artworkList = searchService.selectArtworkList(title);
+        if (artworkList.isEmpty()){
+            return new ResponseEntity<>(null, HttpStatus.OK);
+        }
+        return ResponseEntity.ok().body(artworkList);
     }
 
     @GetMapping("/api/v1/searchNickname")
