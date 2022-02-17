@@ -13,8 +13,8 @@
     >
       <div class="modal" v-if="isOpen == true">
         <h2>내 정보 수정</h2>
-        <div class="profile-image" style="float: none">
-          <label for="file">
+        <div class="profile-user-img">
+          <label for="file" class="profile-user-img-img">
             <img
               v-if="tempimage"
               class="tempimage"
@@ -467,19 +467,34 @@ export default defineComponent({
 // accounts에서 input css 이용
 @import "@/assets/css/accounts.scss";
 
+.profile-user-img {
+  width: 300px;
+  height: 300px;
+  margin: auto;
+  &-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: flex;
+  }
+}
+
+
 // profile edit
 .tempimage {
   display: flex;
   width: 100%;
-  height: 100%;
+  height: 300px;
   object-fit: contain;
+  cursor: pointer;
 }
 
 .altimg {
-  display: flex;
+  // display: flex;
   width: 55px;
   height: 55px;
   cursor: pointer;
+  margin: auto;
 }
 
 .altimg:hover {
