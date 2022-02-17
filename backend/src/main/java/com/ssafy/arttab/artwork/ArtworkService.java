@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,6 +36,9 @@ public class ArtworkService {
 
     @Value("${access.url.profiles}")
     private String profileImgUrl;
+
+    @Value("${access.url.profileDefault}")
+    private String profileDefaultImgUrl;
 
     @Transactional
     public List<ArtworkListResponseDto> getArtworkList(int page, Long loginId){
@@ -225,6 +229,13 @@ public class ArtworkService {
                             .build()); // 작품 아이디와 작품 url 저장
                 }
             }
+            String profileUrl = "";
+
+            if ("default.jpg".equals(followee.getSaveFilename())){
+                profileUrl = profileDefaultImgUrl + followee.getSaveFilename();
+            }else {
+                profileUrl = profileImgUrl + followee.getSaveFilename();
+            }
 
             FollowArtworkListResponseDto response = FollowArtworkListResponseDto.builder()
                     .artworkInfo(artworkInfo)
@@ -232,6 +243,9 @@ public class ArtworkService {
                     .followerNum(followRepository.findAllFollowedCnt(followee.getId()))
                     .memberMail(followee.getEmail())
                     .recentUpdated(recentUpdated)
+                    .memberId(followee.getId())
+                    .nickName(followee.getNickname())
+                    .imgUrl(profileUrl)
                     .build();
 
             result.add(response);
