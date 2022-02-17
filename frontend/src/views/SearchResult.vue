@@ -1,159 +1,27 @@
 <template>
-  <nav-bar />
   <div>
+    <nav-bar />
     <div class="container">
-      <masonry-wall
-        :items="items"
-        :ssr-columns="1"
-        :column-width="300"
-        :gap="16"
-      >
-        <template #default="{ item }">
-          <div class="thumbnail-wrapper">
-            <img :src="item.imageUrl" :alt="`${item.artworkTitle}`" />
-            <div class="overlay">
-              <div class="info">
-                <router-link
-                  :to="{ name: 'ArtworkDetail', params: { id: item.artworkId } }"
-                >
-                  <span style="color: white" class="artwork-title">{{
-                    item.artworkTitle
-                  }}</span>
-                </router-link>
-                <router-link
-                  :to="{ name: 'Profile', params: { id: item.memberId } }"
-                >
-                  <span style="color: white" class="artwork-artist"
-                    >By {{ item.memberNickname }}</span
-                  >
-                </router-link>
-              </div>
-              <div class="button-top-right">
-                <!-- <like-button :liked="!valid" @click="handleLike"></like-button> -->
-              </div>
-            </div>
-          </div>
-        </template>
-      </masonry-wall>
+      <search-title></search-title>
     </div>
-    <!-- <div v-for="(item, i) in items" :key="i">
-      <img :src="item.imageUrl" :alt="item.artworkTitle">
-    </div> -->
-    <Observer @intersect="SearchArtworks" />
   </div>
-  <div class="none-search"></div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue"
+import { defineComponent } from "vue";
 import NavBar from "@/components/layout/NavBar.vue";
-import searchAPI from "@/apis/searchAPI";
-import Observer from "@/components/main/child/Observer.vue";
+import SearchTitle from "@/components/search/SearchTitle.vue";
 
 export default defineComponent({
   components: {
     NavBar,
-    Observer,
-  },
-  data() {
-    return {
-      items: [] as any,
-      title: this.$route.query.title as string,
-    };
-  },
-  methods: {
-    async SearchArtworks() {
-      const res = await searchAPI.SearchArtworks(this.title);
-      this.items = res.data;
-      if (this.items.length === 0) {
-        let nonedata = document.querySelector(".none-search");
-        if (nonedata instanceof Element) {
-          nonedata.innerHTML = "작품이 없습니다.";
-        }
-      }
-    },
+    SearchTitle
   },
 });
 </script>
 
-<style scoped lang="scss">
-footer {
-  position: relative;
-  width: 400px;
-
-  #scroll-trigger {
-    height: 100px;
-  }
-}
-
-* {
-  box-sizing: border-box;
-}
-
-.thumbnail-wrapper {
-  position: relative;
-  width: 300px;
-  margin: 0 auto;
-  transition: 0.5s ease-in-out;
-
-  & img {
-    max-width: 100%;
-    height: auto;
-    border: 1px solid $grey;
-    box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
-  }
-
-  &:hover {
-    transform: translateY(-3px);
-    & .button-top-right {
-      visibility: visible;
-    }
-    & .info {
-      color: white;
-      visibility: visible;
-      transform: translateY(0px);
-    }
-  }
-}
-
-.info {
-  position: absolute;
-  bottom: $font-small;
-  left: 10px;
-  visibility: hidden;
-  z-index: 3;
-  transition: 0.4s, ease-in-out;
-}
-
+<style lang="scss" scoped>
 .container {
-  margin-top: 2rem;
+  margin: auto;
 }
-
-.overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 2;
-  &:hover {
-    background: rgba(0, 0, 0, 0.6);
-  }
-}
-
-.button-top-right {
-  position: absolute;
-  top: 2px;
-  right: 2px;
-  z-index: 3;
-  visibility: hidden;
-}
-
-.none-search {
-  display: flex;
-  justify-content: center;
-  font-size: 50px;
-  margin: 40px;
-}
-
 </style>
