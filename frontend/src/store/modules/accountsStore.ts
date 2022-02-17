@@ -4,6 +4,7 @@ import AccountsAPI from "@/apis/accountsAPI";
 import LoginInfo from "@/types/LoginInfo";
 import UserInfo from "@/types/UserInfo";
 import ResponseData from "@/types/ResponseData";
+import { ConsoleNetworkOutline } from "mdue";
 
 export interface AccountsState {
   isLogin: boolean;
@@ -57,21 +58,24 @@ export const accountsStore: Module<AccountsState, RootState> = {
     async getLogin({ commit }, user: LoginInfo) {
       await AccountsAPI.login(user)
         .then((res: ResponseData) => {
-          console.log(res.data);
+          // 비밀번호 틀린것 등 fail일 때
           if (res.data === "fail") {
             commit("SET_IS_LOGIN", false);
             commit("SET_IS_LOGIN_ERROR", true);
+            commit("SET_IS_CONFIRM_EMAIL", true);
           }
           // 이메일 인증되지 않은 사람일 때
           else if (res.data === "NoauthorizedMember") {
             commit("SET_JOIN_INFO", user);
+            commit("SET_IS_LOGIN", false);
             commit("SET_IS_LOGIN_ERROR", false);
             commit("SET_IS_CONFIRM_EMAIL", false);
           }
-          // 비밀번호 틀린것 등 fail일 때
+          // 정상 로그인
           else {
             commit("SET_IS_LOGIN", true);
             commit("SET_IS_LOGIN_ERROR", false);
+            commit("SET_IS_CONFIRM_EMAIL", true);
             sessionStorage.setItem("access-token", res.data);
           }
         })
