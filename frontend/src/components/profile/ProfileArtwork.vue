@@ -1,5 +1,6 @@
 <template>
   <div>
+    <div class="title">나의 그림 발자취<foot-print></foot-print></div>
     <toast-message ref="toast"></toast-message>
     <div>
       <div class="container">
@@ -69,6 +70,7 @@ import LikeButton from "@/components/common/LikeButton.vue";
 import ToastMessage from "@/components/common/ToastMessage.vue";
 import { mapState } from "vuex";
 import { ArrowUpBoldCircleOutline } from "mdue";
+import { FootPrint } from "mdue";
 import AccountsAPI from "@/apis/accountsAPI";
 import ResponseData from "@/types/ResponseData";
 import ProfileInfo from "@/types/ProfileInfo";
@@ -81,12 +83,14 @@ export default defineComponent({
       items: [] as any,
       likeInfo: [] as any,
       profileInfo: {} as ProfileInfo,
+      isArtwork: false,
     };
   },
   components: {
     LikeButton,
-    ArrowUpBoldCircleOutline,
     ToastMessage,
+    ArrowUpBoldCircleOutline,
+    FootPrint,
   },
   mounted() {
     this.getProfileInfo();
@@ -100,6 +104,11 @@ export default defineComponent({
       const res = await ArtworkAPI.getArtworkListByMember(Number(this.$route.params.id));
       console.log(res);
       this.items = res.data;
+      if (this.items.length == 0) {
+        this.isArtwork = false;
+      } else {
+        this.isArtwork = true;
+      }
       let size = this.items.length;
       for (let i = 0; i < size; i++) {
         this.likeInfo.push({
@@ -144,6 +153,13 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
+.title {
+  margin-top: $size-large;
+  margin-left: $size-small;
+  font-size: $size-large;
+  font-weight: $weight-semi-bold;
+}
+
 .container {
   margin-top: 3rem;
 }

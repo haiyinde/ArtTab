@@ -48,6 +48,10 @@ export const accountsStore: Module<AccountsState, RootState> = {
     SET_IS_CONFIRM_EMAIL: (state, isConfirmed: boolean) => {
       state.isConfirmEmail = isConfirmed;
     },
+    updateUserInfo(state, updatedUserInfo: UserInfo) {
+      state.userInfo!.intro = updatedUserInfo.intro;
+      state.userInfo!.nickname = updatedUserInfo.nickname;
+    }
   },
   actions: {
     // 회원가입 가입정보 저장
