@@ -22,7 +22,9 @@ class ArtworkAPI {
   getArtworkListByMember(memberId: number) {
     // return api.get(`/artwork/member`, { params: { nickname: nickname } });
     // return api.get(`/artwork/member`, { data: { nickname: nickname } });
-    return api.get(`/artwork/member?nickname=`, { params: { memberId: memberId }});
+    return api.get(`/artwork/member?nickname=`, {
+      params: { memberId: memberId },
+    });
     // return api.get(`/artwork/member?nickname=` + nickname);
     // return api.get(`/artwork/member?nickname=` + nickname);
     // return api.get(`/artwork/member/${nickname}`);
@@ -32,8 +34,8 @@ class ArtworkAPI {
     return api.delete(`/artwork/` + id);
   }
   // 닉네임에 해당하는 회원이 좋아요 한 작품 목록 불러오기(없을 경우 null)
-  getLikeArtworkList(nickname: string) {
-    return api.get(`/artwork/${nickname}/like`);
+  getLikeArtworkList(id: number) {
+    return api.get(`/artwork/${id}/like`);
   }
 }
 
