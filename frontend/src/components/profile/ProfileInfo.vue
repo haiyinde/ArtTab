@@ -154,8 +154,8 @@
     </transition>
 
     <!-- Profile Info -->
-    <div class="title">나의 프로필 정보</div>
     <div>
+      <div class="title">나의 프로필 정보<account style="font-size: 1.8rem;"></account></div>
       <div class="container">
         <div class="profile">
           <div class="profile-image">
@@ -241,7 +241,7 @@ import { mapState, mapActions, mapMutations } from "vuex";
 import ResponseData from "@/types/ResponseData";
 import ProfileInfo from "@/types/ProfileInfo";
 import ToastMessage from "@/components/common/ToastMessage.vue";
-
+import { Account } from "mdue";
 
 const accountsStore = "accountsStore";
 
@@ -295,6 +295,7 @@ export default defineComponent({
     InputPassword,
     CloseButton,
     ToastMessage,
+    Account,
   },
   created() {
     this.getProfileInfo();
@@ -509,8 +510,10 @@ export default defineComponent({
 @import "@/assets/css/accounts.scss";
 
 .title {
+  display: flex;
+  align-items: center;
   margin-top: $size-large;
-  margin-left: $size-small;
+  margin-left: 3.5rem;
   font-size: $size-large;
   font-weight: $weight-semi-bold;
 }
@@ -696,7 +699,7 @@ img {
 .container {
   max-width: 1200px;
   min-width: 320px;
-  margin: $size-big auto;
+  margin: 1rem auto 1.75rem auto;
   padding: 0 1rem;
   border: 1px solid $grey;
 }

@@ -1,6 +1,6 @@
 <template>
   <article class="container">
-    <div class="title">마이 갤러리</div>
+    <div class="title">마이 갤러리<palette style="font-size: 1.8rem;"></palette></div>
     <router-link
       v-if="userInfo.id == profileInfo.id"
       class="decorate-gallery-btn"
@@ -27,13 +27,14 @@
 import { defineComponent } from "vue";
 import AddedArtworkItem from "@/components/profile/child/AddedArtworkItem.vue";
 import { mapState, mapActions } from "vuex";
+import { Palette } from "mdue";
 
 const accountsStore = "accountsStore";
 const galleryStore = "galleryStore";
 
 export default defineComponent({
   name: "Gallery",
-  components: { AddedArtworkItem },
+  components: { AddedArtworkItem, Palette },
   data() {
     return {
       profileInfo: {
@@ -66,6 +67,8 @@ export default defineComponent({
 }
 
 .title {
+  display: flex;
+  align-items: center;
   margin-top: $size-large;
   margin-left: $size-small;
   font-size: $size-large;
