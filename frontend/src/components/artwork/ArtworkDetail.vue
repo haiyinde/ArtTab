@@ -8,12 +8,9 @@
         <div class="profile-imgbox">
           <!-- <router-link
             :to="{ name: 'Profile', params: { id: artwork.writerId } }"
-          >
-            <img
-              :src="artwork.writerProfileSaveFolder"
-              alt="작가 프로필 사진"
-            />
-          </router-link>
+          > -->
+          <img :src="artwork.writerProfileSaveFolder" alt="작가 프로필 사진" />
+          <!-- </router-link> -->
         </div>
         <div>
           <div class="profile-title">{{ artwork.title }}</div>
@@ -21,7 +18,7 @@
             <!-- <router-link
               :to="{ name: 'Profile', params: { id: artwork.writerId } }"
             > -->
-              <div class="profile-writer">by. {{ artwork.writerNickname }}</div>
+            <div class="profile-writer">by. {{ artwork.writerNickname }}</div>
             <!-- </router-link> -->
             <!-- 본인 작품일 경우 follow버튼 대신 수정 버튼-->
             <!-- 수정하기 버튼 클릭시 수정 페이지로 데이터 전달 -->
