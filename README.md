@@ -13,6 +13,16 @@ ArtTab은 `그림을 공유하고 싶어하는 사람들을 위한 SNS`에요. �
 # 🖼️서비스 기능
 
 <details>
+<summary>카카오 연동 로그인</summary>
+<div markdown="1">
+
+![ezgif com-gif-maker (3)](https://user-images.githubusercontent.com/55578809/154606515-9aeea3ea-b5b1-4f90-9a18-8c70ebc283dd.gif)
+
+
+</div>
+</details>
+
+<details>
 <summary>피드</summary>
 <div markdown="1">
 
@@ -127,3 +137,35 @@ ArtTab은 `그림을 공유하고 싶어하는 사람들을 위한 SNS`에요. �
 [ERD](https://www.erdcloud.com/d/gNfGpb3YLzHWH2cnw)   
 [api 설계](https://documenter.getpostman.com/view/5813163/UVXqFYVJ)   
 [회의 내용](https://haeinpark.notion.site/2-1-fdfb2b569362442ab99f07bb4a5aa04a)
+
+&nbsp;
+
+# 🔎 배포 명령어
+
+## backend
+
+`cd backend`
+
+`chmod 777 gradlew`
+
+`./gradlew clean bootjar`
+
+`docker build -t arttab ./`
+
+`docker ps -f name=arttab  -q | xargs --no-run-if-empty docker container stop`
+
+`docker container ls -a -f name=arttab -q | xargs -r docker container rm`
+
+`docker run -d -p 9091:8080 -it -e TZ=Asia/Seoul -v /home/arttab/img:/img --name arttab arttab`
+
+</br>
+
+## frontend
+
+`cd frontend`
+
+`npm install`
+
+`npm run build`
+
+</br>
