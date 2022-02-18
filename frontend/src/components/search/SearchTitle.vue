@@ -1,14 +1,13 @@
 <template>
   <div>
-    <div v-if="!items" class="desc">😊 좋아하는 작품을 모아보세요!</div>
-    <div v-else class="container">
+    <div class="container">
       <masonry-wall
         :items="items"
         :ssr-columns="1"
         :column-width="300"
         :gap="16"
       >
-        <template #default="{ item }">
+        <template #default="{ item  }">
           <figure class="card card--1">
             <router-link
               :to="{
@@ -16,7 +15,7 @@
                 params: { id: item.artworkId },
               }"
             >
-              <img :src="item.saveFolder" :alt="`${item.artworkTitle}`" />
+              <img :src="item.imgUrl" :alt="`${item.artworkTitle}`" />
             </router-link>
             <figcaption>
               <span class="info">
@@ -63,7 +62,7 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import ArtworkAPI from "@/apis/artworkAPI";
+import searchAPI from "@/apis/searchAPI";
 import LikeButton from "@/components/common/LikeButton.vue";
 import ToastMessage from "@/components/common/ToastMessage.vue";
 import { mapState } from "vuex";
@@ -76,6 +75,7 @@ export default defineComponent({
     return {
       items: [] as any,
       likeInfo: [] as any,
+      title: this.$route.query.title as string,
     };
   },
   components: {
@@ -84,18 +84,27 @@ export default defineComponent({
     ToastMessage,
   },
   methods: {
-    async getFavouriteArtworks() {
-      const res = await ArtworkAPI.getLikeArtworkList(this.userInfo.id);
+    async getSearchResults() {
+      const res = await searchAPI.SearchArtworks(this.userInfo.id, this.title);;
       this.items = res.data;
-      console.log(res);
+      console.log(this.items);
       let size = this.items.length;
+      console.log(size);
       for (let i = 0; i < size; i++) {
         this.likeInfo.push({
           likeOrNot: this.items[i].likeOrNot,
         });
       }
+      console.log(this.likeInfo);
+      if (this.items.length === 0) {
+        let nonedata = document.querySelector(".none-search");
+        if (nonedata instanceof Element) {
+          nonedata.innerHTML = "해당하는 작품이 없습니다 🤨";
+        }
+      }
     },
     toggleLike(index: number) {
+      console.log('toggle Like');
       this.items[index].likeOrNot = !this.items[index].likeOrNot;
     },
     showToastMessage(msg: string) {
@@ -118,18 +127,12 @@ export default defineComponent({
     ...mapState(accountsStore, ["userInfo"]),
   },
   mounted() {
-    this.getFavouriteArtworks();
+    this.getSearchResults();
   },
 });
 </script>
 
 <style scoped lang="scss">
-.desc {
-  font-size: $size-large;
-  margin-top: $size-big;
-  text-align: center;
-}
-
 .container {
   margin-top: 3rem;
 }

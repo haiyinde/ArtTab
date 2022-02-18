@@ -7,12 +7,12 @@
     </div>
     <nav :class="{ showNav: isShowNav }">
       <ul v-if="!isLogin">
-        <li @click="closeNavBar">
+        <!-- <li @click="closeNavBar">
           <router-link :to="{ name: 'Login' }">로그인</router-link>
-        </li>
-        <li @click="closeNavBar">
+        </li> -->
+        <!-- <li @click="closeNavBar">
           <router-link :to="{ name: 'SignUp' }">회원가입</router-link>
-        </li>
+        </li> -->
       </ul>
     </nav>
     <text-search class="icon navbar-toggle" @click="toggleNavBar"></text-search>
