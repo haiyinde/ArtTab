@@ -725,7 +725,7 @@ img {
 
 .profile {
   // padding: 5rem 0;
-  padding: 5rem 0 1rem 0;
+  padding: 5rem 1rem 1rem 1rem;
   border: 1px solid $grey;
 }
 
