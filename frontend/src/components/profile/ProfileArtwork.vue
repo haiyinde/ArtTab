@@ -3,6 +3,10 @@
     <toast-message ref="toast"></toast-message>
     <div>
       <div class="container">
+        <div class="title">나의 그림 발자취<foot-print style="font-size: 1.8rem;"></foot-print></div>
+        <div v-if="!isArtwork" class="if-not-text">
+          내가 등록한 그림이 없습니다. 그린 그림을 다른 사람들과 공유해볼까요? 
+        </div>
         <masonry-wall
           :items="items"
           :ssr-columns="1"
@@ -69,6 +73,7 @@ import LikeButton from "@/components/common/LikeButton.vue";
 import ToastMessage from "@/components/common/ToastMessage.vue";
 import { mapState } from "vuex";
 import { ArrowUpBoldCircleOutline } from "mdue";
+import { FootPrint } from "mdue";
 import AccountsAPI from "@/apis/accountsAPI";
 import ResponseData from "@/types/ResponseData";
 import ProfileInfo from "@/types/ProfileInfo";
@@ -81,12 +86,14 @@ export default defineComponent({
       items: [] as any,
       likeInfo: [] as any,
       profileInfo: {} as ProfileInfo,
+      isArtwork: false,
     };
   },
   components: {
     LikeButton,
-    ArrowUpBoldCircleOutline,
     ToastMessage,
+    ArrowUpBoldCircleOutline,
+    FootPrint,
   },
   mounted() {
     this.getProfileInfo();
@@ -100,6 +107,11 @@ export default defineComponent({
       const res = await ArtworkAPI.getArtworkListByMember(Number(this.$route.params.id));
       console.log(res);
       this.items = res.data;
+      if (this.items.length == 0) {
+        this.isArtwork = false;
+      } else {
+        this.isArtwork = true;
+      }
       let size = this.items.length;
       for (let i = 0; i < size; i++) {
         this.likeInfo.push({
@@ -144,8 +156,27 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
+.if-not-text {
+  display: flex;
+  justify-content: center;
+  font-size: 1.5rem;
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  margin-top: $size-large;
+  margin-left: $size-large;
+  font-size: $size-large;
+  font-weight: $weight-semi-bold;
+}
+
 .container {
   margin-top: 3rem;
+  max-width: 1200px;
+  min-width: 320px;
+  margin: 1rem auto 1.75rem auto;
+  padding: 0 1rem;
 }
 
 *,

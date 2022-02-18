@@ -4,11 +4,13 @@ package com.ssafy.arttab.search;
 import com.ssafy.arttab.artwork.Artwork;
 import com.ssafy.arttab.artwork.ArtworkRepository;
 import com.ssafy.arttab.follow.FollowRepository;
+import com.ssafy.arttab.like.LikesRepository;
 import com.ssafy.arttab.member.domain.Member;
 import com.ssafy.arttab.member.repository.MemberRepository;
 import com.ssafy.arttab.search.dto.SearchArtworkListResponseDto;
 import com.ssafy.arttab.search.dto.SearchMemberListResponseDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,13 +25,26 @@ public class SearchService {
     private final ArtworkRepository artworkRepository;
     private final MemberRepository memberRepository;
     private final FollowRepository followRepository;
+    private final LikesRepository likeRepository;
 
+    @Value("${access.url.artworks}")
+    private String artworkImgUrl;
 
     @Transactional
-    public List<SearchArtworkListResponseDto> selectArtworkList(String title){
-        return artworkRepository.findAllByTitle(title).stream()
-                .map(SearchArtworkListResponseDto::new)
-                .collect(Collectors.toList());
+    public List<SearchArtworkListResponseDto> selectArtworkList(String title, Long id){
+        List<Artwork> artworkList = artworkRepository.findAllByTitle(title);
+        List<SearchArtworkListResponseDto> responseDtos = new ArrayList<>();
+
+        for (Artwork artwork : artworkList) {
+            String imgUrl = artworkImgUrl + artwork.getSaveFileName();
+            boolean isLike=false;
+            if(likeRepository.selectIsLike(artwork.getId(), id)>0){
+                isLike=true;
+            }
+            responseDtos.add(new SearchArtworkListResponseDto(artwork, imgUrl, isLike));
+
+        }
+        return responseDtos;
     }
 
     @Transactional
