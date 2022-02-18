@@ -2,11 +2,11 @@
   <div>
     <toast-message ref="toast"></toast-message>
     <div>
-      <div class="title">나의 그림 발자취<foot-print style="font-size: 1.8rem;"></foot-print></div>
       <div v-if="!isArtwork" class="if-not-text">
         내가 등록한 그림이 없습니다. 그린 그림을 다른 사람들과 공유해볼까요? 
       </div>
       <div class="container">
+        <div class="title">나의 그림 발자취<foot-print style="font-size: 1.8rem;"></foot-print></div>
         <masonry-wall
           :items="items"
           :ssr-columns="1"
@@ -166,7 +166,7 @@ export default defineComponent({
   display: flex;
   align-items: center;
   margin-top: $size-large;
-  margin-left: 3.5rem;
+  margin-left: $size-large;
   font-size: $size-large;
   font-weight: $weight-semi-bold;
 }

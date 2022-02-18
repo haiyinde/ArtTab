@@ -155,8 +155,8 @@
 
     <!-- Profile Info -->
     <div>
-      <div class="title">나의 프로필 정보<account style="font-size: 1.8rem;"></account></div>
       <div class="container">
+      <div class="title">나의 프로필 정보<account style="font-size: 1.8rem;"></account></div>
         <div class="profile">
           <div class="profile-image">
             <img :src="profileInfo.profileImageUrl" alt="Profile Image" style="width: 15rem; height: 15rem;"/>
@@ -513,7 +513,7 @@ export default defineComponent({
   display: flex;
   align-items: center;
   margin-top: $size-large;
-  margin-left: 3.5rem;
+  margin-left: $size-small;
   font-size: $size-large;
   font-weight: $weight-semi-bold;
 }
@@ -701,7 +701,7 @@ img {
   min-width: 320px;
   margin: 1rem auto 1.75rem auto;
   padding: 0 1rem;
-  border: 1px solid $grey;
+  // border: 1px solid $grey;
 }
 
 .btn {
@@ -726,6 +726,7 @@ img {
 .profile {
   // padding: 5rem 0;
   padding: 5rem 0 1rem 0;
+  border: 1px solid $grey;
 }
 
 .profile::after {
