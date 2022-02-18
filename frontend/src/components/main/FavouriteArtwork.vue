@@ -1,6 +1,7 @@
 <template>
   <div>
-    <div class="container">
+    <div v-if="!items" class="desc">😊 좋아하는 작품을 모아보세요!</div>
+    <div v-else class="container">
       <masonry-wall
         :items="items"
         :ssr-columns="1"
@@ -30,7 +31,7 @@
                 <router-link
                   :to="{ name: 'Profile', params: { id: item.memberId } }"
                 >
-                <span class="artwork-artist">{{ item.memberNickname }}</span>
+                  <span class="artwork-artist">{{ item.memberNickname }}</span>
                 </router-link>
               </span>
               <span class="links">
@@ -123,6 +124,12 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
+.desc {
+  font-size: $size-large;
+  margin-top: $size-big;
+  text-align: center;
+}
+
 .container {
   margin-top: 3rem;
 }
