@@ -1,12 +1,12 @@
 <template>
   <div>
     <!-- 페이지 제목 -->
-    <page-title title="로그인"></page-title>
+    <page-title title="회원가입/로그인"></page-title>
 
     <p class="desc">로그인하면 멋진 작품들을 볼 수 있어요 :)</p>
 
     <!-- 이메일 입력 -->
-    <label for="email" class="label-text">이메일</label>
+    <!-- <label for="email" class="label-text">이메일</label>
     <input
       type="email"
       id="email"
@@ -17,10 +17,10 @@
     />
     <span class="alert" v-show="valid.login"
       >아이디 또는 비밀번호가 올바르지 않습니다.</span
-    >
+    > -->
 
     <!-- 비밀번호 입력 -->
-    <label for="password" class="label-text">비밀번호</label>
+    <!-- <label for="password" class="label-text">비밀번호</label>
     <input-password
       :password="account.password"
       id="password"
@@ -34,19 +34,19 @@
         <label for="storeId">아이디 저장</label>
       </div>
       <router-link to="FindPassword">비밀번호 찾기</router-link>
-    </div>
+    </div> -->
 
     <!-- 로그인 버튼 -->
-    <button
+    <!-- <button
       :class="{ disabled: !isCompleted }"
       :disabled="!isCompleted"
       @click="checkEmail"
     >
       로그인
-    </button>
+    </button> -->
 
     <!-- SNS 로그인/회원가입 -->
-    <div class="subtitle">SNS로 간편 로그인/회원가입하기</div>
+    <!-- <div class="subtitle">SNS로 간편 로그인/회원가입하기</div> -->
     <div class="snslogin">
       <!-- <img
         class="circle"
@@ -70,15 +70,15 @@
     </div>
 
     <!-- 이메일 가입 버튼 -->
-    <div class="subtitle">계정이 없으신가요?</div>
-    <button class="btn-white" @click="moveSignUp">이메일로 가입하기</button>
+    <!-- <div class="subtitle">계정이 없으신가요?</div>
+    <button class="btn-white" @click="moveSignUp">이메일로 가입하기</button> -->
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
 import PageTitle from "@/components/accounts/child/PageTitle.vue";
-import InputPassword from "@/components/accounts/child/InputPassword.vue";
+// import InputPassword from "@/components/accounts/child/InputPassword.vue";
 import AccountsAPI from "@/apis/accountsAPI";
 import ResponseData from "@/types/ResponseData";
 import { SNS_BASE_URL } from "@/config";
@@ -91,7 +91,7 @@ export default defineComponent({
   name: "Login",
   components: {
     PageTitle,
-    InputPassword,
+    // InputPassword,
   },
   data() {
     return {
@@ -205,6 +205,7 @@ export default defineComponent({
   font-size: $font-medium;
   font-weight: $weight-semi-bold;
   color: $dark-grey;
+  margin: $size-medium 0;
 }
 
 .addition-box {

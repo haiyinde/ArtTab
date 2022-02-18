@@ -8,9 +8,12 @@
         <div class="profile-imgbox">
           <!-- <router-link
             :to="{ name: 'Profile', params: { id: artwork.writerId } }"
-          > -->
-            <img :src="artwork.writerProfileSaveFolder" alt="작가 프로필 사진" />
-          <!-- </router-link> -->
+          >
+            <img
+              :src="artwork.writerProfileSaveFolder"
+              alt="작가 프로필 사진"
+            />
+          </router-link>
         </div>
         <div>
           <div class="profile-title">{{ artwork.title }}</div>
