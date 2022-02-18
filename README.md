@@ -1,3 +1,4 @@
+![logo](https://user-images.githubusercontent.com/55578809/154604760-2cd16ae4-e3cc-44c4-9c50-d3d5ab7801d4.png)
 # 🎨인생은 짧다, 그래서 ArtTab
 
 > 당신의 인생에 예술을 담아보세요.   
