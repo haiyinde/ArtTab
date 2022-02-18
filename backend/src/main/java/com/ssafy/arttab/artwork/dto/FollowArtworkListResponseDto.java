@@ -27,14 +27,20 @@ public class FollowArtworkListResponseDto implements Comparable<FollowArtworkLis
     private String memberMail;
     @ApiModelProperty(value = "정렬용: 해당 회원이 제일 최근에 업로드한 날짜")
     private LocalDateTime recentUpdated;
+    private Long memberId;
+    private String nickName;
+    private String imgUrl;
 
     @Builder
-    public FollowArtworkListResponseDto(List<SimpleArtworkDto> artworkInfo, int artworkNum, int followerNum, String memberMail, LocalDateTime recentUpdated) {
+    public FollowArtworkListResponseDto(List<SimpleArtworkDto> artworkInfo, int artworkNum, int followerNum, String memberMail, LocalDateTime recentUpdated, Long memberId, String nickName, String imgUrl) {
         this.artworkInfo = artworkInfo;
         this.artworkNum = artworkNum;
         this.followerNum = followerNum;
         this.memberMail = memberMail;
         this.recentUpdated = recentUpdated;
+        this.memberId = memberId;
+        this.nickName = nickName;
+        this.imgUrl = imgUrl;
     }
 
     @Override
