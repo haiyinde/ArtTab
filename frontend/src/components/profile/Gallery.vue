@@ -70,7 +70,7 @@ export default defineComponent({
   display: flex;
   align-items: center;
   margin-top: $size-large;
-  margin-left: $size-small;
+  margin-left: $size-large;
   font-size: $size-large;
   font-weight: $weight-semi-bold;
 }
